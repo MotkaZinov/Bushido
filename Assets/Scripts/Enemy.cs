@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -6,7 +7,9 @@ using UnityEngine;
 /// </summary>
 public class Enemy : MonoBehaviour
 {
-    public static int Alive { get; private set; }
+    /// <summary>Todos los yokais vivos (lo usa BladeController para detectar cortes).</summary>
+    public static readonly List<Enemy> Active = new List<Enemy>();
+    public static int Alive => Active.Count;
 
     /// <summary>Se dispara cuando un enemigo muere por un corte.</summary>
     public static event System.Action<Enemy> Killed;
@@ -26,7 +29,22 @@ public class Enemy : MonoBehaviour
 
     public bool IsMarked { get; private set; }
 
+    /// <summary>Centro real del yokai (usa el SphereCollider).</summary>
+    public Vector3 Center => col != null ? transform.TransformPoint(col.center) : transform.position;
+
+    /// <summary>Radio real en unidades de mundo (SphereCollider × escala). No borres el SphereCollider.</summary>
+    public float Radius
+    {
+        get
+        {
+            Vector3 sc = transform.lossyScale;
+            float scale = Mathf.Max(Mathf.Abs(sc.x), Mathf.Abs(sc.y), Mathf.Abs(sc.z));
+            return (col != null ? col.radius : 0.5f) * scale;
+        }
+    }
+
     Renderer rend;
+    SphereCollider col;
     Vector3 startPos, endPos, perpendicular;
     float travelTime, elapsed;
     float amplitude, frequency, phase;
@@ -35,11 +53,19 @@ public class Enemy : MonoBehaviour
     void Awake()
     {
         rend = GetComponent<Renderer>();
+        col = GetComponent<SphereCollider>();
         SetColor(normalColor);
     }
 
-    void OnEnable()  { Alive++; }
-    void OnDestroy() { Alive--; }
+    void OnEnable()  { Active.Add(this); }
+    void OnDisable() { Active.Remove(this); }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetStatics()
+    {
+        Active.Clear();
+        Killed = null;
+    }
 
     /// <summary>Lo llama el spawner justo después de instanciar.</summary>
     public void Init(Vector3 start, Vector3 end, float speed, float amp, float freq)

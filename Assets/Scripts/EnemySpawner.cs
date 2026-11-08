@@ -82,6 +82,8 @@ public class EnemySpawner : MonoBehaviour
 
     public void StartFrenzy(float duration)
     {
+        if (GameAudio.Instance != null) GameAudio.Instance.OnFrenzyStart();
+
         // Si ya había un frenesí, se renueva el tiempo (no se suma)
         frenzyEndTime = Mathf.Max(frenzyEndTime, Time.time + duration);
 
