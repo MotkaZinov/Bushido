@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Sonido del juego, GENERADO POR CÓDIGO (no necesitas archivos de audio).
-/// - Cada yokai marcado toca una nota que SUBE en una escala japonesa (sonido tipo koto).
+/// - Cada yokai marcado toca una nota que SUBE en una escala japonesa (sonido percusivo tipo shamisen/taiko).
 /// - Al ejecutar el tajo: "zan!" + arpegio rápido con las notas de la cadena + campanada final
 ///   que sube una nota por cada tajo seguido del combo.
 /// - Cadena rota, swoosh de la navaja y gong del frenesí.
@@ -14,9 +14,12 @@ public class GameAudio : MonoBehaviour
     public static GameAudio Instance { get; private set; }
 
     public enum ScaleType { Hirajoshi, Yo, PentatonicMajor, PentatonicMinor }
+    public enum InstrumentType { ShamisenPercusivo, KotoTradicional }
 
-    [Header("Escala musical (cada yokai marcado sube una nota)")]
+    [Header("Instrumento y Escala")]
+    public InstrumentType instrumentType = InstrumentType.ShamisenPercusivo;
     public ScaleType scaleType = ScaleType.Hirajoshi;
+    
     [Tooltip("Frecuencia de la nota base (261.63 = Do central)")]
     public float rootFrequency = 261.63f;
 
@@ -27,34 +30,34 @@ public class GameAudio : MonoBehaviour
     [Range(0f, 1f)] public float swooshVolume = 0.35f;
 
     [Header("Swoosh de la navaja")]
-    [Tooltip("Velocidad mínima del dedo para que suene (alturas de pantalla por segundo)")]
     public float swooshMinSpeed = 1.2f;
     public float swooshCooldown = 0.22f;
 
     [Header("Al ejecutar el tajo")]
     public int maxArpeggioNotes = 8;
-    [Tooltip("Segundos entre nota y nota del arpegio")]
     public float arpeggioStep = 0.045f;
-    [Tooltip("El arpegio completo nunca dura más que esto")]
     public float arpeggioMaxDuration = 0.5f;
 
-    [Header("Opcional: tus propios sonidos (vacío = se genera solo)")]
-    [Tooltip("Se transporta de tono; se asume que es la nota base")]
+    [Header("Opcional: tus propios sonidos")]
     public AudioClip customNote;
     public AudioClip customSlice;
     public AudioClip customSwoosh;
     public AudioClip customBroken;
     public AudioClip customGong;
+    public AudioClip customGameOver;
+
+    [Header("Diagnóstico")]
+    public bool playTestOnStart = true;
 
     const int Octaves = 3;
     const int PoolSize = 24;
 
     static readonly int[][] Scales =
     {
-        new[] { 0, 2, 3, 7, 8 },   // Hirajoshi (japonesa)
-        new[] { 0, 2, 5, 7, 9 },   // Yo (japonesa, más brillante)
-        new[] { 0, 2, 4, 7, 9 },   // Pentatónica mayor
-        new[] { 0, 3, 5, 7, 10 },  // Pentatónica menor
+        new[] { 0, 2, 3, 7, 8 },   
+        new[] { 0, 2, 5, 7, 9 },   
+        new[] { 0, 2, 4, 7, 9 },   
+        new[] { 0, 3, 5, 7, 10 },  
     };
 
     AudioSource[] pool;
@@ -62,24 +65,27 @@ public class GameAudio : MonoBehaviour
     AudioClip[] notes;
     int[] noteSemitones;
     int scaleLength;
-    AudioClip sliceClip, swooshClip, brokenClip, gongClip;
+    AudioClip sliceClip, swooshClip, brokenClip, gongClip, gameOverClip;
     int sampleRate;
 
     float nextSwooshTime;
     float lastSlashTime = -999f;
     int comboCuts;
+    bool ready;
 
     void Awake()
     {
         Instance = this;
         sampleRate = AudioSettings.outputSampleRate;
 
+        if (sampleRate <= 0) return;
+
         pool = new AudioSource[PoolSize];
         for (int i = 0; i < PoolSize; i++)
         {
             AudioSource s = gameObject.AddComponent<AudioSource>();
             s.playOnAwake = false;
-            s.spatialBlend = 0f; // sonido 2D
+            s.spatialBlend = 0f;
             pool[i] = s;
         }
 
@@ -88,52 +94,44 @@ public class GameAudio : MonoBehaviour
         if (customSwoosh == null) swooshClip = MakeClip("Swoosh", MakeSwoosh());
         if (customBroken == null) brokenClip = MakeClip("Broken", MakeBroken());
         if (customGong == null)   gongClip   = MakeClip("Gong",   MakeGong());
+        if (customGameOver == null) gameOverClip = MakeClip("GameOver", MakeBoom());
+
+        ready = true;
     }
 
-    // ───────────── API (la llaman BladeController y EnemySpawner) ─────────────
-
-    /// <summary>Un yokai fue marcado. chainIndex = su lugar en la cadena (0, 1, 2...)</summary>
-    public void OnMark(int chainIndex)
+    void Start()
     {
-        PlayNote(chainIndex, markVolume, 0f);
+        if (!ready) return;
+        if (playTestOnStart)
+            for (int i = 0; i < scaleLength; i++)
+                PlayNote(i, 0.6f, 0.1f + i * 0.12f);
     }
 
-    /// <summary>Se ejecutó el tajo.</summary>
+    public void OnMark(int chainIndex) => PlayNote(chainIndex, markVolume, 0f);
+
     public void OnSlash(int chainSize, float multiplier)
     {
-        // ¿Seguimos en el mismo combo? Cada tajo seguido sube la campanada final.
         float window = ScoreManager.Instance != null ? ScoreManager.Instance.comboWindow : 2.5f;
         comboCuts = (Time.time - lastSlashTime > window) ? 0 : comboCuts + 1;
         lastSlashTime = Time.time;
 
-        // 1) El "zan!": más grave y fuerte mientras más yokais
         float heavy = Mathf.InverseLerp(2f, 10f, chainSize);
         PlayClip(customSlice != null ? customSlice : sliceClip, sliceVolume, Mathf.Lerp(1.1f, 0.8f, heavy), 0f);
 
-        // 2) Arpegio rápido: repite las notas que fuiste marcando
         int count = Mathf.Min(chainSize, maxArpeggioNotes);
         float step = Mathf.Min(arpeggioStep, arpeggioMaxDuration / Mathf.Max(1, count));
         for (int i = 0; i < count; i++)
             PlayNote(i, markVolume * 0.8f, 0.03f + i * step);
 
-        // 3) Campanada final: una octava arriba, y sube una nota por cada tajo seguido
         int chime = scaleLength + comboCuts;
         float comboT = Mathf.Clamp01(comboCuts / 8f);
         PlayNote(chime, Mathf.Lerp(0.6f, 1f, comboT), 0.03f + count * step);
     }
 
-    /// <summary>La cadena se rompió (un solo marcado, o un yokai se escapó).</summary>
-    public void OnChainBroken()
-    {
-        PlayClip(customBroken != null ? customBroken : brokenClip, 0.6f, 1f, 0f);
-    }
+    public void OnChainBroken() => PlayClip(customBroken != null ? customBroken : brokenClip, 0.6f, 1f, 0f);
+    public void OnFrenzyStart() => PlayClip(customGong != null ? customGong : gongClip, 0.9f, 1f, 0f);
+    public void OnGameOver() => PlayClip(customGameOver != null ? customGameOver : gameOverClip, 1f, 1f, 0f);
 
-    public void OnFrenzyStart()
-    {
-        PlayClip(customGong != null ? customGong : gongClip, 0.9f, 1f, 0f);
-    }
-
-    /// <summary>screenSpeed = alturas de pantalla por segundo que recorre el dedo.</summary>
     public void OnBladeMoved(float screenSpeed)
     {
         if (screenSpeed < swooshMinSpeed || Time.unscaledTime < nextSwooshTime) return;
@@ -145,10 +143,9 @@ public class GameAudio : MonoBehaviour
                  Mathf.Lerp(0.9f, 1.3f, k), 0f);
     }
 
-    // ───────────── Reproducción ─────────────
-
     void PlayNote(int index, float volume, float delay)
     {
+        if (!ready) return;
         index = Mathf.Clamp(index, 0, noteSemitones.Length - 1);
 
         if (customNote != null)
@@ -164,7 +161,7 @@ public class GameAudio : MonoBehaviour
 
     void PlayClip(AudioClip clip, float volume, float pitch, float delay)
     {
-        if (clip == null) return;
+        if (!ready || clip == null) return;
 
         AudioSource s = pool[poolIndex];
         poolIndex = (poolIndex + 1) % pool.Length;
@@ -174,12 +171,9 @@ public class GameAudio : MonoBehaviour
         s.volume = volume * masterVolume;
         s.pitch = pitch;
 
-        // PlayScheduled usa el reloj de audio: no le afecta el hit-stop (timeScale = 0)
         if (delay <= 0f) s.Play();
         else s.PlayScheduled(AudioSettings.dspTime + delay);
     }
-
-    // ───────────── Generación de sonidos ─────────────
 
     void BuildNotes()
     {
@@ -198,7 +192,7 @@ public class GameAudio : MonoBehaviour
             if (customNote == null)
             {
                 float freq = rootFrequency * Mathf.Pow(2f, semis / 12f);
-                notes[i] = MakeClip("Note" + i, Pluck(freq, 0.7f));
+                notes[i] = MakeClip("Note" + i, instrumentType == InstrumentType.ShamisenPercusivo ? PluckShamisenPercussive(freq, 0.45f) : PluckKoto(freq, 0.7f));
             }
         }
     }
@@ -210,15 +204,53 @@ public class GameAudio : MonoBehaviour
         return clip;
     }
 
-    // Cuerda pulsada (Karplus-Strong): suena parecido a un koto
-    float[] Pluck(float freq, float duration)
+    // Sonido Shamisen Ultra-Percusivo / Estilo Taiko (Ataque fuerte de plectro + golpe seco de madera)
+    float[] PluckShamisenPercussive(float freq, float duration)
+    {
+        int n = Mathf.Max(1, (int)(sampleRate * duration));
+        int period = Mathf.Max(2, Mathf.RoundToInt(sampleRate / freq));
+
+        float[] buf = new float[period];
+        for (int i = 0; i < period; i++) 
+            buf[i] = Random.Range(-1.5f, 1.5f); // Ruido de impacto inicial muy marcado (tipo bachi)
+
+        float[] data = new float[n];
+        int idx = 0;
+        
+        for (int i = 0; i < n; i++)
+        {
+            float t = i / (float)sampleRate;
+            int next = (idx + 1) % period;
+            float sample = buf[idx];
+
+            // Añadir un golpe de caja/madera sordo (tipo percusión tradicional japonesa) en los primeros milisegundos
+            float woodHit = (i < sampleRate * 0.03f) ? Mathf.Sin(2f * Mathf.PI * 180f * t) * Mathf.Exp(-t * 50f) * 1.2f : 0f;
+
+            data[i] = sample + woodHit;
+
+            // Amortiguamiento rápido para que sea muy seco, cortante y rítmico
+            buf[idx] = 0.985f * 0.5f * (buf[idx] + buf[next]);
+            
+            // Zumbido metálico característico de la piel (sawari) más intenso al inicio
+            if (i < sampleRate * 0.08f)
+            {
+                buf[idx] += sample * 0.35f * Mathf.Sin(i * 0.35f);
+            }
+
+            idx = next;
+        }
+        return Finish(data, 0.04f);
+    }
+
+    // Sonido estilo Koto tradicional (más redondo y suave)
+    float[] PluckKoto(float freq, float duration)
     {
         int n = Mathf.Max(1, (int)(sampleRate * duration));
         int period = Mathf.Max(2, Mathf.RoundToInt(sampleRate / freq));
 
         float[] buf = new float[period];
         for (int i = 0; i < period; i++) buf[i] = Random.Range(-1f, 1f);
-        for (int i = 0; i < period; i++) buf[i] = 0.5f * (buf[i] + buf[(i + 1) % period]); // más redondo
+        for (int i = 0; i < period; i++) buf[i] = 0.5f * (buf[i] + buf[(i + 1) % period]);
 
         float[] data = new float[n];
         int idx = 0;
@@ -232,7 +264,6 @@ public class GameAudio : MonoBehaviour
         return Finish(data, 0.15f);
     }
 
-    // "Zan!": chasquido agudo + golpe grave que baja de tono
     float[] MakeSlice()
     {
         int n = (int)(sampleRate * 0.3f);
@@ -255,7 +286,6 @@ public class GameAudio : MonoBehaviour
         return Finish(d, 0.02f);
     }
 
-    // Aire que se vuelve más agudo
     float[] MakeSwoosh()
     {
         int n = (int)(sampleRate * 0.22f);
@@ -274,7 +304,6 @@ public class GameAudio : MonoBehaviour
         return Finish(d, 0.02f);
     }
 
-    // Tono grave que cae: "bu-dum" apagado
     float[] MakeBroken()
     {
         int n = (int)(sampleRate * 0.35f);
@@ -291,7 +320,6 @@ public class GameAudio : MonoBehaviour
         return Finish(d, 0.02f);
     }
 
-    // Gong: parciales no armónicos con caída lenta
     float[] MakeGong()
     {
         float[] ratios = { 1f, 2f, 2.76f, 4.07f, 5.4f, 6.9f };
@@ -313,7 +341,25 @@ public class GameAudio : MonoBehaviour
         return Finish(d, 0.1f);
     }
 
-    // Normaliza y suaviza inicio y final para que no haya "clics"
+    float[] MakeBoom()
+    {
+        int n = (int)(sampleRate * 1.1f);
+        float[] d = new float[n];
+        float phase = 0f;
+
+        for (int i = 0; i < n; i++)
+        {
+            float t = i / (float)sampleRate;
+            float freq = Mathf.Lerp(120f, 35f, Mathf.Clamp01(t / 0.6f));
+            phase += 2f * Mathf.PI * freq / sampleRate;
+
+            float body = Mathf.Sin(phase) * Mathf.Exp(-t * 3.2f);
+            float noise = Random.Range(-1f, 1f) * Mathf.Exp(-t * 9f) * 0.6f;
+            d[i] = body + noise;
+        }
+        return Finish(d, 0.1f);
+    }
+
     float[] Finish(float[] d, float fadeOutSeconds)
     {
         float max = 0.0001f;

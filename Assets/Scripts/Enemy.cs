@@ -17,6 +17,16 @@ public class Enemy : MonoBehaviour
     [Header("Puntuación")]
     [Min(0)] public int points = 100;
 
+    [Header("Enemigo peligroso (cubo de la muerte)")]
+    [Tooltip("Si está activo, cortar a este enemigo termina la partida (Game Over)")]
+    public bool causesGameOver = false;
+    [Tooltip("Activo: pierdes en cuanto lo TOCAS. Apagado: pierdes cuando el tajo lo incluye")]
+    public bool gameOverOnTouch = true;
+
+    [Header("Giro (opcional)")]
+    [Tooltip("Grados por segundo en cada eje. Útil para el cubo")]
+    public Vector3 spinSpeed = Vector3.zero;
+
     [Header("Efecto especial: Frenesí")]
     [Tooltip("Si está activo, al matar a este enemigo empieza el modo frenesí")]
     public bool triggersFrenzy = false;
@@ -106,6 +116,9 @@ public class Enemy : MonoBehaviour
         pos += perpendicular * (wave * amplitude);
 
         transform.position = pos;
+
+        if (spinSpeed != Vector3.zero)
+            transform.Rotate(spinSpeed * Time.deltaTime, Space.Self);
     }
 
     public void Mark()

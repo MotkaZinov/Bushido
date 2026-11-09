@@ -1648,7 +1648,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1533748653}
-  - component: {fileID: 1533748652}
+  - component: {fileID: 1533748654}
   m_Layer: 0
   m_Name: GameAudio
   m_TagString: Untagged
@@ -1656,7 +1656,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1533748652
+--- !u!4 &1533748653
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533748651}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 388.64987, y: 370.9215, z: -307.43146}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1533748654
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1668,6 +1683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6755429dc7dc9b154bd1d6f98a1b4b0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameAudio
+  instrumentType: 0
   scaleType: 0
   rootFrequency: 261.63
   masterVolume: 0.8
@@ -1684,21 +1700,8 @@ MonoBehaviour:
   customSwoosh: {fileID: 0}
   customBroken: {fileID: 0}
   customGong: {fileID: 0}
---- !u!4 &1533748653
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1533748651}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 388.64987, y: 370.9215, z: -307.43146}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  customGameOver: {fileID: 0}
+  playTestOnStart: 1
 --- !u!1 &1551635531
 GameObject:
   m_ObjectHideFlags: 0
@@ -1861,16 +1864,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7a12270c3e06d9b4a9c9a451d8aef27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyPrefab: {fileID: 4872938545798969634, guid: 50a83f8bbf51ba859a5439496d810b89, type: 3}
+  enemyPrefab: {fileID: 7206120330352493284, guid: 2df3b75e84a704dfc96191689332b13e, type: 3}
   cam: {fileID: 330585545}
   specialEnemies:
   - prefab: {fileID: 1835090208261456751, guid: 33ad96c79c289f261842c31862d569b1, type: 3}
-    chance: 0.1
+    chance: 0.076
+  - prefab: {fileID: 2363343625650895811, guid: b99a124459bcb7783be2d33c2ce27dbf, type: 3}
+    chance: 0.033
   specialsDuringFrenzy: 1
   spawnInterval: {x: 0.6, y: 1}
-  maxAlive: 35
+  maxAlive: 60
   offscreenMargin: 0.1
-  speedRange: {x: 3, y: 6}
+  speedRange: {x: 3, y: 10}
   amplitudeRange: {x: 0.75, y: 2.25}
   frequencyRange: {x: 2, y: 3.5}
   frenzyMaxAlive: 100
@@ -2203,6 +2208,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1713282868}
   m_CullTransparentMesh: 1
+--- !u!1 &1778901471
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1778901473}
+  - component: {fileID: 1778901472}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1778901472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778901471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e36b1414d814de17af08a20a523a04e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  gameOverScene: GameOver
+  delayBeforeScene: 1.2
+  shakeTrauma: 1
+--- !u!4 &1778901473
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778901471}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 595.05164, y: 258.08658, z: -657.53687}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1976755037
 GameObject:
   m_ObjectHideFlags: 0
@@ -2236,7 +2288,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BladeController
   cam: {fileID: 330585545}
   bladeRadiusPercent: 2.5
-  minChain: 3
+  minChain: 2
   chainTimeout: 1
   trailWidthPercent: 1.6
   chainLineWidthPercent: 1
@@ -2599,3 +2651,4 @@ SceneRoots:
   - {fileID: 1977894899}
   - {fileID: 1533748653}
   - {fileID: 1619774599}
+  - {fileID: 1778901473}

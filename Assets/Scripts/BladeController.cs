@@ -59,7 +59,7 @@ public class BladeController : MonoBehaviour
 
     void Update()
     {
-        if (cam == null) return;
+        if (cam == null || GameManager.IsGameOver) return;
 
         if (PressedThisFrame())
             StartSlice();
@@ -162,6 +162,15 @@ public class BladeController : MonoBehaviour
 
     void MarkEnemy(Enemy e)
     {
+        if (GameManager.IsGameOver) return;
+
+        // Cubo de la muerte: si se pierde al tocarlo, se acabó
+        if (e.causesGameOver && e.gameOverOnTouch)
+        {
+            TriggerGameOver();
+            return;
+        }
+
         if (chain.Count == 0) chainStartTime = Time.time; // arranca el reloj
 
         e.Mark();
@@ -209,6 +218,16 @@ public class BladeController : MonoBehaviour
             }
         }
 
+        // Un enemigo peligroso dentro del tajo: Game Over en vez de puntos
+        foreach (Enemy e in chain)
+        {
+            if (e.causesGameOver)
+            {
+                TriggerGameOver();
+                return;
+            }
+        }
+
         int count = chain.Count;
         int baseScore = 0;
         Vector3 center = Vector3.zero;
@@ -230,6 +249,20 @@ public class BladeController : MonoBehaviour
         float mult = score != null ? score.ComboMultiplier : 1f;
         if (GameFeel.Instance != null) GameFeel.Instance.OnSlash(count, mult);
         if (GameAudio.Instance != null) GameAudio.Instance.OnSlash(count, mult);
+    }
+
+    // Enemigo peligroso cortado: fin de la partida
+    void TriggerGameOver()
+    {
+        chain.Clear();
+        chainLine.positionCount = 0;
+        slicing = false;
+        trail.emitting = false;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.GameOver();
+        else
+            Debug.LogWarning("BladeController: cortaste un enemigo peligroso pero no hay un GameManager en la escena.");
     }
 
     void BreakChain()

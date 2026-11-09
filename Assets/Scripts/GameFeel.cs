@@ -54,7 +54,7 @@ public class GameFeel : MonoBehaviour
 
     public void HitStop(float duration)
     {
-        if (duration <= 0f) return;
+        if (duration <= 0f || GameManager.IsGameOver) return;
 
         if (!frozen)
         {
@@ -72,7 +72,7 @@ public class GameFeel : MonoBehaviour
         // Update sigue corriendo con timeScale = 0, y usamos tiempo sin escala
         if (frozen && Time.unscaledTime >= hitStopEnd)
         {
-            Time.timeScale = savedTimeScale;
+            Time.timeScale = GameManager.IsGameOver ? 0f : savedTimeScale;
             frozen = false;
         }
     }

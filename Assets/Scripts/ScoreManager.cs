@@ -79,6 +79,8 @@ public class ScoreManager : MonoBehaviour
     public float colorMaxMultiplier = 10f;
 
     public int Score { get; private set; }
+    public float BestMultiplier { get; private set; } = 1f;
+    public int BestChain { get; private set; }
     public float ComboMultiplier { get; private set; } = 1f;
 
     float comboExpireTime;
@@ -128,6 +130,9 @@ public class ScoreManager : MonoBehaviour
         if (maxMultiplier > 0f) ComboMultiplier = Mathf.Min(ComboMultiplier, maxMultiplier);
         comboExpireTime = Time.time + comboWindow;
         punch = 0.6f;
+
+        BestMultiplier = Mathf.Max(BestMultiplier, ComboMultiplier);
+        BestChain = Mathf.Max(BestChain, chainSize);
 
         // Los puntos de este tajo ya usan el multiplicador actualizado
         int total = Mathf.RoundToInt(baseScore * ComboMultiplier);
