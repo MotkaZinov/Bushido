@@ -68,6 +68,18 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 4872938545798969634, guid: 50a83f8bbf51ba859a5439496d810b89, type: 3}
+      propertyPath: spinSpeed.x
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4872938545798969634, guid: 50a83f8bbf51ba859a5439496d810b89, type: 3}
+      propertyPath: spinSpeed.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4872938545798969634, guid: 50a83f8bbf51ba859a5439496d810b89, type: 3}
+      propertyPath: spinSpeed.z
+      value: 45
+      objectReference: {fileID: 0}
     - target: {fileID: 7383563249147942757, guid: 50a83f8bbf51ba859a5439496d810b89, type: 3}
       propertyPath: m_Radius
       value: 0.8
