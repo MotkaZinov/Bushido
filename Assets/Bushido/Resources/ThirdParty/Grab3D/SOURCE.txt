@@ -1,0 +1,4 @@
+Japanese House, Grab3D, CC0 1.0, https://grab3d.com/models/buildings/japanese-house/
+ShojiPanel.png is an orthographic projection of the sliding-door mesh, with added lattice and warm paper colors.
+Scroll, Grab3D, CC0 1.0, https://grab3d.com/models/props/scroll/
+Scroll.obj preserves the source geometry. ScrollWashi.jpg adapts the source base color with paper from the Bushido map artwork.

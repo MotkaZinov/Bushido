@@ -1,0 +1,14 @@
+Stone Pathway by Amal Kumar, published by Poly Haven under CC0.
+Source: https://polyhaven.com/a/stone_pathway
+Asset: 1K JPG diffuse map. License: https://polyhaven.com/license
+Forest Floor by eye-candy.xyz: https://polyhaven.com/a/forest_floor
+Rock Surface: https://polyhaven.com/a/rock_surface
+Mossy Rock by Rob Tuytel: https://polyhaven.com/a/mossy_rock
+The three diffuse maps are the 1K JPG versions, published by Poly Haven under CC0.
+Japanese Cedar Bark by Charlotte Baglioni: https://polyhaven.com/a/japanese_cedar_bark
+Lacquered Cherry Wood by Jenelle van Heerden and Rico Cilliers: https://polyhaven.com/a/lacquered_cherry_wood
+Both are 1K JPG diffuse maps published under CC0.
+Rock Moss Set 01 by Kless Gyzen, published by Poly Haven under CC0.
+Source: https://polyhaven.com/a/rock_moss_set_01
+FBX mirror: https://github.com/Igrium/polyhaven-models/blob/master/Assets/models/nature/rock/rock_moss_set_01.fbx
+The title scene uses the six meshes with Bushido's existing terrain materials.
