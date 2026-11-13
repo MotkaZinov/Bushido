@@ -1,0 +1,6 @@
+Rank slash texture: Kenney Particle Pack, CC0 1.0.
+Author: Kenney (https://kenney.nl)
+Original pack: https://kenney.nl/assets/particle-pack
+File: slash_02.png, renamed Slash.png.
+Retrieved from: https://github.com/euuuuuuan/hollowmere-public/tree/main/public/textures/fx
+License: https://creativecommons.org/publicdomain/zero/1.0/
