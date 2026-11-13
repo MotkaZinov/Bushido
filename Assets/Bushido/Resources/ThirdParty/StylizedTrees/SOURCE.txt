@@ -1,0 +1,3 @@
+Stylized Trees by Mert Ozan Katipoglu, MIT.
+Source: https://github.com/mozankatip/StylizedTrees
+Subset: Tree_01_Red and Tree_02_Red prefabs and their Unity asset dependencies.

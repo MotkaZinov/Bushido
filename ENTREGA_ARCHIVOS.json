@@ -1,0 +1,2192 @@
+[
+  {
+    "path": ".gitignore",
+    "bytes": 2616,
+    "sha256": "c3ab20e41033f5cf363a9d534968f4e4d36027d9d05bc3bc3a090a914384460e"
+  },
+  {
+    "path": "Assets/AssistantCustomInstructions.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "Assets/AssistantCustomInstructions.txt.meta",
+    "bytes": 158,
+    "sha256": "e171baad92c049ffbd412764f9f19d4b285430c5e32f8e63563452c3b09ee423"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoCompositionReview.cs",
+    "bytes": 4697,
+    "sha256": "abfa2eeea29e06a76a7a72a1e64818791f7c7fe7387eabc4e5d3626662705fbe"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoCompositionReview.cs.meta",
+    "bytes": 59,
+    "sha256": "56d1d22aa3c193ce00efb503d2543cb60a948643e601f651654e2b96790fb0e8"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoDuelPreview.cs",
+    "bytes": 1855,
+    "sha256": "ec9e1b82369a8ace568fd66cb3f423b874b37cf61dba3422fcef2de39a6a6e6e"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoDuelPreview.cs.meta",
+    "bytes": 59,
+    "sha256": "7fa62afeb03e7c94e911149c98f10f8b4c6b138f47897a656ffef4dfcd9e8925"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoDuelValidation.cs",
+    "bytes": 11893,
+    "sha256": "0369cb5243d33e4c1e1c880c915adc3ffc06bc967003262da74bdd10240e8c8a"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoDuelValidation.cs.meta",
+    "bytes": 59,
+    "sha256": "2758d0504ccf44a625795189ee5998cda44bded6862233ecc1c65f6e634b9560"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoKatanaReview.cs",
+    "bytes": 12179,
+    "sha256": "50482deec397d78fe8807265767f2afe75d86618d8d1ca3ac1d2896f79fa2c10"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoKatanaReview.cs.meta",
+    "bytes": 59,
+    "sha256": "84ea86c0a9caa1dcc244ffa7dd543a459ce593a4afdb1c8c42eda5735b70fd43"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoMapIconImporter.cs",
+    "bytes": 628,
+    "sha256": "a46e49832faa043552defa25bbe0bb6348b167849142992e83af8f454aaac798"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoMapIconImporter.cs.meta",
+    "bytes": 59,
+    "sha256": "add7c7162b9ee3b58b29137151c7078c350e5c00f35088e750f13b520af894b6"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoMapPreview.cs",
+    "bytes": 1791,
+    "sha256": "bebd50703cd68bd419574be8e3c183fa28ead4dd42df2e60cd0cb7ad695f8c71"
+  },
+  {
+    "path": "Assets/Bushido/Editor/BushidoMapPreview.cs.meta",
+    "bytes": 59,
+    "sha256": "c1551bfbc9ced4b1d474c0eff37bc1deec144834af2144bda7afe794e00538cb"
+  },
+  {
+    "path": "Assets/Bushido/Editor/FrogImporter.cs",
+    "bytes": 687,
+    "sha256": "d79cd64e70356abbf1693d049aff950348707d6fea17b6b7dbdd94cf8bdb8f7e"
+  },
+  {
+    "path": "Assets/Bushido/Editor/FrogImporter.cs.meta",
+    "bytes": 59,
+    "sha256": "eef8083b40d393c4a89eb3b4332d842ec94cd4791ee1ea7ed3421f253e4a3d54"
+  },
+  {
+    "path": "Assets/Bushido/Editor.meta",
+    "bytes": 172,
+    "sha256": "aff7c50720eac9525058f091892aac65bb1f1cf67ab5a573d697f2a045988a3e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/AceroEnLaNiebla.wav",
+    "bytes": 667870,
+    "sha256": "69025b137126f3aef75d52be52d6a46dbda938006e69013bd2483d6630804464"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/AceroEnLaNiebla.wav.meta",
+    "bytes": 485,
+    "sha256": "ea87c440d13c04253a83a5d86e3c26d3a8867c4788730fbc5b16ea2cf3599529"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/FinalDrawStrike.mp3",
+    "bytes": 121581,
+    "sha256": "8cd52afb10aa22d24f72bb4d8d4bab82044ddac5061cf45057ce52bf1e14c740"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/FinalDrawStrike.mp3.meta",
+    "bytes": 485,
+    "sha256": "b705a5d1f7fbc53ff1b3444f9d3cb530c4b0c0d7e593cd860a9ab0be770f1802"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/Parry01.mp3",
+    "bytes": 49581,
+    "sha256": "77631e31f915fc71c4d7e2bfbe9a0494caf025ebb835c819bef86ee54100d434"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/Parry01.mp3.meta",
+    "bytes": 485,
+    "sha256": "0429fd9019240f5474040f031be1c38664f5e40053ddfb9811509798374e5e44"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/Parry02.mp3",
+    "bytes": 49581,
+    "sha256": "5100a09ecf140a604ee34228879129eefc56f71982fe4740d5242e97ec7880ad"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/Parry02.mp3.meta",
+    "bytes": 485,
+    "sha256": "b01e565c01722c7ccf87bb60b81e52912e7b6921274c731b007127173661e9ae"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/Slash01.mp3",
+    "bytes": 25389,
+    "sha256": "1d73d5f2428ecaf0f46e29bd24fd1991444d0561102f6c224cf9cb42ebf52523"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/Slash01.mp3.meta",
+    "bytes": 485,
+    "sha256": "066953a31417998f29a3d22fd19cad8951ac4c2880ad5209c2a922aeacf59646"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/SOURCES.txt",
+    "bytes": 998,
+    "sha256": "28b64b6a8ea0526e192b5624ae8aba5294b87f65b02ce613bd690739eabb5d55"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/SOURCES.txt.meta",
+    "bytes": 158,
+    "sha256": "4feda28b83ab81c4c7e18c22bc032a42ec58df107ccd4b994e03dca27b679458"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/SpiritDissolve.mp3",
+    "bytes": 193581,
+    "sha256": "ce546e3eea291a33711434b90618ed046f3e1814423c52e58e30975b177f94b0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat/SpiritDissolve.mp3.meta",
+    "bytes": 485,
+    "sha256": "e11ce013184768b53ccc403ddc9dfe6c5773ce1c9ca9a2ea717cb81c607a0da4"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio/Combat.meta",
+    "bytes": 172,
+    "sha256": "c969e13e5ea73253f3e889f9639b23f1c02aa124d33110b27cfeb39900931f8b"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Audio.meta",
+    "bytes": 172,
+    "sha256": "1c3401293caffcfb0e149b42b3ca057bbf9b5045d4c2be17c943f759c973d97c"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/BosqueNocturno.png",
+    "bytes": 2558501,
+    "sha256": "20ef6fdd09d340b504e34ac1875c94baf7aa64323938e9f4228aea6d4c6d8d53"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/BosqueNocturno.png.meta",
+    "bytes": 2714,
+    "sha256": "9129acac94d4f767012953261ab842b70865052f7f006fa4f34983ea4af38772"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/InicioAtardecer.png",
+    "bytes": 2416997,
+    "sha256": "5680448156ec256ff87a39f5c50a8f86aa5e267a728c7bf60c953dc487689379"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/InicioAtardecer.png.meta",
+    "bytes": 2714,
+    "sha256": "10914b71ab609749b7ad4ba33ccffac8828a8d956a839786334427a524c8d731"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/InicioSiluetas.png",
+    "bytes": 346616,
+    "sha256": "0cfc7f6dd670a78e3142b9920922593475aefd7f4a2def8f0fbde94bc7e030cc"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/InicioSiluetas.png.meta",
+    "bytes": 2714,
+    "sha256": "e9565a6c0b5227d1aa1b7de1ce352af3ef4d4255a7d4d20c7a4ffd41f1b9ddda"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiAldea.png",
+    "bytes": 2561067,
+    "sha256": "029c538e8263d72429b367c7016d2a01d6d3f85a4f2d6ed9f3a7f005bfd7be95"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiAldea.png.meta",
+    "bytes": 2716,
+    "sha256": "dae000dc9b93ee8460195a9ac29f16f5091cd74421a869302580211cf0bf36f1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiBambu.png",
+    "bytes": 1958158,
+    "sha256": "b3cf2a07ecb753a1dab9fad3db622c6cf8b0242744b2f850ca657bbf376ddec1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiBambu.png.meta",
+    "bytes": 2714,
+    "sha256": "57bf4d5a33e23af7e8111345a38bd764d3e8ee15386fc811f93abb2cb1f2871b"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiNubes.png",
+    "bytes": 733094,
+    "sha256": "6e0c792ea4b4180c0176ded89d547ac81b82c57f877537290db2546802c03af7"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiNubes.png.meta",
+    "bytes": 2714,
+    "sha256": "8f978654c2c0e765eb8e2261b7dd36ef1907f53724c062e0b80777922f12c86c"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiPradera.png",
+    "bytes": 2591943,
+    "sha256": "b6b972e619eb12f8b47e890620fca91491cdd23128da15c2e3004f9ebddb34aa"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiPradera.png.meta",
+    "bytes": 2714,
+    "sha256": "2e2fd057ff70a0c8054f3810e1dc5c808f755efb93240af9ff7c8b8e67735d07"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiRio.png",
+    "bytes": 2875292,
+    "sha256": "6ddf6b41c83ab0fc0339c3ac97252458dec5b2ae0a77cb1411e01a04b458160b"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiRio.png.meta",
+    "bytes": 2714,
+    "sha256": "351cbdbbca0905f3ca9d31bb4a3c123b620705bebfba8b468647d3964192c9af"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiRocas.png",
+    "bytes": 863257,
+    "sha256": "cd92b8790e5c16479ab213496f4e73fa1f89c1f46ec27a414733b3ef76adc8a6"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/KamishibaiRocas.png.meta",
+    "bytes": 2714,
+    "sha256": "d8bf18969203410281d56d53841fbcc753b59b544e257e7796f8610922cf9675"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/MapaTinta.jpg",
+    "bytes": 270956,
+    "sha256": "449d198968c2839615bb0f624f967093f0ef33f8e2bec82528743b2b6e38a86a"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/MapaTinta.jpg.meta",
+    "bytes": 2714,
+    "sha256": "4f6eb3ae690f7fefe577c1b1ccc94a53310f6b9c84b51a41a4e0c7c1ad74a24d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/PergaminoEnrollado.png",
+    "bytes": 2481474,
+    "sha256": "83dc87a1b6f6eb343addfe678d2540532826365e3b8a13f0c17cde6ea661f0a0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/PergaminoEnrollado.png.meta",
+    "bytes": 2714,
+    "sha256": "d5f7e15842b57486178e945ed0b903c3015ef416049432d6e147f81a7718bbf6"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/PergaminoWashi.png",
+    "bytes": 2465830,
+    "sha256": "c2e8ba006af4e2e86f7c1dfb246ce3949f325503f0c187442d4e62f30f5dda20"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/PergaminoWashi.png.meta",
+    "bytes": 2714,
+    "sha256": "75d2f8114bf05e23205ba8d00ae092c23b61d00ec17f781c3b91b8372c166e2e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/ShojiPanel.png",
+    "bytes": 49865,
+    "sha256": "c6a545c1bcb2b70d0e2483aad07dd1659a253179515e959a62281a9417fdf4b2"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds/ShojiPanel.png.meta",
+    "bytes": 2714,
+    "sha256": "6cf6f92ddd50d62386f8769c256555625b9cf981128b8aac6953cd6090dd8dd0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Backgrounds.meta",
+    "bytes": 172,
+    "sha256": "e4d9c00bc599fd1f0194b1e80e878cafd27bac1c7068bbb667de42979c91cdd3"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Bosses/PaperOgre/Binding.png",
+    "bytes": 2222814,
+    "sha256": "69779d145f2cf5abdfe88728d5c0abca79b573c555a9bade09fa5d47871e4a50"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Bosses/PaperOgre/Binding.png.meta",
+    "bytes": 2718,
+    "sha256": "bd8d287a934594e5d6d2868643b657f57bf50d29ea3aba4189cfdc0a3efcffcc"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Bosses/PaperOgre/Combat.png",
+    "bytes": 2505914,
+    "sha256": "bac3a94e770c0cc5f6c5d4c0c4e9a9b0c4ddec0f58929fa66280a548af09c134"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Bosses/PaperOgre/Combat.png.meta",
+    "bytes": 2718,
+    "sha256": "57baeac2464bb3f21114b0b1d00666775e1c9c92fe1c887f17f2e4cbd10e36b9"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Bosses/PaperOgre.meta",
+    "bytes": 172,
+    "sha256": "af4f1014a57e9f8d3679e83637d04bf2ff7ada137d0e640d2b2884dc7fb0bff0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Bosses.meta",
+    "bytes": 172,
+    "sha256": "c050c85888451aea3a76c0d729032ba661e25fbb35e5dcd8c964c00625ce062f"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoForestSky.shader",
+    "bytes": 5235,
+    "sha256": "a0f70223d423a32ee6f0bfabc369856a8917237c1e812bcfd880b59560ebc4c9"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoForestSky.shader.meta",
+    "bytes": 204,
+    "sha256": "007055acb27d66359175eebf3a214555dce591eff7f3c2141d7039575996c8e8"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoForestSunlight.shader",
+    "bytes": 1834,
+    "sha256": "dfe2a7c01f6bfadd020a62aefad14da9181853151e12d8f864cc1d0d3c11fcc6"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoForestSunlight.shader.meta",
+    "bytes": 204,
+    "sha256": "cc460f2d341bb08589dd6b1ec554d9f6805ab1534a04e82f86144707b0d8d004"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoInk.shader",
+    "bytes": 11518,
+    "sha256": "18be8c954000ee2869ce913b44680440b3e162caaa4d670827d6f55b611784b1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoInk.shader.meta",
+    "bytes": 61,
+    "sha256": "675151d2f1d0ec3d3a7ad075425fb5bfb5500584b77a0843de06aba290d0df73"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoKatana.shader",
+    "bytes": 1990,
+    "sha256": "74ebe0ca7ec7beba3f6cd54b84ba54e9b787d678a812313706761847682fae34"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoKatana.shader.meta",
+    "bytes": 204,
+    "sha256": "f1a103e9ba1719fba4eee438c58b68e7b72aae1658008cf0674ecc12972cb21b"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoKatanaAura.shader",
+    "bytes": 1268,
+    "sha256": "393aa3124e15405695249d0c981b1d1a001d1f3b40fb2ecccd7be4a8971255a1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoKatanaAura.shader.meta",
+    "bytes": 204,
+    "sha256": "54580bb54041e0fc8385c4784aae268c71807d8744dc2c5869525d61de12fd78"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoKatanaFilament.shader",
+    "bytes": 935,
+    "sha256": "cc8bbf268c235f07ac328c5740034479e9d711f513d556ed922fe96e791ad150"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoKatanaFilament.shader.meta",
+    "bytes": 204,
+    "sha256": "0902eddfb79b24de6537d94e4a4b7790ee5d8b491b64003185cfe0a2ad77513d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoKatanaVapor.shader",
+    "bytes": 1798,
+    "sha256": "19761c0c1388f4598b4c500afadf07a1ee7e266bb06b63c471c73962d8bb6e5e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoKatanaVapor.shader.meta",
+    "bytes": 204,
+    "sha256": "65ffe9f2cc98a901aa1a0e7d2494f2808a7ce0c3e5294da162060d62eedadde3"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoSpiritChain.shader",
+    "bytes": 1024,
+    "sha256": "66b0a87c756f0a61c3a9657be5cadd16347cf0cfd3837dee0f9d7e03a786182b"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoSpiritChain.shader.meta",
+    "bytes": 204,
+    "sha256": "0c0805f7c8c22060a4adf6ad02477fdb99878a07e9da2409b426b7c3ea981753"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoSpiritSmoke.shader",
+    "bytes": 959,
+    "sha256": "547323e8fbce8f0fd00a8b72df6ef6fbe10e2f6773b06f4c91a0ec48a5078c72"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoSpiritSmoke.shader.meta",
+    "bytes": 204,
+    "sha256": "b5c9d4a15dd266184c3d7e890c887e57aa4087554567d17e7077abc3e9803647"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoTrailGlow.shader",
+    "bytes": 940,
+    "sha256": "417480a4a7826d974437c116727584beb0f0ffe0392376a8b5430f1285dc23ac"
+  },
+  {
+    "path": "Assets/Bushido/Resources/BushidoTrailGlow.shader.meta",
+    "bytes": 204,
+    "sha256": "80023594afa835bc6445474543e89e44bac7369311aa2e5043d0b133338e7865"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/bamboo.png",
+    "bytes": 8056,
+    "sha256": "01eebcb1ab4b396f5d7d1bc272d4e824e52e76d00488514444890d9ac8a0b251"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/bamboo.png.meta",
+    "bytes": 2713,
+    "sha256": "81a6c88aec5aaee6fee01ac9f722af3d50f41b48001b67357e12c83f5b4fe949"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/CREDITS.txt",
+    "bytes": 807,
+    "sha256": "00eb9b6472108f21d581ff4094e2b3c4cf65d18bea483d2828c5d30769f908a1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/CREDITS.txt.meta",
+    "bytes": 158,
+    "sha256": "fb71daeaaf11979c306e2ba6544b528be5f66a1dac47475f91b633b6fa85831d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/japanese-bridge.png",
+    "bytes": 7088,
+    "sha256": "c8dea5785f745d81384396edee58eb31bef749586d7f300f42ceb9db9289df38"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/japanese-bridge.png.meta",
+    "bytes": 2713,
+    "sha256": "e80a0c0df34e773fba5ba554ceb211ab5aa1c099b811fbe057fcc025acab72e2"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/mountains.png",
+    "bytes": 11459,
+    "sha256": "802af80f07c3b4e14848481ad6d17243e5aeb605deba2774a4c1b2b37a204021"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/mountains.png.meta",
+    "bytes": 2713,
+    "sha256": "4843ab23c49c15eaca949340c98d3f5a707b4564aae60506061bc216084fd079"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/oni.png",
+    "bytes": 10201,
+    "sha256": "9a95659dfd586e0bcbd3d54e20fdf0be97aedcd73f66ad9eb84f433a01cfc3ac"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/oni.png.meta",
+    "bytes": 2713,
+    "sha256": "6e87c60835e334f9e5d93aee3e81b0dfd55624a460a917bf61fa6229794c46c1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/samurai-helmet.png",
+    "bytes": 9167,
+    "sha256": "f16a399a57a299e1a928d5e00e3973fc4a0ea61df449086a095a80a63ef3493f"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk/samurai-helmet.png.meta",
+    "bytes": 2713,
+    "sha256": "6796359514135ef1aa675fa296c1e245252cf613a6a0a1af03596f44924a2efe"
+  },
+  {
+    "path": "Assets/Bushido/Resources/MapInk.meta",
+    "bytes": 172,
+    "sha256": "a6c3b773217fd1c9b6b3a007ade95de1a25f558a759faf0b1a5592b86bbdf2cc"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow.fbx",
+    "bytes": 731312,
+    "sha256": "3b93000be996dad130328dc1db15b6b8f21bbd107371d546e22f84fec128f3d4"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow.fbx.meta",
+    "bytes": 3063,
+    "sha256": "9292528ae564a118834579699ac223a8c5f3839d6bcf1f4f0a74bd4b26972a49"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Diff.png",
+    "bytes": 1155863,
+    "sha256": "4a6ebf14be08eea3ce01072ea0b5fb0a2fa1a3ba2e173d125cc45390ddfc29bc"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Diff.png.meta",
+    "bytes": 2714,
+    "sha256": "222cb7ed85bf08a09369c191e324651dc5b970c1e1ddde09fecbb60d03fb63ef"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Emiss.png",
+    "bytes": 341,
+    "sha256": "10a8be59219f8f30e14bd6e44edcba7791f9b777d6aa2acbe7c4dc02a403b51c"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Emiss.png.meta",
+    "bytes": 2714,
+    "sha256": "78136c75e199c86bc5d6e5d6fa52a75c101f4f8241080e98d7f1f80697ae9ad1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Knife_Diff.png",
+    "bytes": 30241,
+    "sha256": "e0cc179c9a26815356758c8194236dc5dce30a66cf4cba49ed36863900e1d1a3"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Knife_Diff.png.meta",
+    "bytes": 2714,
+    "sha256": "a0c216ecf52d0262cc1b2adba2f3e20b754ac9b86cd8a09241b7d16eb085ae27"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Knife_Norm.png",
+    "bytes": 67547,
+    "sha256": "60c232a3e3d7a2727251b2baa9bdf935bf208344b8d74f8c7915659324e7343b"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Knife_Norm.png.meta",
+    "bytes": 2714,
+    "sha256": "fd81991ab479b4091f828254baa5348c5f8c3f988c12c8a074be1dff08ea814c"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Norm.png",
+    "bytes": 1393196,
+    "sha256": "7e960666d27da9206d01c81277ceeb9b5ed68fb27fd21acc5fd201f9fb16a4dd"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Norm.png.meta",
+    "bytes": 2714,
+    "sha256": "ad91fedd533920604dec91ebf5137e48d91880a2d4a235a7f14a234797434de0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Spec.png",
+    "bytes": 268985,
+    "sha256": "2c719ac5c514c60939e59cd262aedf621079a672b428b03674031ce574be0532"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/Drax_MarvelNow_Spec.png.meta",
+    "bytes": 2714,
+    "sha256": "43f72522511149ded0186c9760fe5bb0b9cffc3b3cae683247f49e6b82db902c"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/generic_item.mesh",
+    "bytes": 2195121,
+    "sha256": "986569834e785a29fcf554c2ec28384a28eaaff4da65d4a0eeb07089210c99c6"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/generic_item.mesh.meta",
+    "bytes": 182,
+    "sha256": "167a71eba97e114689e46141996dedfca912fddb2244437149ed602a9062af90"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/prev.png",
+    "bytes": 231480,
+    "sha256": "853a21937d01ccc94d1677beba068e04a0b8bb853f1c8c96b5e9e7e149ddf4fd"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax/prev.png.meta",
+    "bytes": 2714,
+    "sha256": "0fe5a83b705ff38bd9fccf9846c96cefedfae38025094021607381fe97724259"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax/Drax.meta",
+    "bytes": 172,
+    "sha256": "291398ff1258a0f9e5eb7ab1eace68b67380f6942dcd8e88bc28a4a2aba7e8f6"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/Drax.meta",
+    "bytes": 172,
+    "sha256": "089f95087d8cae636d9f3b68ce72f2100d957de56067d66ac761e784f3ea4d43"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/OniSamurai.glb",
+    "bytes": 13846388,
+    "sha256": "c49c96c4e89358f094423affce3894752eb6e3252995dc8a0f673144e2846946"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses/OniSamurai.glb.meta",
+    "bytes": 155,
+    "sha256": "1c17ef909e9f8b933240e9b3fbcc7492e2545db59a686ec8651b3748568cfacd"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Bosses.meta",
+    "bytes": 172,
+    "sha256": "2ec8efccbc497c7e43399e0e8261bd3eb596ca9095cbaf0f6ff74a690469dacb"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/CursedMask/textures/Oni_Mask_4_baseColor.png",
+    "bytes": 1210501,
+    "sha256": "a0796ddff1d562f0b94a195900df373a59e6315ea0aced82bbde563d0edcaada"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/CursedMask/textures/Oni_Mask_4_baseColor.png.meta",
+    "bytes": 2714,
+    "sha256": "52f2af71b7ec4d0ba42ef649f1768b27c465d64afd37f336571968858a4b132d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/CursedMask/textures/Oni_Mask_4_normal.png",
+    "bytes": 14177087,
+    "sha256": "8c11ce1abb3bbd457ff6a4f7c133f505c9ddf539e9eef23344e50821e70ca9ba"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/CursedMask/textures/Oni_Mask_4_normal.png.meta",
+    "bytes": 2714,
+    "sha256": "b73274e3697f62c162401e7f76a2b447fd087feb008d56fc7e52cf344d9c932d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/CursedMask/textures.meta",
+    "bytes": 172,
+    "sha256": "e794eb5dd6d3a244928a731aa6c0d5bfd221da82eac88a38a5086f67c478c43e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/CursedMask.meta",
+    "bytes": 172,
+    "sha256": "bde1f6acb6c88fdf90b62349722180e84d9a5708ed9feba7ba04a7e05b15ed5e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Samurai.fbx",
+    "bytes": 284764,
+    "sha256": "edea7320d2affef1a773dc84f4a1a8148d9498ec68bb23609caa39a77d4d01f9"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Samurai.fbx.meta",
+    "bytes": 3063,
+    "sha256": "ee77b7de1c1b9533ef7d35815bbd488a475d641ec9f59a12bbad751858c9c10e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Base_Color.png",
+    "bytes": 8062767,
+    "sha256": "84158a3a22c3b9e4965723695b16ec1ec845b679d04108eebf656c5b933244df"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Base_Color.png.meta",
+    "bytes": 2714,
+    "sha256": "1ee8838f3dd5e1fcc8b42a97b184ac6af566bf4806d32f6ccf382483b9d1891d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Height.png",
+    "bytes": 3711229,
+    "sha256": "0ab07f908c5dacd44900ff4cf3a4cf7ddff7ad72250fb0e4a5886d59d68306e0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Height.png.meta",
+    "bytes": 2714,
+    "sha256": "5ab2fac29ddaf401fb7a1d1306635a81a66d779caf2e4d71812381c0a469c1c5"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Metallic.png",
+    "bytes": 550063,
+    "sha256": "2f46c5c8d2dbdfe06582690a6b7e7dbc5072c54d688252f0c9399966e83bafb2"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Metallic.png.meta",
+    "bytes": 2714,
+    "sha256": "c982d9edca4e1c6d05bb4fea75f1659f8c8adf6897659b35842f65312725c6d3"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Mixed_AO.png",
+    "bytes": 4188279,
+    "sha256": "58240bf8f87eae8c7807b704f0ae474b114b88dd66f8f16d49642ddc1943be73"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Mixed_AO.png.meta",
+    "bytes": 2714,
+    "sha256": "0a5e9cd60d1ade2d69e0776f7ffa5a41026b7abee858aff33dd122d01d34a576"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Normal_DirectX.png",
+    "bytes": 16817377,
+    "sha256": "5ae3d11c9aa63c71b39f99511c00956a93300aa32a8c0a5d84f8058b0b8f85aa"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Normal_DirectX.png.meta",
+    "bytes": 2714,
+    "sha256": "70e0be4329a37ab9ac055b689d0565fa70c1cc19a3d6a56ba85dd07add4db321"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Roughness.png",
+    "bytes": 4040738,
+    "sha256": "69588be55fa44fa2a3a1d4973f1f1ba2fca781f1c4c027ab87b7f6d7c6ff1f88"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana material_Roughness.png.meta",
+    "bytes": 2714,
+    "sha256": "272a442224e665d31ed9a0ecb887a514c5dc0ccd083a8ee79a7130fd5ddeb4fb"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana no case.fbx",
+    "bytes": 339548,
+    "sha256": "33fc0e828c2e7aa05a393670eb818e23a3695c4fa9a31faca792e31f201d3847"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana no case.fbx.meta",
+    "bytes": 3065,
+    "sha256": "3d81d684b501453da8c44a587d10565bd22f412fa437b52fa15548ac548206a4"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana.fbx",
+    "bytes": 534108,
+    "sha256": "996c4b5024937ebaf36006fb9587323c05b8e34a203461e40b223f8981bfd469"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana/katana.fbx.meta",
+    "bytes": 3065,
+    "sha256": "9bbe92ff732952fc06eb35a2fa6fca2918e757cf9eadf79e8c9a0fd15b2a33b6"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons/katana.meta",
+    "bytes": 172,
+    "sha256": "ba2b209b3d4cabc482fb437e6cf1cb774825841fb04492dde838b6f250469743"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Weapons.meta",
+    "bytes": 172,
+    "sha256": "61afac5334b7f6d0abd1ae21abf6aaa06a3d73cf9986f5e562996ba00d8f1e1e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Yokai_Rana.fbx",
+    "bytes": 70092,
+    "sha256": "53c1c873d4c5032ae519ed7c87eeff06ca1e31c7609f00b3036afa30a8377c9b"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models/Yokai_Rana.fbx.meta",
+    "bytes": 3063,
+    "sha256": "335ec53281ec97646d8962da292127e130aebe93d5c9cb594578658131f42a27"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Models.meta",
+    "bytes": 172,
+    "sha256": "1b215aef707a87e746fe9684b2997e7141bd6bfccf60c93f970d9652fb041a81"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Naganoshi-OFL.txt",
+    "bytes": 4487,
+    "sha256": "2a29328b861e0fa4fe6e9c95deb44ee987619f309ced4fba4a7c752f7d31b6dc"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Naganoshi-OFL.txt.meta",
+    "bytes": 158,
+    "sha256": "a7fa9e85620e36f8f772603d23535c8d3c973e11897ce8fda6d917a8ed6ac4d6"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Naganoshi.ttf",
+    "bytes": 1409464,
+    "sha256": "d6d67f8b5120eda65055f0a3fe15f648d6a366a7a193640531051c0080cdff24"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Naganoshi.ttf.meta",
+    "bytes": 563,
+    "sha256": "e8c47f0eaf60ee99a1c2ba6bf0c39cd3546eb4be92a94d17f475bbb4db219cbe"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Cinzel/CinzelDecorative-Bold.ttf",
+    "bytes": 62300,
+    "sha256": "e854e68a388aa50d742a4415c1ae5c17a617ef7956c95a70021d0a4a44f20518"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Cinzel/CinzelDecorative-Bold.ttf.meta",
+    "bytes": 502,
+    "sha256": "443b364217bc417c0ac0a2ab24ffbb092e183a3f4057ec5526f42c04f83bd9b8"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Cinzel/OFL.txt",
+    "bytes": 4393,
+    "sha256": "1e5d6660366ddcfca4f2fc10e2acfba9fa4d97d40aec80d7dbfd41d730a420ae"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Cinzel/OFL.txt.meta",
+    "bytes": 158,
+    "sha256": "e855c063953d0dea0d7a519da786fe22a7295f107968abe5a33055b1c1168d60"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Cinzel.meta",
+    "bytes": 172,
+    "sha256": "e65ecf560fb5c9d604efdc46152d95767475e39a016c56de09e3b1b2a73c57d0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Grab3D/Scroll.obj",
+    "bytes": 759547,
+    "sha256": "2a1893d335c9cbda001867bfef824e7d7cf3bf9841b2ee9b464274cde6c74b11"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Grab3D/Scroll.obj.meta",
+    "bytes": 3063,
+    "sha256": "35b31a57a2416e64c084dea6e28aabfd65c002074413a57634384bd0a6da754a"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Grab3D/ScrollWashi.jpg",
+    "bytes": 46013,
+    "sha256": "7a43320ac0bea2b6109027a3a765f8957a01f9bc4f5a504734dcd5921a79a2c7"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Grab3D/ScrollWashi.jpg.meta",
+    "bytes": 2714,
+    "sha256": "ccc6854bebf4fee4cfd8fdc88ed45b19beda2fcd68447034d1446c1f16439d50"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Grab3D/SOURCE.txt",
+    "bytes": 392,
+    "sha256": "21f35c5a4c9725345acc0360fe34b65d0abe89acae58662fb39e3152dc776e1f"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Grab3D/SOURCE.txt.meta",
+    "bytes": 158,
+    "sha256": "b90e3412fed1117d64b95d05ce0a5e09570a1ca0f6805cf44f7d3b09673cd707"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Grab3D.meta",
+    "bytes": 172,
+    "sha256": "822f35c39c5d9ed9181825cd4dd089304d75f5f00166aa672478a34cbe1688a5"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/OpenGameArt/MapleLeaf.png",
+    "bytes": 1257621,
+    "sha256": "a58950e3b2c3cbbb041d7f34b68977bef689e8d5ae25ed958f16668bcdfdc791"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/OpenGameArt/MapleLeaf.png.meta",
+    "bytes": 2714,
+    "sha256": "3064ecbdcfc6a51bcc64a8075fea4910e033d8689dbfbd7e4659b6cbbbef9bd0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/OpenGameArt/SOURCE.txt",
+    "bytes": 189,
+    "sha256": "a20562cbf2e1b221c5ed33bcad1550447066f3abded4f383f237b707c7316613"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/OpenGameArt/SOURCE.txt.meta",
+    "bytes": 158,
+    "sha256": "9fe5f107ad85a761d4c9353808246912fcb3a46a3e1d0836c81edacdd577749e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/OpenGameArt.meta",
+    "bytes": 172,
+    "sha256": "9a0dee5267638b7a6421d9dde6a9a29e2d0fab6fbba27c5cbb5db0021244b700"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/CliffRock.jpg",
+    "bytes": 886291,
+    "sha256": "07edda2bbe4715b01aae2e4bac9f21f204cf4aae37b4733ef01de33281e5e60e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/CliffRock.jpg.meta",
+    "bytes": 2714,
+    "sha256": "8244d626aff36bd78241e8b0dba5e4b8f0ba8ca20fd2b1a1fb5c3d757a3f55c5"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/ForestFloor.jpg",
+    "bytes": 1329853,
+    "sha256": "f12e5adea1741f9eb7a528bfc621f8267885b9530b74c3a8afdb823899bdbf0b"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/ForestFloor.jpg.meta",
+    "bytes": 2714,
+    "sha256": "8494ffe400b11996e4b0c2a1fd127bd8da780f5ba4ac1d0070cef6b79081f44c"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/JapaneseCedarBark.jpg",
+    "bytes": 1371666,
+    "sha256": "fa240510e9ef127a8979ebd63628950abdc048a1e091d8a1611c86bbe2c6cda4"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/JapaneseCedarBark.jpg.meta",
+    "bytes": 2714,
+    "sha256": "9cfa98a9c9228c9efff9696c08a38d0294d69dd1b108bb4ab7c892ff652caff7"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/LacqueredCherryWood.jpg",
+    "bytes": 618034,
+    "sha256": "781a173cfbe1b11a00d2f73a7736b7db6f908e47bbad8eaaf9d59c36490ab857"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/LacqueredCherryWood.jpg.meta",
+    "bytes": 2714,
+    "sha256": "9f0cf2ba7cc884f43a205b4b2222b2c8f6c3d5191c67fea854ccc19bface350d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/MossyRock.jpg",
+    "bytes": 1124438,
+    "sha256": "4dbf37f1b0465c9c8914213163923be159716f5b97fb6946437b6c5e143ef540"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/MossyRock.jpg.meta",
+    "bytes": 2714,
+    "sha256": "130da2c23dac5fb7c0a68359599a469c67cd269183d3cbd0be2f3a57b6010ca9"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/RockMossSet.fbx",
+    "bytes": 807328,
+    "sha256": "68ea3786d54bf7d4e095e466bbbcd17a5382578609eefaf73864e5201048c7a9"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/RockMossSet.fbx.meta",
+    "bytes": 3063,
+    "sha256": "8baede6dafcc6d1fae236b767482696114fb3c7f56a38a3e11344e33e440b833"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/SOURCE.txt",
+    "bytes": 999,
+    "sha256": "43e58f144368e6256bc792a6384996a4b8a984a88b45d42c2e39367bc5bd8af3"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/SOURCE.txt.meta",
+    "bytes": 158,
+    "sha256": "f5b383d04a06f3cd391787690be30a320541d439153da151d7343746a53010d6"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/StonePathway.jpg",
+    "bytes": 694047,
+    "sha256": "d348dfd4a8c2c16b753618e2787fd4b165b398739f60efbf18a320d0816982b7"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven/StonePathway.jpg.meta",
+    "bytes": 2714,
+    "sha256": "096c2cf0028f63073071ce64468af992477b5d65216b2e270dbad3ba446a98ff"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/PolyHaven.meta",
+    "bytes": 172,
+    "sha256": "0cff77a06bc2fc5201d803df0ef798ff454f3f3ab2bb9fa642ead07f6350da89"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Quaternius/LICENSE.txt",
+    "bytes": 319,
+    "sha256": "1ca06a7ff5f16ae54a43e6aa5c2999677c924ce6992067972a3fd0d5ccabe8aa"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Quaternius/LICENSE.txt.meta",
+    "bytes": 158,
+    "sha256": "c6ebc9cf2250af73424b5dda0cd74268ecfbbd8da2cecae3c3a63860747d584a"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Quaternius/SOURCE.txt",
+    "bytes": 358,
+    "sha256": "a7f2d2906509241282ff50af5bd2d88a3263f5f94aa5724aec4b61fbe79c041e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Quaternius/SOURCE.txt.meta",
+    "bytes": 158,
+    "sha256": "fc7e78481b9af6eccc144bb0c20c874946085eba8185f82c507656759d6cd9e1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Quaternius/SwordTrial.json",
+    "bytes": 39993,
+    "sha256": "8dd63764bfe85408aff80041e8fc2ed5a585cf5064ba1ad4c069e4b363ef29e0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Quaternius/SwordTrial.json.meta",
+    "bytes": 158,
+    "sha256": "804d1dd564e077e321eb07c4ee03ede88c5ae4e89a34aa4b1396f407f07d9f7e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/Quaternius.meta",
+    "bytes": 172,
+    "sha256": "3d8436f35bf841b0a71bbfb54ab2b0d1c5bb6b8e7ab41375fec6344943fdb345"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/ATTRIBUTION.txt",
+    "bytes": 242,
+    "sha256": "abe73b319d65319a7498f0a7fc6cf636aaa654ed6eb7ee2510b4370bb5c24cce"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/ATTRIBUTION.txt.meta",
+    "bytes": 158,
+    "sha256": "8160279ec6b6bebe67ea0951d7586fd65063a471dd560bb1600f014c01e67129"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/chain.jpg",
+    "bytes": 63879,
+    "sha256": "738970fdfe6e972ce143f29deb6a639b268319fb20da7a2cec3b44c42dc2a8e4"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/chain.jpg.meta",
+    "bytes": 2714,
+    "sha256": "817b1c44c6601b1bf79ae49a6cf34751518c58031456ce494cf1ef1bb660413d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/chain.png",
+    "bytes": 205863,
+    "sha256": "bb9685b1f75b170a73e15aea4ea55dd2e0b1e7146cec12ba9ce19b51fc67fa0f"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/chain.png.meta",
+    "bytes": 2714,
+    "sha256": "62cee74c9d0ed1011b6b089b2f426264bb30b215765bfcbd0d86e92ba490643a"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/chain_preview.jpg",
+    "bytes": 53288,
+    "sha256": "05ffe54c20268216b435ff955d65378eb232f60c27265543338d994c02342865"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/chain_preview.jpg.meta",
+    "bytes": 2714,
+    "sha256": "a9af520dc9d5ad70b7e5b43f8a6b9d66ccbb5352a94c33f1b37b1ae9d31fdc47"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/chain_samples.jpg",
+    "bytes": 91853,
+    "sha256": "f1b3624c436e16d97499a8a6a9d484294ddade536d46530ad1ac2420500d4a32"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/chain_samples.jpg.meta",
+    "bytes": 2714,
+    "sha256": "758778b2d2419361fe899d658448b8f83b2aea9f4d3dad9375e12b2d0c4e047e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/chain_samples.png",
+    "bytes": 258336,
+    "sha256": "2ee1a79051961864e2fa9f76dcd6595487c3e74e2414774ef116dc6507792655"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/chain_samples.png.meta",
+    "bytes": 2714,
+    "sha256": "8cd45e7275c59424d6dc8002e5f0b819ea9666e2bb2cc5c426bef46a981ea0a8"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/ReadMe.txt",
+    "bytes": 364,
+    "sha256": "5bf07d1b0c4408d4d0b1627297efaea1ef0283644554567ec895c4d86d394d22"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain/ReadMe.txt.meta",
+    "bytes": 158,
+    "sha256": "7dabc3a637a9440a557b96729ff6dd87cbf8461aecb7863d1f4f3deadb4158fa"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain.7z",
+    "bytes": 574909,
+    "sha256": "b63ce9a0723d8fe360c38f73bf72074af9e9c7a3aff563ba1a554e62fa8a7119"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain.7z.meta",
+    "bytes": 155,
+    "sha256": "dea9291cd258d9664701caa2f8f52ea9fe7db56a41cbef0660900b579d92fa41"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain/chain.meta",
+    "bytes": 172,
+    "sha256": "38e76a7f00853916c91defdf8bff5e5abf4a02fcf225064ac9ab406ee82b9f82"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/SpiritChain.meta",
+    "bytes": 172,
+    "sha256": "1d5e5d06cf845ba1e9772bc3ddf8756cb03c6c9a06a240ac017428ca8192fad0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/LICENSE.txt",
+    "bytes": 1076,
+    "sha256": "58aef39628c9c58c68d30599181a35cf81b78123be08887e7f6b973d0c0ae146"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/LICENSE.txt.meta",
+    "bytes": 158,
+    "sha256": "1459aa6f7ff98c0cf020917723ce25f55a6b09d139c518d9f634e3fe91d1fb19"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Materials/M_Leaves_Green.mat",
+    "bytes": 9724,
+    "sha256": "154ece507be50329b2835e8645e02d35fd3b6321a3bbcc159286e7206ffcca69"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Materials/M_Leaves_Green.mat.meta",
+    "bytes": 188,
+    "sha256": "0ca021b947ed090e44773596c99e3d3d9d33f905b30c87226e57fe435d43e2ae"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Materials/M_Leaves_Red.mat",
+    "bytes": 9693,
+    "sha256": "09e1ee65f92669a244df1b79acd783e513dcee2846e09e42d95923c6153bb141"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Materials/M_Leaves_Red.mat.meta",
+    "bytes": 188,
+    "sha256": "ece65fb8ba58e09a468188fec06f25eed83bea3790040e3950a8b5bd6097c9ae"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Materials/M_Trunk.mat",
+    "bytes": 10336,
+    "sha256": "9ae04275c5e42bea68d197248cda4804d0e242dd3028719953f7ed2c959a81fb"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Materials/M_Trunk.mat.meta",
+    "bytes": 188,
+    "sha256": "06b6e384a8a86705be2e0a3b1fb62224a18fb1789e1d925fb0e651cb1d3979f3"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Materials.meta",
+    "bytes": 172,
+    "sha256": "178d8a21c19e492efc85d3daad8aca599f0396397741b76cb23d90bacf7a6eb9"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_01_LOD0.fbx",
+    "bytes": 442880,
+    "sha256": "2ca9ec16a431c52ea8a656f077ff751d3674c2d1f67e9c3ec560896505093f25"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_01_LOD0.fbx.meta",
+    "bytes": 3098,
+    "sha256": "beb5748415e76ce0e24cde9b549c8103f1f1515276027961c3a7a44ea578be8b"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_01_LOD1.fbx",
+    "bytes": 258736,
+    "sha256": "cb6c6740653591ad329417028be073c4981c63bb0d15a61b5f395b97a933daa9"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_01_LOD1.fbx.meta",
+    "bytes": 3098,
+    "sha256": "209f87b85b6f537578acd6130aa1745655d8b1ebf05d32aef85b158c7cad4f67"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_01_LOD2.fbx",
+    "bytes": 158144,
+    "sha256": "7211fee8c109c208263f327415290c74104cc35a3af197d026c2cfdcadae69ac"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_01_LOD2.fbx.meta",
+    "bytes": 3098,
+    "sha256": "130f9c69eac4299afe94e85072b75561e6986d214ec33f92d319fbd4ced9a697"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_02_LOD0.fbx",
+    "bytes": 397200,
+    "sha256": "ee6f75ba20d7405577afd4ad1340098cd978960ac92e95e14b4d8024768d93db"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_02_LOD0.fbx.meta",
+    "bytes": 3098,
+    "sha256": "7ae97b7ea02ec85517010c0207de58ceeca152db5fa0548dc37649c20af68804"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_02_LOD1.fbx",
+    "bytes": 232208,
+    "sha256": "7379120101acc056bfca31ee8ca59335c5ddd8f7b61b159649ae334276186a95"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_02_LOD1.fbx.meta",
+    "bytes": 3098,
+    "sha256": "22295e718f3c6cf4ba2adf2bf1c9618ba1fcdc520d8d8da380d2c4b6e48c2e3d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_02_LOD2.fbx",
+    "bytes": 135024,
+    "sha256": "b2179d1839b44c32204f4ff05c1b9de6967b9bd76be74487eb3d18645087a997"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models/Tree_02_LOD2.fbx.meta",
+    "bytes": 3098,
+    "sha256": "0a45772d8d139406d02ce32fa713a5fd538db67e34f5273107816c5ff981371e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Models.meta",
+    "bytes": 172,
+    "sha256": "96d82345158031b22bf889c9fa8de1794050cf0a19c758ac7ada1b0a327563c0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Prefabs/Trees/Tree_01.prefab",
+    "bytes": 22027,
+    "sha256": "265db37d6bfa541684ae3edae79194e2d92b1ac11026b1d1057688cc4ccf420a"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Prefabs/Trees/Tree_01.prefab.meta",
+    "bytes": 154,
+    "sha256": "0a450291cadfde38db0a3a1a6a6253d2dfa47e4ada4c0aec49043a76fcc4f0a3"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Prefabs/Trees/Tree_01_Red.prefab",
+    "bytes": 7119,
+    "sha256": "82d896cc99f38599df3c1109fc06cd46a82f802c6bd41bd31cd4fb24ad484ccf"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Prefabs/Trees/Tree_01_Red.prefab.meta",
+    "bytes": 154,
+    "sha256": "ccd5e4f5d95bd164167d9cc60b513503efa949ec23bc104ea3fa6d44fa53b84a"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Prefabs/Trees/Tree_02.prefab",
+    "bytes": 20346,
+    "sha256": "0533e968aa5e022aabfe82705fa8e03eaf34c6ca66dda2818c2965cc2240785a"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Prefabs/Trees/Tree_02.prefab.meta",
+    "bytes": 154,
+    "sha256": "40a1eabfce1c32d84312d0e6d8e23399121fbc7a266b0221ac122edee27c2417"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Prefabs/Trees/Tree_02_Red.prefab",
+    "bytes": 5619,
+    "sha256": "3aace462ed8bf1435de6cc3a799efda472c94a3d42aa01826886a1d02b76abf7"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Prefabs/Trees/Tree_02_Red.prefab.meta",
+    "bytes": 154,
+    "sha256": "8ad5e89fdf49e3315dedfd04bf0a6ee9b3b23360f129e078a5dfe5a2208c9c23"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Prefabs/Trees.meta",
+    "bytes": 172,
+    "sha256": "9c52034fba4708c4887beaac074f2b3758355560dcbdd627f411eb6933d05382"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Prefabs.meta",
+    "bytes": 172,
+    "sha256": "18d8f2edd22872f03a429ec26bc6b4b8b56ca21f73f3057a427091065e866397"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Shaders/Leaves.shadergraph",
+    "bytes": 100818,
+    "sha256": "d3a17b8a529d035b97df7149a2d8af60c4674e57bf57a3e628d8a627b026fe81"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Shaders/Leaves.shadergraph.meta",
+    "bytes": 285,
+    "sha256": "5f90c74b2046676ca1dd82668c948285afd9d9e334c0ec5cbe9f104b5a3d69e0"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Shaders.meta",
+    "bytes": 172,
+    "sha256": "f155e6526bcfd2ca00c00d3a85c8c9c0c3961650919652ea9fcdc320f13d433e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/SOURCE.txt",
+    "bytes": 177,
+    "sha256": "b54cbba1bd4bcebd1f4378345901c90f38e61486fe0967b24cef10f379889d86"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/SOURCE.txt.meta",
+    "bytes": 158,
+    "sha256": "8a7ccbabe2192d67a3cd4f620dc76e129a3ce4816d2ae7cbbcafeddff395e70d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Textures/T_Leaf_01_Mask.png",
+    "bytes": 71202,
+    "sha256": "aac3f0b08558cfec9ffbfdbfe9746a169c1c190578f9ca085aed4732c9674def"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Textures/T_Leaf_01_Mask.png.meta",
+    "bytes": 3176,
+    "sha256": "6ec546a89ccf23a96a69833426f0799a571710fcbb71c443b6d7f0efe9452a08"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Textures/T_Trunk_BaseColor.png",
+    "bytes": 860402,
+    "sha256": "9a494f89fb8c5be132bcb522492144fb7684fd867618cc3206aac95848e237cb"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Textures/T_Trunk_BaseColor.png.meta",
+    "bytes": 2849,
+    "sha256": "14753ba13592dc8dc2128ba845f3572d565ea4d15a8f427d4d4838509ed28b8f"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees/Textures.meta",
+    "bytes": 172,
+    "sha256": "226c1f5f6ea3c81adad948ca2cc246b8f6ed78b4209ea344c7129c617f8f86bc"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty/StylizedTrees.meta",
+    "bytes": 172,
+    "sha256": "da67f6c71b41874b69b7f71683aa1d91ab8126ff4d5b836f4d654d38f181c158"
+  },
+  {
+    "path": "Assets/Bushido/Resources/ThirdParty.meta",
+    "bytes": 172,
+    "sha256": "514e18b818f9910d4b2edd906c7874cf418044ff08b3a4bed03feeb34b43af10"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/HealthGourd.png",
+    "bytes": 1540736,
+    "sha256": "9788eae253e5c535df6ea0a5a0127568f42eb41dc771d9a264d72b4f53cfc37d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/HealthGourd.png.meta",
+    "bytes": 2714,
+    "sha256": "8a46f3fd4a78659fe6cf84130f8692688a440bc4c4e8f03774413cd0e2600364"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/RankFX/ATTRIBUTION.txt",
+    "bytes": 332,
+    "sha256": "6bf3bd54ffd0133f79116267ba34d6e8348fcf21e4c1e270ac61d304186f4f41"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/RankFX/ATTRIBUTION.txt.meta",
+    "bytes": 158,
+    "sha256": "89c576a767ba3cbda4ba85898e5e4a7d5105d5272695fde73914b7d75924ae33"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/RankFX/Slash.png",
+    "bytes": 38224,
+    "sha256": "a79a9e297790e6126b78d41015a3045cda3f1863b421c88321d2442ed6f9032e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/RankFX/Slash.png.meta",
+    "bytes": 2714,
+    "sha256": "cafbeaf0e5274a612058ec85da7cbbc91b841d10050d695f203f0700047b4e98"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/RankFX.meta",
+    "bytes": 172,
+    "sha256": "d9976236026acaa9a2796c8ea6fc77fa3ca46733f6a809e4773ed0723e8d5e57"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/SamuraiLifeStages.png",
+    "bytes": 1938638,
+    "sha256": "e8bb6097cdb96e0c52301c22164d812a2b09d323a241b0ae812b46953bab670b"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/SamuraiLifeStages.png.meta",
+    "bytes": 2714,
+    "sha256": "c45c3e4abea894ff2006774371aaa28d7c067e218116423c2c00f027cab5a7f1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/SamuraiReactions.png",
+    "bytes": 1942187,
+    "sha256": "6e4f9e68282ed6d53ed48a9a9f89a2723e8d28546f1de8a770cfde6d9d3f1500"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/SamuraiReactions.png.meta",
+    "bytes": 2714,
+    "sha256": "086c6d7980979f4de18ea9693c6330cbdeb36779945c9117f0ae131401335fe8"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/SamuraiReactionsMasked.png",
+    "bytes": 2051206,
+    "sha256": "73d762cac78ab73db2a5f0893402410f146387ffe2d91a3063332768b2cb8487"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/SamuraiReactionsMasked.png.meta",
+    "bytes": 2714,
+    "sha256": "49a0dbd7cd39a63488c08a02816c87f4037406067750a8c835bb08cc8720c649"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/Seals/OfudaPaper.png",
+    "bytes": 2191121,
+    "sha256": "d8c725222d4381f27b233eeaa6025634bc63607417443efbd2e3e7ba565b3eed"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/Seals/OfudaPaper.png.meta",
+    "bytes": 2718,
+    "sha256": "c4a8b8121dcdde967b776de4bea76b24f3e24a4e7765939cd875bc43e7bb8ff8"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/Seals/OniMaskSprites.png",
+    "bytes": 2053121,
+    "sha256": "cd993f328f120d0f2078b4bcebf8a8316deec8969b851288ad9b756daa423acd"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/Seals/OniMaskSprites.png.meta",
+    "bytes": 2720,
+    "sha256": "bef14919739140eb0b93c9f3953da677a2dd206923a730ab983121535fb859b2"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/Seals/PaperLantern.png",
+    "bytes": 1642124,
+    "sha256": "869f3cdf2a35a08e206f29aa360845ed2ec530cd64bb430d33830e96bf3d6e66"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/Seals/PaperLantern.png.meta",
+    "bytes": 2720,
+    "sha256": "8c8e3fd34def5f1c92d0559809926f018c29b29386add6b0564b47f3512a5f9e"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI/Seals.meta",
+    "bytes": 172,
+    "sha256": "67152c78e7ff3f35bdd25419096cd06b8a722532639581c9f0a01933b06155c1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/UI.meta",
+    "bytes": 172,
+    "sha256": "04d26d823593f34c29f2c2cb06cba223648eed5e5c5ba794bcde630f2bc9ddc2"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Weapons/PaperKatana.png",
+    "bytes": 428345,
+    "sha256": "f9c7953696be3e0131d3453f9fc66cf0e1dba34c71191716424b30c645e20fe8"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Weapons/PaperKatana.png.meta",
+    "bytes": 2716,
+    "sha256": "d009ef4a1007876d30bc21c0ddd8b1edbf83bef01eab4e2e8ffcf36baf771aa1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Weapons/PaperSaya.png",
+    "bytes": 1344873,
+    "sha256": "a006369e0e4695d4aae0fdbdf0486c17bd6d1727b160d9addccc10c1614f327d"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Weapons/PaperSaya.png.meta",
+    "bytes": 2716,
+    "sha256": "e9096351f680346f15fdb8ee771d1f7a6eba640357d3fc37485274dcfa29e6f1"
+  },
+  {
+    "path": "Assets/Bushido/Resources/Weapons.meta",
+    "bytes": 172,
+    "sha256": "9f707c962d9e5d0068e3a7d0da15e12b267aba64e6cb15dad8bf27a45371ee8e"
+  },
+  {
+    "path": "Assets/Bushido/Resources.meta",
+    "bytes": 117,
+    "sha256": "ff88cca61a28d08bb2d87bb5ef9fd1e9baafea15cbdee3193e2af1fd102ceada"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoBossActing.cs",
+    "bytes": 5708,
+    "sha256": "d6f894e1eafc514202809a2ca52d072f3a40f2c0be09b7ffe8687a3d61b04f09"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoBossActing.cs.meta",
+    "bytes": 59,
+    "sha256": "3d678ad4f029cede48885f54b69bf518bac812815d0c1e604093b528e8dff28b"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoBossDuel.cs",
+    "bytes": 12457,
+    "sha256": "dffdb41a87958801a10af61408303e5fcad64861cb606d2c64dbfdbb447e6906"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoBossDuel.cs.meta",
+    "bytes": 59,
+    "sha256": "7fe62f6f67f6d4e09188a0c06731ba22b1fbc4e160ed6adc49434ce1f0ef73f1"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoBossRitual.cs",
+    "bytes": 12268,
+    "sha256": "f6215158916183e6343b85738080382f27efad8d0e06d8251c5a3f8da52f2e18"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoBossRitual.cs.meta",
+    "bytes": 59,
+    "sha256": "263f797bfa02dbd0527b84b289f171253d5b56f39beda27ebcaf269f7583f2d5"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoCampaignBoard.cs",
+    "bytes": 7154,
+    "sha256": "f241eca74a77fd370e0a0e2936a85ca72cef22d5bc9ee31e2b1b80aec6903398"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoCampaignBoard.cs.meta",
+    "bytes": 59,
+    "sha256": "5f6039ceea3a7f60455b33e491d98bb4261647463ad1b99574b6fe2ba3eb54e8"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoCompanion.cs",
+    "bytes": 5644,
+    "sha256": "2f85ecf356fefc492abaccbb5737621ed4854337b0a06fe4cf2c10e30fb1c929"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoCompanion.cs.meta",
+    "bytes": 59,
+    "sha256": "ee5a14886545f25424b761fb8541a05646ebeac859319268a4efebef594914c2"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoCursedMask.cs",
+    "bytes": 2283,
+    "sha256": "ac8013bbb13ebf1e44c3beb2a5ef0b83f6928037908faa4891a2ca6b9b9413d9"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoCursedMask.cs.meta",
+    "bytes": 59,
+    "sha256": "a99b1f53be5bbe3c45482e2bd77bb1789dce8bf2fa29412b2985fd64e7167d99"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoCutFeedback.cs",
+    "bytes": 16656,
+    "sha256": "86eadb642f2cdc86da9a9bb06925171f59a199175a12cc6443285ed1c42e127b"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoCutFeedback.cs.meta",
+    "bytes": 59,
+    "sha256": "df517b2604035520953425613bc7dd2900672faba368cdbe031e102bb31e1736"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoDefense.cs",
+    "bytes": 18480,
+    "sha256": "dbb78d4e541702cec16d07a0cad68169602fe2e75f7826bcec5ede036d7f5f9e"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoDefense.cs.meta",
+    "bytes": 59,
+    "sha256": "057b31642ec3d273610f97f6f27f5a46764a77460114cbbbf6fa9b77db66e057"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoDefenseEffects.cs",
+    "bytes": 8806,
+    "sha256": "7dec776fe11dfda291c6457f8f11d38783ef7755484244be8217ee0d2fb3d983"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoDefenseEffects.cs.meta",
+    "bytes": 59,
+    "sha256": "bcb75e27d768de8bc18cf911c95968a8a3725299193ae42ff2a38261d1609eee"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoFinisherAudio.cs",
+    "bytes": 1746,
+    "sha256": "2b64f967c54f2bafe1636b7060571eed79f1f07facf6dc3ee7e6f5fcbb2ed5b0"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoFinisherAudio.cs.meta",
+    "bytes": 59,
+    "sha256": "5e7cb5cf84c4e30f8b775eb04eae2b6bd466a1f8e20b50a8ac403052708cf780"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoForestFoliage.cs",
+    "bytes": 10198,
+    "sha256": "ee43be98a2489b14b024bdd10788c30226c796c52ac51a1759460a3fa77081da"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoForestFoliage.cs.meta",
+    "bytes": 59,
+    "sha256": "baa703ae89daedbedd5d4eee1d6f6ba349b0195eefa0dc7b87421657bb6be644"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoForestTerrain.cs",
+    "bytes": 15083,
+    "sha256": "503ac2d33d60543db085ebc7956d0a37dab47fb2e28b210986d7206541390e8a"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoForestTerrain.cs.meta",
+    "bytes": 59,
+    "sha256": "ebf9f87c4388f724630a15be8e0511cba3c0ea675bfc6c09b90b0949464d5e8c"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoJutsu.cs",
+    "bytes": 5707,
+    "sha256": "099a6d72a9da4a52e49608f8fd85369c10855ec2a0888464c866e9f9a756ca09"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoJutsu.cs.meta",
+    "bytes": 59,
+    "sha256": "fd32c9afecf16c15f03843344eede5647c5d43a6d64e4bd841ba7ae52d1f0685"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoJutsuEffects.cs",
+    "bytes": 7179,
+    "sha256": "18e78633c437567f28ae067a24e3af12de30137adb880fadceb8a6c7b807891a"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoJutsuEffects.cs.meta",
+    "bytes": 59,
+    "sha256": "9d7ab6663dd80cccf75b5f61b95c7f10f8ad0dc1ec51be05f8983d9da6dd87f6"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoKatana.cs",
+    "bytes": 15365,
+    "sha256": "af6f4f1190bd7dac48dfbab5ba9e7b0902b4b7c66e4fa607c127680d581603f5"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoKatana.cs.meta",
+    "bytes": 59,
+    "sha256": "aa9af07207c1d7982dedd084b70aa1c76b71c4a411442df80b3a42e95e6df54c"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoPaperHUD.cs",
+    "bytes": 13759,
+    "sha256": "ed6b2e97fcc67df090dbe95c57ec847283d1a19b612e7888715217d3f0b16bd0"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoPaperHUD.cs.meta",
+    "bytes": 59,
+    "sha256": "2fd976c7f01f971f4278374b243d8a88a102f6fc0e17dcff999a92c017c1575f"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoPaperOgre.cs",
+    "bytes": 6076,
+    "sha256": "b6c178b976175a86f35425ae1c9f672061b109dc614dc18a48bf98984500e63e"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoPaperOgre.cs.meta",
+    "bytes": 59,
+    "sha256": "cb804645b94fa4f8f44de9be8c00101d471079e88d21db5729daa9b27cf0c2bc"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoPaperTheater.cs",
+    "bytes": 8460,
+    "sha256": "790887169e76c3126e79f37e07566492ddf7b9ab6a5fbf2c2c5b8768eba1991b"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoPaperTheater.cs.meta",
+    "bytes": 59,
+    "sha256": "98b465d0cf69eb99fa04d3e6ba10c4cc464d2555a69e83a19dbed77c95eb275b"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoPrototype.cs",
+    "bytes": 34991,
+    "sha256": "985d862fa5f82a8de24db942b766267fb7be9ff16919550d11f71c6c2e2b83f6"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoPrototype.cs.meta",
+    "bytes": 61,
+    "sha256": "6b7cf0e762e6630663163e2c8fd8b78f3364ec51abda68e471f68634806ed338"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoPrototypeUI.cs",
+    "bytes": 23375,
+    "sha256": "51c1f7f38584ca787f67ef8cb3153d583b15345c3c6f9e073f4cf6ab2bdc9c75"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoPrototypeUI.cs.meta",
+    "bytes": 61,
+    "sha256": "27369a509aaf6304267881c365f7eb21bf22cf6f62c6ef762ee3a4a53da3f683"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoRitualAltar.cs",
+    "bytes": 2591,
+    "sha256": "73395a1741c0722a2b8392ec9ed03e27c6ed2e72aa0b185bba85b074ed9f4811"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoRitualAltar.cs.meta",
+    "bytes": 59,
+    "sha256": "e209f47b53bbc7f6a0e278e40721993f558044e8514384892a14f86f29299bba"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoScrollPaper.cs",
+    "bytes": 4817,
+    "sha256": "0b1fe761c5f8f6ec962b319390f47a38437392cfa1093ddc33b4115ed698b564"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoScrollPaper.cs.meta",
+    "bytes": 59,
+    "sha256": "8c2fc040082188c6b50b71c36e162d97a8af5ca73e76e53801e405302ef252d2"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoSpiritSeal.cs",
+    "bytes": 9590,
+    "sha256": "8a415097a31b088bfbbff29b86aba94bee96ce23a9936e66e4501b23739166f5"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoSpiritSeal.cs.meta",
+    "bytes": 59,
+    "sha256": "78751d92f70c630c1f3df976fcd8b1a3e3ca2a08d4df863ed6d9df91221a61d0"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoSwingFeedback.cs",
+    "bytes": 4701,
+    "sha256": "311e4cdb9b5a1e250fa9359218862004fa4938cf263187c8ac3e7b8f32e2f288"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoSwingFeedback.cs.meta",
+    "bytes": 59,
+    "sha256": "0b97bdf29790d38ddc9548811b558c3bda37e420313d4fc9f1ed8e9031989756"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoTitleForest.cs",
+    "bytes": 12601,
+    "sha256": "87fa9157bf2a1fac540552a99865eabfd539d058d89e3b44d8b3757abdc4cf43"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoTitleForest.cs.meta",
+    "bytes": 59,
+    "sha256": "719067230cdc323e61df03ceed6e13e17d7fff2a8ba4c491398f8446dd9548ca"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoTitlePilgrim.cs",
+    "bytes": 5629,
+    "sha256": "7063c1f463a01fdc768629e40cf561949e25f2cdc0e0a468a049328a35462ee5"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoTitlePilgrim.cs.meta",
+    "bytes": 59,
+    "sha256": "319ff71a3f8529f52ca0e1bcb24e4e7ed6e17f8c255d701d0f00d55551b2076a"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoVillageLanterns.cs",
+    "bytes": 2570,
+    "sha256": "d5e1c001ced34aa384fea93b639db8c06740e7bdff0e5d727cbe7c9d0b79836d"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/BushidoVillageLanterns.cs.meta",
+    "bytes": 59,
+    "sha256": "7e188172bbff422f0b61f0ffb36b8f6dd490a4178d79ef1608b742288ead213e"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/CampaignInkArt.cs",
+    "bytes": 4339,
+    "sha256": "2481e8bd750174f7ecc082fa1fbf02c00c9877d7d0cc7e22864531b1ed8a6b3b"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/CampaignInkArt.cs.meta",
+    "bytes": 59,
+    "sha256": "6ff91ebfc34d13f11e7755ecf8af8fb68006c1350024aa75fbcb466ae4116b30"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/CampaignProgress.cs",
+    "bytes": 2131,
+    "sha256": "d51d60750faff01f19f90dd79795ee4ff4f49c9eb591714d5a5f0cb533c28667"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/CampaignProgress.cs.meta",
+    "bytes": 61,
+    "sha256": "e0b3d6247e703710ca4914308fb5d203370e7791865a95566a223d54aeea9203"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/FrogSlicer.cs",
+    "bytes": 12361,
+    "sha256": "cb682deb7457c1308f0a0d6095494523dcb8cfe712b97b569768e3851987bd6e"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/FrogSlicer.cs.meta",
+    "bytes": 59,
+    "sha256": "0fbcfcac3543b372326e5e0f88344e41e2b96c5316ff1a04bce80953c299eccb"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/KatanaSpiritVfx.cs",
+    "bytes": 15723,
+    "sha256": "0ab359ffe96124f2809cf13b0d8655886e1daaee98ab0b6980d0398237d20b63"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/KatanaSpiritVfx.cs.meta",
+    "bytes": 59,
+    "sha256": "4c6557453a8df4a0b77ecbc94b803eee8dae0b51e0904fa0f9f50a63b713e717"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/PaperOgreSprite.cs",
+    "bytes": 1294,
+    "sha256": "7f06f4e72cbe3b448ce8a97eec6846601d0fd090057ebe372c79734a435ef0d7"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/PaperOgreSprite.cs.meta",
+    "bytes": 59,
+    "sha256": "7ae5b4a6213d2d7b5662502431aeeb7ca9580799d635a815aefd0bfcb55b76d9"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/PrototypeArt.cs",
+    "bytes": 15841,
+    "sha256": "7850398583219d2edc568f96640816f3aa93b9b2553a4a68a4d73d96075e8b6b"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/PrototypeArt.cs.meta",
+    "bytes": 61,
+    "sha256": "61ac4f787c36be5cae8922cdc9b52cba473110ac5a603e1f627a5984b80bbca6"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/SamuraiRig.cs",
+    "bytes": 7982,
+    "sha256": "a386a445d8fd2101148d128535a176f86d93ef518d2188697ad0e6a0ac822b4c"
+  },
+  {
+    "path": "Assets/Bushido/Scripts/SamuraiRig.cs.meta",
+    "bytes": 59,
+    "sha256": "f47f21e17294febecd02160fb6680b80c46ee4ce2ba910ab40bf4448cc777899"
+  },
+  {
+    "path": "Assets/Bushido/Scripts.meta",
+    "bytes": 117,
+    "sha256": "1292070324b7b97081be77248cb1d70851942cda4dc5fc95ba4f48600d92a29f"
+  },
+  {
+    "path": "Assets/Bushido.meta",
+    "bytes": 117,
+    "sha256": "48c70bff18b1f229f9c57e5a9934de2d759ea34b4407845ee4aec12e4237d12c"
+  },
+  {
+    "path": "Assets/InputSystem_Actions.inputactions",
+    "bytes": 41005,
+    "sha256": "1c6cbb519d65ecfe19a29231735b7f54741a20ac1a8ad4f46a18e1bfb28a3c39"
+  },
+  {
+    "path": "Assets/InputSystem_Actions.inputactions.meta",
+    "bytes": 376,
+    "sha256": "3b4e424a80f5b4fa76b6abd774884a24285eaa61f22ff9bb20e5ad505fd8b569"
+  },
+  {
+    "path": "Assets/Readme.asset",
+    "bytes": 1423,
+    "sha256": "4ca7614fe45a13ac0423b2c4ced1bcd13b0f889649bd9bd70bb2d2a4ceee5afa"
+  },
+  {
+    "path": "Assets/Readme.asset.meta",
+    "bytes": 182,
+    "sha256": "46c6b89ac1d47bd0c0d1a8b141ae3e32cd95d3e74c49381f0d9f942488c254ce"
+  },
+  {
+    "path": "Assets/Scenes/CampaignMap.unity",
+    "bytes": 1343,
+    "sha256": "2eb230e31cc078ae68ab394651e5a635b561fc924fa413cf4c9f9a26f9314bcb"
+  },
+  {
+    "path": "Assets/Scenes/CampaignMap.unity.meta",
+    "bytes": 61,
+    "sha256": "ad1736b6bf1a1fc8eb19754c84f1723a62404ba91c0c2a5deb98a848ea2c4eb8"
+  },
+  {
+    "path": "Assets/Scenes/Level.unity",
+    "bytes": 9121,
+    "sha256": "6672e8f2587bdd90b9405fd43624893787a6af63984998fafc2b41c220715728"
+  },
+  {
+    "path": "Assets/Scenes/Level.unity.meta",
+    "bytes": 155,
+    "sha256": "46259061cb5ce3ebf0f5546c8d1b63cef352e249db733b722ec2a6d7875e4b92"
+  },
+  {
+    "path": "Assets/Scenes/SampleScene.unity",
+    "bytes": 8431,
+    "sha256": "692629c2e9dcad1b9b70bd9bfe31763a62dc56053bf35e097fc617c02bfa8d7d"
+  },
+  {
+    "path": "Assets/Scenes/SampleScene.unity.meta",
+    "bytes": 155,
+    "sha256": "b5815a6b12afaf810577bc89041c4ce46516c7cd6609693f8db616f8e5584d80"
+  },
+  {
+    "path": "Assets/Scenes.meta",
+    "bytes": 172,
+    "sha256": "92598ef42aeaa7813a50e780bcee1ad6c832b257592d09ffb0e6fb6116bb703f"
+  },
+  {
+    "path": "Assets/Settings/DefaultVolumeProfile.asset",
+    "bytes": 23987,
+    "sha256": "6698bfacfad479acfd9766d00aba81ab52527d3b15c8b133d03ed7a2401499d6"
+  },
+  {
+    "path": "Assets/Settings/DefaultVolumeProfile.asset.meta",
+    "bytes": 189,
+    "sha256": "efbcb026cee6b8e32fdf27018c06b0515296a6ccbb43969e792fea270310700a"
+  },
+  {
+    "path": "Assets/Settings/Mobile_Renderer.asset",
+    "bytes": 1713,
+    "sha256": "aa93274c9521fa941170becec9e87c5fa36b8587eefd5eeb5c0eed0d1d4b1dbe"
+  },
+  {
+    "path": "Assets/Settings/Mobile_Renderer.asset.meta",
+    "bytes": 189,
+    "sha256": "a148ee2b4987b05b8ff7ae5f9bf84916184f77aefddc821dceb551f5a69f8179"
+  },
+  {
+    "path": "Assets/Settings/Mobile_RPAsset.asset",
+    "bytes": 4709,
+    "sha256": "8d551911e1e411b063203e4ee970b4c1bcc209dc561aa7ecfe8824f85c2498f4"
+  },
+  {
+    "path": "Assets/Settings/Mobile_RPAsset.asset.meta",
+    "bytes": 189,
+    "sha256": "53ea46647712c615fd1a3f2e0dddfa8559eeedc649e9a1dbf93ff913de28544c"
+  },
+  {
+    "path": "Assets/Settings/PC_Renderer.asset",
+    "bytes": 3439,
+    "sha256": "3d0b01d8ded3327263b6690be128a3de58d17c514943ae42fe743a3e084a9c79"
+  },
+  {
+    "path": "Assets/Settings/PC_Renderer.asset.meta",
+    "bytes": 189,
+    "sha256": "b5df8ddb2708c6ed4c133a5ff9ee95a75cc20e4ee3ed6181366a61aedbaf31ec"
+  },
+  {
+    "path": "Assets/Settings/PC_RPAsset.asset",
+    "bytes": 4728,
+    "sha256": "65b657b87062616fca959aecbb64b4b01dfd3b0051ac1119fb65be615539df96"
+  },
+  {
+    "path": "Assets/Settings/PC_RPAsset.asset.meta",
+    "bytes": 189,
+    "sha256": "bb469b9b6f318e9e9bed29c3b2e73e79371c04743c6f95dd6603941f1cd3e53e"
+  },
+  {
+    "path": "Assets/Settings/SampleSceneProfile.asset",
+    "bytes": 3751,
+    "sha256": "cc071e84f9f24e3617f24a2069153ec6244679c12331ce81f7f13e7fda0fa361"
+  },
+  {
+    "path": "Assets/Settings/SampleSceneProfile.asset.meta",
+    "bytes": 182,
+    "sha256": "2e23abc214069f0adbf2b2207f1db54be7876629ec2a3681d0f4aa5b61622ef0"
+  },
+  {
+    "path": "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+    "bytes": 29234,
+    "sha256": "f074f70005181226c7614cbfb06b064e692c1032763bef94ccf334d91d0056d0"
+  },
+  {
+    "path": "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset.meta",
+    "bytes": 189,
+    "sha256": "f61661d8bc8dbe531daf09f6211ef978c7ba145c9207c8e76524396ae0722d7c"
+  },
+  {
+    "path": "Assets/Settings.meta",
+    "bytes": 172,
+    "sha256": "73c8e19843240273facb0af6bdbf430d719e397aded705629594060ce25ce7ad"
+  },
+  {
+    "path": "Assets/TutorialInfo/Editor/ReadmeEditor.cs",
+    "bytes": 4233,
+    "sha256": "4eaa92bc653d0dfa552685c9766be3ccd6d94715570fc709510e56d2ab299472"
+  },
+  {
+    "path": "Assets/TutorialInfo/Editor/ReadmeEditor.cs.meta",
+    "bytes": 264,
+    "sha256": "f59080b424c16fa13edd105bf006fdbad98c11fce0c921043e63c8877f144cd9"
+  },
+  {
+    "path": "Assets/TutorialInfo/Editor.meta",
+    "bytes": 193,
+    "sha256": "7036bdbc8af05799b5fd508484343b35c28a68b390198da4673d34357d7d667f"
+  },
+  {
+    "path": "Assets/TutorialInfo/Icons/URP.png",
+    "bytes": 24069,
+    "sha256": "1d17a9ff3537859abe2c008603d29d90cf43191ae77aa386167cc65e53ba03d9"
+  },
+  {
+    "path": "Assets/TutorialInfo/Icons/URP.png.meta",
+    "bytes": 3156,
+    "sha256": "b330f1fcfc4e6ceccc95fc34a38434141603469b135633e1c4e8a03c19f9fdbc"
+  },
+  {
+    "path": "Assets/TutorialInfo/Icons.meta",
+    "bytes": 193,
+    "sha256": "546e7d7af6b4d5e17d284c8f1188d05472e681911b8359905ee9b9e20769a106"
+  },
+  {
+    "path": "Assets/TutorialInfo/Layout.wlt",
+    "bytes": 15479,
+    "sha256": "0a18bf035aa7ce914f19f7ce6b60a5a2d33e2371af6f492a8ea7a1bc78755b8b"
+  },
+  {
+    "path": "Assets/TutorialInfo/Layout.wlt.meta",
+    "bytes": 176,
+    "sha256": "b8745a251df078ffa75dbaac0c4c6debecb61ab306b5b119a490ce6c635a11d8"
+  },
+  {
+    "path": "Assets/TutorialInfo/Readme.cs",
+    "bytes": 434,
+    "sha256": "6c1d741bccb431ef270aa99bea9498abd5f17191ddb022834f82582c13aa8d64"
+  },
+  {
+    "path": "Assets/TutorialInfo/Readme.cs.meta",
+    "bytes": 317,
+    "sha256": "80a3df9969fab6e656583ee9bbca884d0507e2b7de3417f6ea3118fba901cd60"
+  },
+  {
+    "path": "Assets/TutorialInfo/StyleSheets/ReadmeEditor.uss",
+    "bytes": 1124,
+    "sha256": "ef26f35935595d237802d5fd7ec7608df7ec1e2ebed25bde15aa4972c7cb55c9"
+  },
+  {
+    "path": "Assets/TutorialInfo/StyleSheets/ReadmeEditor.uss.meta",
+    "bytes": 305,
+    "sha256": "0b7d3988e424498e61b8ad246996cbdef616dfceeeade3d8ebe974546f13f5ae"
+  },
+  {
+    "path": "Assets/TutorialInfo/StyleSheets/ReadmeEditorDark.uss",
+    "bytes": 34,
+    "sha256": "55520ccb7ab7e06c25283f608a4391f25c3a62e19f4bd8ee270bb80fb50f3ff8"
+  },
+  {
+    "path": "Assets/TutorialInfo/StyleSheets/ReadmeEditorDark.uss.meta",
+    "bytes": 305,
+    "sha256": "e42f7f9dda8a158ebe18760e1ad684eb113ef70061a046955db87592610bd8f2"
+  },
+  {
+    "path": "Assets/TutorialInfo/StyleSheets/ReadmeEditorLight.uss",
+    "bytes": 34,
+    "sha256": "5e9ace1270007dc66b8b1c29063de8d3a6f056485ae116dfa38d2c5519334445"
+  },
+  {
+    "path": "Assets/TutorialInfo/StyleSheets/ReadmeEditorLight.uss.meta",
+    "bytes": 305,
+    "sha256": "0e4af29f8addccee1c225bd695b280d2e712e59b8801b574481a934f7f78c2ed"
+  },
+  {
+    "path": "Assets/TutorialInfo/StyleSheets.meta",
+    "bytes": 193,
+    "sha256": "930d0c8276cea1559a3e315f8500ea6ca8b58d980eee3b44aaa1d461742c47e0"
+  },
+  {
+    "path": "Assets/TutorialInfo.meta",
+    "bytes": 172,
+    "sha256": "07f022e5932c833d026e020b27d73452ebd781993b616d76003494af1e140946"
+  },
+  {
+    "path": "Packages/manifest.json",
+    "bytes": 2303,
+    "sha256": "b086d72d94c45677332dd78404c254f8bb7ed09e98cca80073c13037e32ef54d"
+  },
+  {
+    "path": "Packages/packages-lock.json",
+    "bytes": 15368,
+    "sha256": "f9ae677b389ace0e4f9b08560a293fb4efb50ed850042c35a09023f1adaa5299"
+  },
+  {
+    "path": "ProjectSettings/AudioManager.asset",
+    "bytes": 413,
+    "sha256": "aeedeb3243f07b61dbbe854aa08b5ef6f0b5274dd9852ad9f6129dde3e105a31"
+  },
+  {
+    "path": "ProjectSettings/ClusterInputManager.asset",
+    "bytes": 114,
+    "sha256": "40e65dd214bf254955d2c8829ca8ce2130fd3510485560ce012e9a1ddd93e623"
+  },
+  {
+    "path": "ProjectSettings/DynamicsManager.asset",
+    "bytes": 1587,
+    "sha256": "bf017b547bb77ce3443dd5287ddf2516a74fd167f4f2ee5d798340694f51776d"
+  },
+  {
+    "path": "ProjectSettings/EditorBuildSettings.asset",
+    "bytes": 564,
+    "sha256": "8799df1354fdc4f29949edabc3e9b54db93a52ecf613a812a1c700e5b12a18e2"
+  },
+  {
+    "path": "ProjectSettings/EditorSettings.asset",
+    "bytes": 1673,
+    "sha256": "bbedcf93c32bca12eaba9ed61189ab13f064217e9f2984a66772719fa73c56b5"
+  },
+  {
+    "path": "ProjectSettings/GraphicsSettings.asset",
+    "bytes": 2498,
+    "sha256": "15ff4127a0f261f15321f24c6a6b5c82e1f5a306ad32fd399eac3e3c46c723c9"
+  },
+  {
+    "path": "ProjectSettings/InputManager.asset",
+    "bytes": 9731,
+    "sha256": "7a1bb836a1008d26d0860d143e9d9df7ca41731d30a72901b518063819c62df2"
+  },
+  {
+    "path": "ProjectSettings/MemorySettings.asset",
+    "bytes": 1192,
+    "sha256": "1e8379a461b10ae09f3f696911088c16875d63e87ed5f2d95df9e1892703f9fd"
+  },
+  {
+    "path": "ProjectSettings/MultiplayerManager.asset",
+    "bytes": 157,
+    "sha256": "aba89fd1a1ddad182727ad82727e536d27372e90328a8196da2a4560398983dd"
+  },
+  {
+    "path": "ProjectSettings/NavMeshAreas.asset",
+    "bytes": 1308,
+    "sha256": "80106cfa7e6181a1928b142c075f3e510d527441e3d79bc83590e4ac91e7cd66"
+  },
+  {
+    "path": "ProjectSettings/PackageManagerSettings.asset",
+    "bytes": 1157,
+    "sha256": "f281d96e785df430d30ce0a515f4fe5c625ef44467125879f4b9f4cb087e1578"
+  },
+  {
+    "path": "ProjectSettings/Packages/com.unity.ai.assistant/Settings.json",
+    "bytes": 374,
+    "sha256": "56d1b4a77f554cd89473c5f9da2fab80ebb8fdf9af2acead2f2df6da6a9c9a7f"
+  },
+  {
+    "path": "ProjectSettings/Physics2DSettings.asset",
+    "bytes": 2028,
+    "sha256": "d57a0fe55659c33879e8b70bc01c5ea9cdf082069dab649905c6c5138531e6eb"
+  },
+  {
+    "path": "ProjectSettings/PhysicsCoreProjectSettings2D.asset",
+    "bytes": 151,
+    "sha256": "bedc5339a832c60dc3f11b84abc4f4384dbfa20b0cd9ad6c444b907e751fc35e"
+  },
+  {
+    "path": "ProjectSettings/PresetManager.asset",
+    "bytes": 146,
+    "sha256": "29c125923fe6e29f90190d4fce1c82d660e7051546e2c9d02908d18c9cf2436c"
+  },
+  {
+    "path": "ProjectSettings/ProjectAuditorSettings.asset",
+    "bytes": 1036,
+    "sha256": "9e68444b9bda981e2927a98df9edf69ea88362f0c6b7f3c81b39b9d515d2a416"
+  },
+  {
+    "path": "ProjectSettings/ProjectSettings.asset",
+    "bytes": 24752,
+    "sha256": "cb0c212c9e9eb64907bfa2c0d3db75237b63f6e00c144f2237717dfd1bdab9be"
+  },
+  {
+    "path": "ProjectSettings/ProjectVersion.txt",
+    "bytes": 83,
+    "sha256": "2a88e6864b6f54588287bed3bc6e9260e65bd49498910cca4478770ca8a5d674"
+  },
+  {
+    "path": "ProjectSettings/QualitySettings.asset",
+    "bytes": 3757,
+    "sha256": "600bee1dd55cc67dbdfdcf320395635175c0e762760a8504cceaa080a18a4eba"
+  },
+  {
+    "path": "ProjectSettings/SceneTemplateSettings.json",
+    "bytes": 3535,
+    "sha256": "bb9098b3bfcde78d93e264b96f7b77b5430e64e8c57a7aad7f5a5d9c3945e16a"
+  },
+  {
+    "path": "ProjectSettings/ShaderGraphSettings.asset",
+    "bytes": 556,
+    "sha256": "cdba1e5d65bcf6e3269d76ed3e60b6c21f98322002996642c9d74f1eb89f6b91"
+  },
+  {
+    "path": "ProjectSettings/TagManager.asset",
+    "bytes": 657,
+    "sha256": "23fc56b484aa3d7edf5914cd3591f7a823ccef5e3f3496f8a51f30388ead63dc"
+  },
+  {
+    "path": "ProjectSettings/TimeManager.asset",
+    "bytes": 202,
+    "sha256": "1a83e54adbbda7c9f4851103a0c6ab7f6448a3343d4ea5b7620452fa08416ecd"
+  },
+  {
+    "path": "ProjectSettings/UnityConnectSettings.asset",
+    "bytes": 1191,
+    "sha256": "7f2112b8c6ea0885dcc72b312c9726ffcd909f2e89d1eead61889274a4e5d1c0"
+  },
+  {
+    "path": "ProjectSettings/URPProjectSettings.asset",
+    "bytes": 461,
+    "sha256": "c317fe22b9488785c0611f0642429922e5d324430d929bffb41648130f30c218"
+  },
+  {
+    "path": "ProjectSettings/VersionControlSettings.asset",
+    "bytes": 188,
+    "sha256": "e7bda45bf7a394745fee1316e6c71fa676004d591ad1f3aa247fd3e4ceb86071"
+  },
+  {
+    "path": "ProjectSettings/VFXManager.asset",
+    "bytes": 308,
+    "sha256": "f066c6483919961332415ee64204f74fe52f38c02e82892eb02b7a5b2e381f0e"
+  },
+  {
+    "path": "ProjectSettings/XRSettings.asset",
+    "bytes": 158,
+    "sha256": "edd2beb4a2e388312b4b7da241aa51070434005d82c59363f1237dd2e567585f"
+  },
+  {
+    "path": "README.md",
+    "bytes": 5667,
+    "sha256": "60f5d36f28e67b6814dd2e3301422032831bd8643730fe1327f11b594c45ca0c"
+  },
+  {
+    "path": "SourceAssets/Bosses/Drax.rar",
+    "bytes": 3878371,
+    "sha256": "ef4d4e9bf80c3398ed4ef2b3b1c69e386a65fd7e503b3596c4f7bf0ff3621c25"
+  },
+  {
+    "path": "SourceAssets/Bosses/Drax.rar.meta",
+    "bytes": 155,
+    "sha256": "7010745637df8d10eadebac45b31fc0bcd02df76ede62968c3d1dc1fb20179c9"
+  },
+  {
+    "path": "SourceAssets/Bosses/Oni_Samurai.usdz",
+    "bytes": 8125753,
+    "sha256": "4696c90e29f57ad0c658d450fbd4093e19a594273cb2e959595c12c11b798a80"
+  },
+  {
+    "path": "SourceAssets/Bosses/Oni_Samurai.usdz.meta",
+    "bytes": 155,
+    "sha256": "33cacc92d745a788c637ee3357806fa956708e16a10ab09c40cc97029164f3af"
+  },
+  {
+    "path": "SourceAssets/CursedMask/Mask HD.fbx",
+    "bytes": 43886624,
+    "sha256": "3de38e475e72bfd860392d5796b744d97fa2a374a41cfc92242976420f6554bd"
+  },
+  {
+    "path": "SourceAssets/CursedMask/Mask HD.fbx.meta",
+    "bytes": 3063,
+    "sha256": "c8887ee7b8482669734d7a98d5a42361e5793536e97ba4f838eb71bd9a1d3169"
+  },
+  {
+    "path": "Tools/preparar_entrega.py",
+    "bytes": 2951,
+    "sha256": "b061e725333b9fb0a2b8115b8a136884f5a96f4a34f65d01179d0ee3cc32eb56"
+  }
+]
