@@ -1,0 +1,8 @@
+User-supplied combat sounds, 2026-11-11. Originals copied without editing.
+Parry01.mp3: Sharp_steel_katana_p_#1-1794457950954.mp3
+Parry02.mp3: Sharp_steel_katana_p_#3-1794457972647.mp3
+Slash01.mp3: Quick,_sharp_katana__#1-1794458168808.mp3
+Parries alternate at the existing contact event. Slash plays once when a gesture hits a cuttable target. Synthetic release sound is suppressed while using the supplied slash to avoid doubling. In-game listening and level balancing pending.
+SpiritDissolve.mp3: Japanese_exorcism_ma_#3-1794458698580.mp3
+FinalDrawStrike.mp3: Sharp_shing_of_a_dra_#3-1794458748191.mp3
+User direction: SpiritDissolve only at the ink disappearance event (0.85 s after finisher begins). FinalDrawStrike only at the released final katana strike (0.16 s). Separate one-shot sources, guarded by existing finalCutReleased / bossInkBurst flags; no playback while partially drawing/reinserting the blade. Dissolve tail can finish over the map transition. Both reset on a new encounter.

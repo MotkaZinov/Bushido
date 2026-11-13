@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: c0439e9d15d9585468cb5c5f347e865a
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Naganoshi
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: d97fdc695fe4547499d6095ba834ca93, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  subsetRecipes: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,4 @@
+Chain - Pavel Kutejnikov, CC0 (public domain)
+Source: https://opengameart.org/content/chain-0
+Downloaded 2026-11-11. Original PNG atlas, selected through mesh UVs.
+Game treatment: jade/ivory ink shading, alternating links, animated tension.

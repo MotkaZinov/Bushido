@@ -1,0 +1,18 @@
+Bushido map icon credits
+
+Source: https://game-icons.net/
+License: Creative Commons Attribution 3.0 Unported
+https://creativecommons.org/licenses/by/3.0/
+
+Delapouite (https://delapouite.com/):
+- Bamboo: https://game-icons.net/1x1/delapouite/bamboo.html
+- Samurai helmet: https://game-icons.net/1x1/delapouite/samurai-helmet.html
+- Oni: https://game-icons.net/1x1/delapouite/oni.html
+- Japanese bridge: https://game-icons.net/1x1/delapouite/japanese-bridge.html
+
+Lorc (https://lorcblog.blogspot.com/):
+- Mountains: https://game-icons.net/1x1/lorc/mountains.html
+
+Original white-on-transparent PNG files, downloaded 2026-11-11.
+Adaptations in-game: resizing and tinting to the Bushido ink palette; original drawings unchanged.
+Paper seal frames, shogi silhouette and procedural brush paths are project code.
