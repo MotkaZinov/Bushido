@@ -25,7 +25,7 @@ namespace Bushido
         readonly List<CutEffect> cutEffects = new List<CutEffect>();
         readonly List<Vector3> trailPoints = new List<Vector3>();
         readonly List<float> trailAges = new List<float>();
-        GameObject frogPrefab;
+        GameObject sandalPrefab;
         AudioSource cutAudio;
         AudioClip cutSound;
         float comboTime, comboPulse, impactTime, shakeTime;
@@ -49,22 +49,32 @@ namespace Bushido
 
         Transform CreateFrog(Transform parent, float size, float yaw = 180f)
         {
-            if (frogPrefab == null) frogPrefab = Resources.Load<GameObject>("Models/Yokai_Rana");
-            if (frogPrefab == null) throw new System.InvalidOperationException("Falta el modelo Yokai_Rana en Resources/Models.");
-            Transform model = Instantiate(frogPrefab, parent, false).transform;
-            model.localRotation = Quaternion.Euler(0, yaw, 0);
-            // Bake skinned assets too, so the same clipping path handles both model types.
-            foreach (var skin in model.GetComponentsInChildren<SkinnedMeshRenderer>())
+            if (sandalPrefab == null) sandalPrefab = Resources.Load<GameObject>("Models/chancla");
+            if (sandalPrefab == null) throw new System.InvalidOperationException("Falta el modelo chancla en Resources/Models.");
+            Transform model = Instantiate(sandalPrefab, parent, false).transform;
+            model.localRotation = Quaternion.Euler(-12, yaw, -10);
+            // Each sandal owns the meshes it shows: its puppet re-bakes the pose into them every frame,
+            // so the slicer always cuts the pose that is on screen.
+            var skins = model.GetComponentsInChildren<SkinnedMeshRenderer>();
+            var pieces = new MeshFilter[skins.Length];
+            for (int i = 0; i < skins.Length; i++)
             {
-                var mesh = new Mesh();
+                var skin = skins[i];
+                var mesh = new Mesh { name = skin.name + " / pose" };
+                mesh.MarkDynamic();
                 skin.BakeMesh(mesh);
-                skin.gameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
-                skin.gameObject.AddComponent<MeshRenderer>().sharedMaterials = skin.sharedMaterials;
-                skin.gameObject.AddComponent<SliceMeshOwner>();
-                skin.enabled = false;
+                var piece = new GameObject(skin.name + " / corte");
+                piece.transform.SetParent(skin.transform, false);
+                pieces[i] = piece.AddComponent<MeshFilter>();
+                pieces[i].sharedMesh = mesh;
+                piece.AddComponent<MeshRenderer>().sharedMaterials = skin.sharedMaterials;
+                piece.AddComponent<SliceMeshOwner>();
+                // Keep skinning alive for BakeMesh, but only the baked piece is drawn.
+                skin.forceRenderingOff = true;
             }
+            model.gameObject.AddComponent<SandalPuppet>().Bind(skins, pieces);
             var renderers = model.GetComponentsInChildren<MeshRenderer>();
-            if (renderers.Length == 0) throw new System.InvalidOperationException("El modelo de rana no contiene mallas renderizables.");
+            if (renderers.Length == 0) throw new System.InvalidOperationException("El modelo de chancla no contiene mallas renderizables.");
             Bounds bounds = renderers[0].bounds;
             foreach (var renderer in renderers)
             {
@@ -103,9 +113,138 @@ namespace Bushido
             cutSound.SetData(samples, 0);
         }
 
+        static readonly Color FrogInterior = new Color(0.95f, 0.69f, 0.25f);
+
+        // Special frogs read in flight by tint, size and a paper prop, all in the ink palette. Props and tints use
+        // per-frog material clones so lifting a frog's render queue (judgment cut) never touches shared materials.
+        void DecorateFrog(Projectile item)
+        {
+            item.tints = new List<Material>();
+            Transform model = item.root.GetChild(0); // CreateFrog's model
+            if (item.frog == FrogKind.Linked)
+            {
+                TintFrog(item, model, JutsuInk, 0.5f);
+                LinkFrogs(item);
+            }
+            else if (item.frog == FrogKind.Golden)
+            {
+                item.size = GoldenSize;
+                TintFrog(item, model, PrototypeArt.Gold, 0.85f);
+                var halo = new Vector3[21];
+                for (int i = 0; i < halo.Length; i++) halo[i] = new Vector3(Mathf.Cos(i * Mathf.PI * 2 / 20), Mathf.Sin(i * Mathf.PI * 2 / 20), -0.3f) * 0.95f;
+                FrogLine(item, item.root, "Rana • aura", halo, PrototypeArt.Gold, 0.07f);
+            }
+            else
+            {
+                // Armour: a paper breastplate and helmet with ink borders and red cords.
+                item.size = ArmouredSize;
+                item.armour = new GameObject("Armadura de papel").transform;
+                item.armour.SetParent(item.root, false);
+                FramePlate(item, new Vector3(0, -0.05f, -0.5f), new Vector3(0.9f, 0.7f, 0.05f));
+                FramePlate(item, new Vector3(0, 0.62f, -0.5f), new Vector3(0.76f, 0.26f, 0.05f));
+                FrogLine(item, item.armour, "Rana • cordón", new[] { new Vector3(-0.45f, 0.15f, -0.6f), new Vector3(0.45f, 0.15f, -0.6f) }, PrototypeArt.Red, 0.09f);
+                FrogLine(item, item.armour, "Rana • cordón", new[] { new Vector3(0, 0.45f, -0.6f), new Vector3(0, -0.4f, -0.6f) }, PrototypeArt.Red, 0.07f);
+            }
+            item.radius *= item.size;
+        }
+
+        Material FrogProp(Projectile item, Color color)
+        {
+            var material = new Material(art.Material(color)) { renderQueue = -1 };
+            item.tints.Add(material);
+            return material;
+        }
+
+        void FramePlate(Projectile item, Vector3 position, Vector3 scale)
+        {
+            art.Shape(item.armour, "Rana • placa", PrimitiveType.Cube, position, scale * 1.1f, PrototypeArt.Ink)
+                .GetComponent<Renderer>().sharedMaterial = FrogProp(item, PrototypeArt.Ink);
+            art.Shape(item.armour, "Rana • placa", PrimitiveType.Cube, position + Vector3.back * 0.04f, scale, PrototypeArt.Paper)
+                .GetComponent<Renderer>().sharedMaterial = FrogProp(item, PrototypeArt.Paper);
+        }
+
+        LineRenderer FrogLine(Projectile item, Transform parent, string name, Vector3[] points, Color color, float width)
+        {
+            var line = art.Line(parent, points, color, width);
+            line.name = name;
+            line.sharedMaterial = FrogProp(item, color);
+            return line;
+        }
+
+        void TintFrog(Projectile item, Transform model, Color tint, float amount)
+        {
+            foreach (var renderer in model.GetComponentsInChildren<MeshRenderer>())
+            {
+                var materials = renderer.sharedMaterials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    var copy = new Material(materials[i]) { renderQueue = -1 };
+                    copy.SetColor("_BaseColor", Color.Lerp(copy.GetColor("_BaseColor"), tint, amount));
+                    item.tints.Add(copy);
+                    materials[i] = copy;
+                }
+                renderer.sharedMaterials = materials;
+            }
+        }
+
+        // A spirit thread joins the two ends once both have leapt; the first end carries the line.
+        void LinkFrogs(Projectile item)
+        {
+            foreach (Projectile other in projectiles)
+            {
+                if (other == item || other.pair != item.pair || other.partner != null) continue;
+                other.partner = item; item.partner = other;
+                other.thread = FrogLine(other, other.root, "Rana • hilo", new Vector3[2], JutsuInk, 0.09f);
+                other.thread.useWorldSpace = true;
+                return;
+            }
+        }
+
+        // First cut of an armoured frog: the plates tear off as paper and the frog is knocked back up into a short arc.
+        void TearArmour(Projectile item, Vector3 a, Vector3 b)
+        {
+            item.tornStroke = strokeSerial;
+            Vector3 position = item.root.position;
+            var plates = new List<Transform>();
+            foreach (Transform plate in item.armour) plates.Add(plate);
+            foreach (Transform plate in plates)
+            {
+                plate.SetParent(world, true);
+                if (cutEffects.Count >= 48) { Destroy(plate.gameObject); continue; }
+                Vector3 away = (plate.position - position).normalized;
+                AddDebris(plate, away * 5f + Vector3.up * 3f, Vector3.forward * Random.Range(-360f, 360f), 0.55f).drag = 2f;
+            }
+            Destroy(item.armour.gameObject);
+            item.armour = null;
+            // Knock-back: rises ArmourJuggleRise above the cut point (v = sqrt(2 g h), g = 5.2 as in flight) and drifts the other way.
+            item.velocity = new Vector3(-item.velocity.x * 0.6f, Mathf.Sqrt(2f * 5.2f * ArmourJuggleRise), 0);
+            if (!strokeWhooshPlayed) { BeginSwingSound(); strokeWhooshPlayed = true; }
+            SetupCutAudio();
+            SliceImpactSound();
+            cutStrokeDir = ((Vector2)(b - a)).normalized;
+            CutBurst(position, false);
+            shakeTime = Mathf.Max(shakeTime, 0.1f);
+            impactTime = Mathf.Max(impactTime, 0.03f);
+            FighterCut(b - a);
+        }
+
+        void GoldenReward(Vector3 position)
+        {
+            ShockRingBurst(position, Quaternion.identity, 1.8f, PrototypeArt.Gold);
+            if (lives < 3) { lives++; Tell("Chancla dorada: una vida recuperada", 2.5f); }
+            else Tell("Chancla dorada", 1.5f);
+        }
+
+        // The survivor of a half-cut pair bolts: a spirit burst, then a faster and higher hop.
+        void EnrageFrog(Projectile item)
+        {
+            ShockRingBurst(item.root.position + Vector3.back * 0.5f, Quaternion.identity, 1.5f, JutsuInk);
+            item.velocity = new Vector3(item.velocity.x * LinkedHopDrift, Mathf.Max(item.velocity.y, 0f) + LinkedHopBoost, 0);
+        }
+
         bool CutFrog(Projectile item, Vector3 a, Vector3 b)
         {
-            if (!FrogSlicer.Slice(item.root, a, b, art.Material(new Color(0.95f, 0.69f, 0.25f)), out var first, out var second)) return false;
+            if (!FrogSlicer.Slice(item.root, a, b, art.Material(FrogInterior), out var first, out var second)) return false;
             Vector3 normal = Vector3.Cross(b - a, Vector3.forward).normalized;
             // Halves pop slightly as they part, then settle.
             AddDebris(first.transform, item.velocity * 0.35f + normal * 3.2f + Vector3.back, new Vector3(30, 40, -100), 1.4f).punch = 0.16f;

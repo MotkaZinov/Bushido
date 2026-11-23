@@ -9,7 +9,8 @@ namespace Bushido
     {
         const string SaveKey = "Bushido.Campaign.v1";
         enum Mode { Title, Map, Travel, FaceOff, Battle, Result, Transition, ScrollOpening, ScrollClosing }
-        enum ProjectileKind { Frog, Bomb, Heavy }
+        enum ProjectileKind { Frog, Bomb, Heavy, Wisp }
+        enum FrogKind { Common, Armoured, Linked, Golden }
 
         sealed class Projectile
         {
@@ -18,16 +19,27 @@ namespace Bushido
             public Vector3 velocity, spin;
             public float age;
             public float radius;
+            // Special frogs (see FrogKind): armour props, spirit thread to the partner, per-frog material clones.
+            public FrogKind frog;
+            public int sandalStyle;
+            public float size = 1f, orphan;
+            public Transform armour;
+            public Projectile partner;
+            public LineRenderer thread;
+            public int pair, tornStroke = -1, linkStroke = -1;
+            public List<Material> tints;
+            public SandalPuppet puppet;
         }
 
-        readonly string[] titles = { "El comienzo", "Sendero del bambú", "Drax", "Paso de la montaña", "Oni Samurái" };
+        readonly string[] titles = { "El comienzo", "Sendero del bambú", "Festival de las chanclas", "Los faroles gemelos", "La sombrilla de la lluvia" };
         readonly Vector3[] nodes = {
             new Vector3(-5.8f, 0, -1.2f), new Vector3(-3.1f, 0, 1.2f),
             new Vector3(0, 0, -0.7f), new Vector3(3, 0, 1.3f), new Vector3(5.7f, 0, -0.6f)
         };
         readonly List<Projectile> projectiles = new List<Projectile>();
-        readonly List<(float delay, float x, float speed, float drift)> pendingFrogs = new List<(float, float, float, float)>();
-        int frogPattern;
+        readonly List<(float delay, float x, float speed, float drift, FrogKind kind, int pair)> pendingFrogs = new List<(float, float, float, float, FrogKind, int)>();
+        readonly HashSet<FrogKind> frogHints = new HashSet<FrogKind>();
+        int frogPattern, linkSerial, strokeSerial, commonSandalCount;
         float pendingBombDelay = -1f;
         float pendingBombX;
         const float WaveLeadTime = 0.48f;
@@ -47,7 +59,8 @@ namespace Bushido
         int routeNode;
         int nextRouteNode;
         float travelTime;
-        float faceTime;
+        int dialogueLine;
+        bool strokeHasSwing;
         bool paused;
         bool wasPressed;
         bool inputBlockedUntilRelease, gestureFromTouch;
@@ -78,6 +91,9 @@ namespace Bushido
         string saveWarning = "";
         readonly Vector2[] cutDirections = { new Vector2(1, 1).normalized, Vector2.right, new Vector2(1, -1).normalized };
 
+        FestivalScore arcade = new FestivalScore();
+        bool IsTrail => mission == 1 || mission == 2;
+        float nextRushVolley;
         bool IsBoss => CampaignProgress.IsBoss(mission);
         bool SecondPhase => IsBoss && bossHealth <= bossMaxHealth / 2;
         Vector3 CounterCenter => new Vector3(0, IsBoss ? 3f : 4.1f, -0.5f);
@@ -124,6 +140,7 @@ namespace Bushido
         void NewWorld(bool forest = false)
         {
             CancelActiveGesture();
+            DisposeLanternDuel();
             if (battleMusic != null) battleMusic.Stop();
             if (world != null)
             {
@@ -139,10 +156,10 @@ namespace Bushido
             art = new PrototypeArt(forest);
             world = new GameObject("Escenario Bushido").transform;
             world.SetParent(transform);
-            projectiles.Clear();
+            ClearProjectiles();
             pendingFrogs.Clear();
             pendingBombDelay = -1f;
-            frogPattern = 0;
+            frogPattern = commonSandalCount = 0;
             ResetJutsu();
             cutEffects.Clear();
             trailPoints.Clear();
@@ -181,9 +198,8 @@ namespace Bushido
                 art.Shape(world, titles[i] + " · ficha de papel", PrimitiveType.Cylinder, nodes[i] + Vector3.up * 0.12f, new Vector3(1.38f, 0.04f, 1.38f), available ? PrototypeArt.Paper : new Color(.55f,.53f,.47f));
                 if (CampaignProgress.IsBoss(i))
                 {
-                    Transform figure = CreateBossFigure(i, nodes[i], i == 4 ? 2.1f : 1.85f);
-                    figure.rotation = figure.GetComponent<PaperOgreSprite>() != null
-                        ? view.transform.rotation : Quaternion.Euler(0, 180, 0);
+                    Transform figure = CreateUmbrellaFigure(nodes[i], 2.1f);
+                    figure.rotation = Quaternion.Euler(0, 180, 0);
                 }
                 else if (i > 0)
                 {
@@ -209,6 +225,7 @@ namespace Bushido
         void LateUpdate()
         {
             if (backdrop != null) PositionBackdrop();
+            LateJudgmentCut();
         }
 
         void PositionBackdrop()
@@ -250,8 +267,9 @@ namespace Bushido
         {
             progress.currentNode = mission;
             Save();
-            mode = Mode.FaceOff;
-            faceTime = 0;
+            mode = IsBoss || LanternDuel ? Mode.FaceOff : Mode.ScrollClosing;
+            scrollTime = 0;
+            dialogueLine = 0;
             playerToken.rotation = Quaternion.LookRotation(nodes[mission] - playerToken.position);
         }
 
@@ -270,24 +288,31 @@ namespace Bushido
             PositionBackdrop();
             if (IsBoss)
             {
-                opponent = CreateBossFigure(mission, new Vector3(0, 4.1f, 3), 3.15f);
+                opponent = CreateUmbrellaFigure(new Vector3(0, 4.1f, 3), 3.15f);
                 opponent.rotation = Quaternion.identity;
             }
             else opponent = null;
             BeginPaperTheater();
             ResetBossRitual();
+            ResetBossVoice();
             lives = 3;
             hits = misses = wounds = combo = bestCombo = guard = waveNumber = 0;
+            frogHints.Clear(); // each special type gets its one-line hint again in every battle
             battleTime = 0;
+            arcade = new FestivalScore();
+            nextRushVolley = 0;
+            if (IsTrail) Tell("Corta al destello o reúne tres chanclas en un tajo", 3.2f);
+            judgmentCharge = 0; judgmentTap = false;
             comboTime = comboPulse = 0;
             waveTimer = 1.15f;
-            bossMaxHealth = mission == 2 ? 6 : 12;
+            bossMaxHealth = 12;
             bossHealth = bossMaxHealth;
-            guardLimit = mission == 2 ? 5 : 7;
+            guardLimit = 7;
             vulnerable = false;
             slash = art.Line(world, new[] { Vector3.zero, Vector3.zero }, PrototypeArt.Paper, 0.055f);
             slash.enabled = false;
             BeginDefense();
+            BeginLanternDuel();
             PlayBattleMusic();
         }
 
@@ -311,37 +336,37 @@ namespace Bushido
             if (paused) return;
             float delta = Mathf.Min(Time.deltaTime, 0.05f);
             noticeTime -= delta;
-            if (mode == Mode.Travel) UpdateTravel(delta);
-            else if (mode == Mode.FaceOff)
+            if (mode == Mode.Result)
             {
-                faceTime += delta;
-                if (faceTime >= 1.2f)
-                {
-                    mode = Mode.ScrollClosing;
-                    scrollTime = 0;
-                }
+                // Keep the actor alive beside the results scroll; combat and its timers stay finished.
+                UpdateFighter(delta);
+                return;
             }
+            if (mode == Mode.Travel) UpdateTravel(delta);
             else if (mode == Mode.Battle)
             {
                 UpdateCutEffects(delta);
+                UpdateEnergyBursts(delta);
                 UpdateDefense(delta);
                 UpdateJutsu(delta);
+                UpdateJudgmentCut(delta);
                 float combatDelta = impactTime > 0 ? delta * 0.12f : delta;
                 impactTime = Mathf.Max(0, impactTime - delta);
                 UpdateBattle(combatDelta);
                 if (mode == Mode.Battle) { ReadSwipe(delta); ResolveDuelContact(); }
                 UpdateFighter(combatDelta);
                 if (IsBoss) UpdateBossRitual(combatDelta);
+                if (LanternDuel && mode == Mode.Battle) UpdateLanternDuel(combatDelta);
             }
         }
 
         void UpdateBattle(float delta)
         {
-            if (IsBoss && bossFinalStage > 0) return;
+            if (bossFinalStage > 0) return;
             battleTime += delta;
             UpdatePaperTheater(delta);
             if (mode != Mode.Battle) return;
-            if (!IsBoss && battleTime >= 35)
+            if (!IsBoss && !LanternDuel && battleTime >= 35)
             {
                 Finish(true);
                 return;
@@ -351,6 +376,17 @@ namespace Bushido
                 counterTime -= delta;
                 if (counterTime <= 0) CloseCounter();
                 return;
+            }
+            bool rush = IsTrail && arcade.RushLeft > 0;
+            if (IsTrail) arcade.Tick(delta);
+            if (rush && battleTime < 32f && (nextRushVolley -= delta) <= 0)
+            {
+                // Alternate banks. Stagger the second arrival just enough for one sweep.
+                float bank = Mathf.Sin(battleTime * 3f) >= 0 ? -1f : 1f;
+                for (int k = 0; k < 3; k++)
+                    pendingFrogs.Add((WaveLeadTime + .09f * k, bank * (4.1f - k), 8f + .35f * k,
+                        -bank * .9f, FrogKind.Common, 0));
+                nextRushVolley = 1.35f;
             }
             waveTimer -= delta;
             if (projectiles.Count > 0 || pendingFrogs.Count > 0 || pendingBombDelay >= 0f)
@@ -362,26 +398,31 @@ namespace Bushido
                 if (pendingBombDelay <= 0f)
                 {
                     pendingBombDelay = -1f;
-                    SpawnProjectile(ProjectileKind.Bomb, pendingBombX, 10.9f);
+                    SpawnProjectile(ProjectileKind.Bomb, pendingBombX, mission == 2 ? 9f : 10.9f);
                 }
             }
-            if (waveTimer <= 0 && (!IsBoss || theaterState == 0) && (IsBoss || battleTime < 30))
+            if (!rush && waveTimer <= 0 && (!IsBoss || theaterState == 0) && (IsBoss || battleTime < 30) && (!LanternDuel || lanternStage == 0))
             {
                 SpawnWave();
                 float pressure = Mathf.Clamp01(battleTime / 30f);
-                waveTimer = jutsuTime > 0 ? 1.12f : Mathf.Lerp(2.05f, SecondPhase ? 1.3f : 1.55f, pressure);
+                waveTimer = jutsuTime > 0 ? 1.12f : Mathf.Lerp(HardTrail ? HardTrailIntervalFrom : TrailIntervalFrom,
+                    HardTrail ? HardTrailIntervalTo : SecondPhase ? 1.3f : TrailIntervalTo, pressure);
                 waveTimer += waveNumber % 3 == 0 ? 0.24f : -0.10f;
             }
             float flightDelta = jutsuTime > 0 ? delta * 0.62f : delta;
             for (int i = pendingFrogs.Count - 1; i >= 0; i--)
             {
                 var frog = pendingFrogs[i];
-                if (frog.delay > LaunchTell && frog.delay - delta <= LaunchTell) LaunchRipple(frog.x, PrototypeArt.Paper);
+                if (frog.delay > LaunchTell && frog.delay - delta <= LaunchTell)
+                {
+                    LaunchRipple(frog.x, FrogRipple(frog.kind)); // the ripple colour names the type before it leaves the river
+                    FrogHint(frog.kind);
+                }
                 frog.delay -= delta;
                 if (frog.delay > 0f) pendingFrogs[i] = frog;
                 else
                 {
-                    SpawnProjectile(ProjectileKind.Frog, frog.x, frog.speed, frog.drift);
+                    SpawnProjectile(ProjectileKind.Frog, frog.x, frog.speed, frog.drift, frog.kind, frog.pair);
                     pendingFrogs.RemoveAt(i);
                 }
             }
@@ -395,8 +436,31 @@ namespace Bushido
                 if (item.kind == ProjectileKind.Frog)
                 {
                     // Leap out of the river with a small overshoot instead of appearing at full size.
+                    if (IsTrail && item.velocity.y <= FestivalScore.ApexSpeed &&
+                        item.velocity.y + 5.2f * flightDelta > FestivalScore.ApexSpeed)
+                        ShockRingBurst(item.root.position + Vector3.back * .35f, Quaternion.identity, .9f, PrototypeArt.Gold);
                     float pop = Mathf.Clamp01(item.age / 0.22f);
-                    item.root.localScale = Vector3.one * (0.6f + 0.4f * pop + Mathf.Sin(pop * Mathf.PI) * 0.18f);
+                    item.root.localScale = Vector3.one * ((0.6f + 0.4f * pop + Mathf.Sin(pop * Mathf.PI) * 0.18f) * item.size);
+                    // The sole stretches on launch, levels at the apex and tips on descent.
+                    float tilt = Mathf.Clamp(item.velocity.y * 3f, -28f, 28f);
+                    float roll = item.spin.z * item.age;
+                    float flutter = Mathf.Sin(item.age * 7f);
+                    if (item.frog == FrogKind.Armoured) roll = flutter * 9f;
+                    else if (item.frog == FrogKind.Linked) roll = flutter * 22f;
+                    else if (item.sandalStyle == 1) roll = 32f * flutter; // Jade rocks from heel to toe.
+                    else if (item.sandalStyle == 2) roll *= 1.8f; // Vermilion cartwheels.
+                    item.root.rotation = Quaternion.Euler(tilt, 12f * flutter, roll);
+                    item.puppet?.Animate(item.age, item.velocity.y, item.orphan > 0f || item.frog == FrogKind.Linked ? .5f : 0f, view.transform.forward);
+                    if (item.thread != null)
+                    {
+                        if (item.partner == null) { Destroy(item.thread.gameObject); item.thread = null; } // one end was cut or escaped: the thread snaps
+                        else
+                        {
+                            item.thread.SetPosition(0, item.root.position + Vector3.back * 0.3f);
+                            item.thread.SetPosition(1, item.partner.root.position + Vector3.back * 0.3f);
+                        }
+                    }
+                    if (item.orphan > 0f && (item.orphan -= delta) <= 0f && item.partner == null) EnrageFrog(item);
                 }
                 else if (item.kind == ProjectileKind.Bomb)
                     item.root.localScale = Vector3.one * (1f + Mathf.Sin(item.age * 16f) * 0.07f);
@@ -406,7 +470,8 @@ namespace Bushido
                 if (item.root.position.y < (dangerous ? 0.65f : -1.8f) && item.velocity.y < 0)
                 {
                     bool blocked = dangerous && TryGuard(item.root.position, 58f);
-                    if (item.kind != ProjectileKind.Bomb && !blocked) misses++;
+                    // A golden frog is pure reward: letting it go is not a miss.
+                    if (item.kind != ProjectileKind.Bomb && !blocked && item.frog != FrogKind.Golden) misses++;
                     RemoveProjectile(i);
                     if (dangerous && !blocked) Hurt();
                     if (blocked && guardHeldTime <= DeflectWindow)
@@ -418,6 +483,17 @@ namespace Bushido
                 }
             }
         }
+
+        // Sendero tuning: node 1 is the base trail; node 3 (second trail) is harder. Boss nodes ignore these.
+        const float TrailIntervalFrom = 2.05f, TrailIntervalTo = 1.55f, HardTrailIntervalFrom = 1.8f, HardTrailIntervalTo = 1.35f;
+        const int TrailFrogs = 4, HardTrailFrogs = 5, TrailBombEvery = 4, HardTrailBombEvery = 3;
+        bool HardTrail => mission == 2 || mission == 3;
+        // Special frogs. Waves are 1-based; node 3 brings every type HardTrailEarlier waves sooner and allows two specials a wave.
+        const int ArmouredFromWave = 4, GoldenFromWave = 5, LinkedFromWave = 7, BossLinkedFromWave = 3, HardTrailEarlier = 2;
+        const int TrailSpecials = 1, HardTrailSpecials = 2;
+        const float GoldenChance = 1f / 6f, GoldenSize = 0.7f, GoldenSpeed = 7.6f, GoldenDrift = 3.4f, GoldenJudgmentGain = 1f / 3f;
+        const float ArmouredSize = 1.15f, ArmourJuggleRise = 2.6f;
+        const float LinkedStrokeWindow = 0.3f, LinkedHopBoost = 7f, LinkedHopDrift = 1.5f, LinkedPairGain = 2f * JudgmentSliceGain;
 
         void SpawnWave()
         {
@@ -432,7 +508,9 @@ namespace Bushido
             // Opens with the plain volley, then mixes the rest so two waves never read alike.
             int pattern = PatternOrder[sequence % PatternOrder.Length];
             float direction = sequence % 2 == 0 ? 1f : -1f;
-            int count = abundanceTime > 0 ? 6 : 4;
+            int count = (HardTrail ? HardTrailFrogs : TrailFrogs) + (abundanceTime > 0 ? 2 : 0);
+            bool splitBanks = mission == 2 && wave % HardTrailBombEvery == 1 && jutsuTime <= 0;
+            int firstFrog = pendingFrogs.Count;
             for (int i = 0; i < count; i++)
             {
                 float lane = i / (float)(count - 1) * 2f - 1f;
@@ -484,17 +562,84 @@ namespace Bushido
                         drift = -direction * 0.35f;
                         break;
                 }
-                pendingFrogs.Add((WaveLeadTime + delay, x, speed, drift));
+                if (splitBanks)
+                {
+                    // Two compact groups flank the bomb. Lift the blade and start a second stroke.
+                    float bank = i < count / 2 ? -1f : 1f;
+                    int slot = i < count / 2 ? i : i - count / 2;
+                    x = bank * (2.25f + slot * .9f);
+                    speed = 8.8f + slot * .22f;
+                    drift = bank * .12f;
+                    delay = bank == direction ? .16f : 0f;
+                }
+                pendingFrogs.Add((WaveLeadTime + delay, x, speed, drift, FrogKind.Common, 0));
             }
-            if (jutsuTime <= 0 && (wave % 4 == 1 || SecondPhase))
+            AssignSpecials(firstFrog, count, wave);
+            if (jutsuTime <= 0 && (wave % (HardTrail ? HardTrailBombEvery : TrailBombEvery) == 1 || SecondPhase))
             {
-                pendingBombX = direction > 0 ? 5.2f : -5.2f;
-                pendingBombDelay = WaveLeadTime + 0.95f;
+                // The warning ripple appears in the same lane as the bomb.
+                pendingBombX = splitBanks ? 0f : direction * 5.2f;
+                pendingBombDelay = WaveLeadTime + (splitBanks ? .08f : .95f);
             }
             if (wave % 4 == 3 && jutsuTime <= 0 && jutsuSeal == null) ShowJutsuSeal();
         }
 
-        void SpawnProjectile(ProjectileKind kind, float x, float speed, float drift = 0f)
+        // Special frogs replace members of the wave just queued (pendingFrogs[first..first+count)); the 8 patterns are untouched.
+        void AssignSpecials(int first, int count, int wave)
+        {
+            int number = wave + 1, early = HardTrail ? HardTrailEarlier : 0;
+            int armoured = ArmouredFromWave - early, golden = GoldenFromWave - early, linked = (IsBoss ? BossLinkedFromWave : LinkedFromWave) - early;
+            var kinds = new List<FrogKind>();
+            // Priority order, cut to the per-wave cap. A type's first wave excludes the others, so each is taught alone before mixing.
+            if (!IsBoss && number >= golden && number != armoured && number != linked && UnityEngine.Random.value < GoldenChance) kinds.Add(FrogKind.Golden);
+            if (number >= linked && (number - linked) % 2 == 0) kinds.Add(FrogKind.Linked);
+            if (!IsBoss && number >= armoured && number != linked) kinds.Add(FrogKind.Armoured);
+            int cap = HardTrail ? HardTrailSpecials : TrailSpecials;
+            if (kinds.Count > cap) kinds.RemoveRange(cap, kinds.Count - cap);
+            var taken = new bool[count];
+            foreach (FrogKind kind in kinds)
+            {
+                int need = kind == FrogKind.Linked ? 2 : 1;
+                int start = kind == FrogKind.Armoured ? count / 2 : kind == FrogKind.Golden ? wave * 3 % count : wave % 2 == 0 ? 0 : count - 2;
+                for (int tries = 0; tries < count; tries++)
+                {
+                    int i = (start + tries) % count;
+                    if (i + need > count || taken[i] || (need == 2 && taken[i + 1])) continue;
+                    var frog = pendingFrogs[first + i];
+                    frog.kind = kind;
+                    if (kind == FrogKind.Golden)
+                    {
+                        // Flatter and faster: it streaks low across the whole river instead of arcing up.
+                        float side = wave % 2 == 0 ? -1f : 1f;
+                        frog.x = side * 4.7f; frog.drift = -side * GoldenDrift; frog.speed = GoldenSpeed;
+                    }
+                    pendingFrogs[first + i] = frog;
+                    taken[i] = true;
+                    if (kind == FrogKind.Linked)
+                    {
+                        // Both ends leave together so the thread is visible from the first frame.
+                        var mate = pendingFrogs[first + i + 1];
+                        frog.pair = mate.pair = ++linkSerial;
+                        mate.kind = kind; mate.delay = frog.delay; mate.speed = frog.speed;
+                        pendingFrogs[first + i] = frog; pendingFrogs[first + i + 1] = mate;
+                        taken[i + 1] = true;
+                    }
+                    break;
+                }
+            }
+        }
+
+        static Color FrogRipple(FrogKind kind) => kind == FrogKind.Armoured ? PrototypeArt.Red : kind == FrogKind.Golden ? PrototypeArt.Gold
+            : kind == FrogKind.Linked ? JutsuInk : PrototypeArt.Paper;
+
+        void FrogHint(FrogKind kind)
+        {
+            if (kind == FrogKind.Common || !frogHints.Add(kind)) return;
+            Tell(kind == FrogKind.Armoured ? "Chancla acorazada: dos tajos" : kind == FrogKind.Linked ? "Chanclas enlazadas: córtalas de un solo tajo"
+                : "Chancla dorada: restaura una vida y no cuenta si escapa", 3.5f);
+        }
+
+        void SpawnProjectile(ProjectileKind kind, float x, float speed, float drift = 0f, FrogKind frog = FrogKind.Common, int pair = 0)
         {
             var root = new GameObject(kind.ToString()).transform;
             root.SetParent(world);
@@ -522,11 +667,24 @@ namespace Bushido
             if (kind == ProjectileKind.Frog)
             {
                 float turn = x < 0 ? 1f : -1f;
-                spin = new Vector3(24f, 80f * turn, 38f * turn);
+                // Specials only roll flat to the camera, so their paper props never turn edge-on.
+                spin = frog == FrogKind.Common ? new Vector3(0, 0, 116f * turn) : new Vector3(0, 0, (frog == FrogKind.Golden ? 90f : 38f) * turn);
             }
             else if (kind == ProjectileKind.Bomb) spin = Vector3.forward * 30f;
-            projectiles.Add(new Projectile { root = root, kind = kind, velocity = new Vector3(drift, speed, 0),
-                spin = spin, radius = kind == ProjectileKind.Frog ? 1.1f : 0.6f });
+            var spawned = new Projectile { root = root, kind = kind, velocity = new Vector3(drift, speed, 0),
+                spin = spin, radius = kind == ProjectileKind.Frog ? 1.1f : 0.6f, frog = frog, pair = pair };
+            spawned.puppet = root.GetComponentInChildren<SandalPuppet>();
+            projectiles.Add(spawned);
+            if (frog != FrogKind.Common) DecorateFrog(spawned);
+            else if (kind == ProjectileKind.Frog)
+            {
+                spawned.sandalStyle = commonSandalCount++ % 3;
+                if (spawned.sandalStyle != 0)
+                {
+                    spawned.tints = new List<Material>();
+                    TintFrog(spawned, root.GetChild(0), spawned.sandalStyle == 1 ? PrototypeArt.Jade : PrototypeArt.Red, .48f);
+                }
+            }
             // River splash on launch; capped like the cut sparks so effects never pile up.
             int drops = Mathf.Min(3, Mathf.Max(0, 48 - cutEffects.Count));
             for (int i = 0; i < drops; i++)
@@ -587,7 +745,8 @@ namespace Bushido
                 bossSealDrawing.Clear();
                 bossSealDrawing.Add(PointerWorld(pointer));
                 strokeHits = 0;
-                strokeWhooshPlayed = false;
+                strokeSerial++; // identifies this stroke for linked pairs and armour tears
+                strokeWhooshPlayed = strokeHasSwing = false;
                 validStroke = (DuelActive && pointer.y > Screen.height*.10f && pointer.y < Screen.height*.88f) || bossFinalStage == 1 || (pointer.y > Screen.height * 0.12f && pointer.y < Screen.height * 0.81f);
                 ResetSealTrace();
                 if (validStroke && !DuelActive && !vulnerable && bossFinalStage == 0) TraceJutsu(PointerWorld(pointer), PointerWorld(pointer));
@@ -601,7 +760,16 @@ namespace Bushido
                 AddTrail(a, b);
                 if(DuelActive && duelDrawing.Count<512)duelDrawing.Add(b);
                 if (vulnerable && bossSealDrawing.Count < 512) bossSealDrawing.Add(b);
-                if (!vulnerable && !BossGesture(a, b) && !TraceJutsu(a, b)) SliceProjectiles(a, b);
+                if (!vulnerable && !BossGesture(a, b) && !TraceJutsu(a, b))
+                {
+                    SliceProjectiles(a, b);
+                    if (!strokeHasSwing && !DuelActive && !guarding && mode == Mode.Battle &&
+                        (pointer - strokeStart).sqrMagnitude > Screen.height * Screen.height * .0004f)
+                    {
+                        if (strokeHits == 0) FighterCut(b - PointerWorld(strokeStart));
+                        strokeHasSwing = true;
+                    }
+                }
             }
             if (!pressed && wasPressed && validStroke && mode == Mode.Battle)
             {
@@ -630,13 +798,17 @@ namespace Bushido
             return Vector3.Distance(point, a + segment * Mathf.Clamp01(fraction));
         }
 
-        void SliceProjectiles(Vector3 a, Vector3 b)
+        // judgment: a slash line of the Destierro technique. Same cut and reward as a swipe, but it never sets off bombs,
+        // never lands heavy attacks and gives no judgment charge (the technique must not feed itself).
+        void SliceProjectiles(Vector3 a, Vector3 b, bool judgment = false)
         {
+            if (LanternDuel && !judgment) LanternCut(a, b);
             // Resolve bombs first so a guard break cannot erase a bomb touched by the same slash.
-            for (int i = projectiles.Count - 1; i >= 0; i--)
+            for (int i = projectiles.Count - 1; i >= 0 && !judgment; i--)
             {
                 Projectile item = projectiles[i];
                 if (item.kind != ProjectileKind.Bomb || SegmentDistance(item.root.position, a, b) > item.radius) continue;
+                if (IsTrail) arcade.HitBomb(strokeSerial);
                 bool blocked = TryGuard(item.root.position, 38f);
                 RemoveProjectile(i);
                 if (!blocked) Hurt();
@@ -647,18 +819,57 @@ namespace Bushido
                 Projectile item = projectiles[i];
                 if (item.kind == ProjectileKind.Bomb || SegmentDistance(item.root.position, a, b) > item.radius) continue;
                 if (item.kind == ProjectileKind.Heavy &&
-                    (item.age < 0.7f || item.age > 1.8f || Vector2.Dot(((Vector2)(b - a)).normalized, cutDirections[0]) < 0.7f)) continue;
-                if (item.kind == ProjectileKind.Frog && !CutFrog(item, a, b)) continue;
+                    (judgment || item.age < 0.7f || item.age > 1.8f || Vector2.Dot(((Vector2)(b - a)).normalized, cutDirections[0]) < 0.7f)) continue;
+                if (item.kind == ProjectileKind.Frog)
+                {
+                    if (item.tornStroke == strokeSerial) continue; // one stroke tears the armour, the next one purifies
+                    if (item.armour != null) { TearArmour(item, a, b); continue; }
+                    if (!CutFrog(item, a, b)) continue;
+                }
                 Vector3 position = item.root.position;
                 int strength = item.kind == ProjectileKind.Heavy ? 3 : 1;
+                // Cutting one end of a pair: the partner remembers the stroke (bonus if it falls to the same stroke, else it panics).
+                bool pairBroken = item.linkStroke == strokeSerial;
+                if (item.partner != null) { item.partner.linkStroke = strokeSerial; item.partner.orphan = LinkedStrokeWindow; }
                 RemoveProjectile(i);
                 int previousStyle = StyleLevel;
                 RewardCut(position);
+                if (item.kind == ProjectileKind.Frog)
+                {
+                    if (!judgment) JudgmentGain(item.frog == FrogKind.Golden ? GoldenJudgmentGain : JudgmentSliceGain);
+                    if (item.frog == FrogKind.Golden) GoldenReward(position);
+                    if (pairBroken)
+                    {
+                        if (!judgment) JudgmentGain(LinkedPairGain);
+                        ShockRingBurst(position, Quaternion.identity, 1.6f, JutsuInk);
+                        Tell("LAZO ROTO", 1.5f);
+                    }
+                }
+                if (item.kind == ProjectileKind.Wisp && !judgment) JudgmentGain(JudgmentSliceGain);
                 strokeHits++;
+                // Clean stroke: every frog past the second in one stroke pays extra.
+                if (item.kind == ProjectileKind.Frog && strokeHits >= 3)
+                {
+                    if (!judgment) JudgmentGain(JudgmentSliceGain);
+                    Tell("TAJO LIMPIO ×" + strokeHits, 1.5f);
+                }
+                if (IsTrail && item.kind == ProjectileKind.Frog && !judgment)
+                {
+                    bool apex = Mathf.Abs(item.velocity.y) <= FestivalScore.ApexSpeed;
+                    bool wasRushing = arcade.RushLeft > 0;
+                    arcade.Cut(strokeSerial, battleTime, apex);
+                    if (!wasRushing && arcade.RushLeft > 0)
+                    {
+                        nextRushVolley = 0;
+                        Tell("FRENESÍ   ×2", 1.4f);
+                    }
+                    else if (apex && strokeHits < 3 && !pairBroken && item.frog != FrogKind.Golden)
+                        Tell("CORTE EN LA CIMA", .8f);
+                }
                 FighterCut(b - a, StyleLevel > previousStyle);
                 // Frogs sustain style; interrupting the yokai opens the sealing window.
             }
-            if (IsBoss && guard >= guardLimit) OpenCounter();
+            if (!judgment && IsBoss && guard >= guardLimit) OpenCounter();
         }
 
         void OpenCounter()
@@ -668,8 +879,7 @@ namespace Bushido
             theaterState = 2;
             theaterTime = 0;
             theaterStrike = true;
-            foreach (Projectile item in projectiles) Destroy(item.root.gameObject);
-            projectiles.Clear();
+            ClearProjectiles();
             pendingFrogs.Clear();
             pendingBombDelay = -1f;
             ClearJutsuSeal();
@@ -699,6 +909,8 @@ namespace Bushido
 
         void Hurt()
         {
+            if (IsBoss && DuelActive) BossSay(VoiceUmbrella, BossPick(UmbrellaTaunt), 2f);
+            else if (LanternDuel && litTwin >= 0) BossSay(litTwin, BossPick(LanternTaunt), 2f);
             lives--;
             wounds++;
             combo = 0;
@@ -709,26 +921,45 @@ namespace Bushido
             if (lives <= 0) Finish(false);
         }
 
+        void ClearProjectiles()
+        {
+            for (int i = projectiles.Count - 1; i >= 0; i--) RemoveProjectile(i);
+        }
+
         void RemoveProjectile(int index)
         {
-            Destroy(projectiles[index].root.gameObject);
+            Projectile item = projectiles[index];
+            if (item.partner != null) item.partner.partner = null;
+            // The halves of a cut frog still wear its tinted materials for a moment.
+            if (item.tints != null) foreach (Material tint in item.tints) Destroy(tint, 2f);
+            Destroy(item.root.gameObject);
             projectiles.RemoveAt(index);
         }
 
         void Finish(bool victory)
         {
             CancelActiveGesture();duelContactPending=false;
-            mode = Mode.Transition;
+            mode = Mode.Result;
             if (battleMusic != null) battleMusic.Stop();
+            if (IsTrail) progress.bestScores[mission] = Math.Max(progress.bestScores[mission], arcade.Points);
+            if (mission == 2 && arcade.Points < FestivalScore.Target) victory = false;
             won = victory;
+            companionMood = victory ? CompanionMood.Victory : CompanionMood.Disappointed;
+            companionReactionTime = 1;
+            companionReactionAge = 0;
+            guarding = false;
+            fighterSwing = 0;
+            // The ink execution hides all stage renderers. Return the actor for the result bow.
+            if (bossInkBurst && fighter != null)
+                foreach (var renderer in fighter.GetComponentsInChildren<Renderer>()) renderer.enabled = true;
             resultRank = victory ? CampaignProgress.Grade(hits, misses, wounds) : Rank.None;
+            if (mission == 2 && victory && resultRank < Rank.B) resultRank = Rank.B;
             int oldUnlocked = progress.unlockedThrough;
             progress.Record(mission, resultRank, victory);
             unlockedNew = progress.unlockedThrough > oldUnlocked;
             Save();
             validStroke = false;
             if (slash != null) slash.enabled = false;
-            StartCoroutine(RevealMap());
         }
 
         void Tell(string message, float seconds) { notice = message; noticeTime = seconds; }
@@ -769,6 +1000,9 @@ namespace Bushido
         void OnDestroy()
         {
             DisposeSwingLayers();
+            DisposeJudgmentCut();
+            DisposeSamuraiTrail();
+            DisposeEnergyBursts();
             Shader.SetGlobalFloat("_BossFinalInk", 0);
             art?.Dispose();
             ClearTitleAssets();

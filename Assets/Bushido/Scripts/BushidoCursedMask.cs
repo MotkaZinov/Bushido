@@ -10,7 +10,7 @@ namespace Bushido
         void BeginCursedMask()
         {
             cursedMask=null;maskAge=0;
-            if(!IsBoss)return;
+            if(!IsBoss || mission == 4)return;
             ritualAltar=null;
             var atlas=Resources.Load<Texture2D>("UI/Seals/OniMaskSprites");
             if(atlas==null){Debug.LogWarning("Faltan los sprites de la máscara.");return;}
@@ -37,7 +37,7 @@ namespace Bushido
             }
             bool visible=opponent!=null&&opponent.gameObject.activeInHierarchy&&bossFinalStage<2;
             cursedMask.gameObject.SetActive(visible);
-            Vector3 anchor=CablePoint(.5f)+Vector3.down*1.15f;
+            Vector3 anchor=RopePoint(.5f)+Vector3.down*1.15f;   // the mask hangs from the rope's real, sagging middle
             float struggle=1-landedBossSeals/3f;
             cursedMask.position=anchor+new Vector3(0,Mathf.Sin(maskAge*1.8f)*.07f,0)*struggle;
             cursedMask.rotation=Quaternion.Euler(0,0,Mathf.Sin(maskAge*1.3f)*3*struggle);

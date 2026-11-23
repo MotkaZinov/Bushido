@@ -101,8 +101,6 @@ namespace Bushido
             GUI.Label(new Rect(10, 194, 240, 25), styleNames[level], inkCaptionStyle);
             GUI.EndGroup();
             DrawComboFuse(accent);
-            DrawIllustratedCompanion();
-            Bar(new Rect(1060, 662, 120, 4), stamina / MaxStamina, guarding ? PrototypeArt.Gold : PrototypeArt.Jade);
         }
 
         Texture2D rankStain;
@@ -231,20 +229,9 @@ namespace Bushido
             float warning = fraction > 0 && fraction < 0.3f ? 1 - fraction / 0.3f : 0;
             float beat = 0.5f + 0.5f * Mathf.Sin(battleTime * (12 + warning * 14));
             Color pigment = Color.Lerp(accent, PrototypeArt.Red, warning * (0.45f + beat * 0.4f));
-            // Uneven brush silhouette and visible spent paper make remaining time readable.
-            for (int i = 0; i < 32; i++)
-            {
-                float offset = Mathf.Sin(i * 2.3f) * 1.4f;
-                float height = 7 + Mathf.Sin(i * 1.7f) * 2;
-                Rect segment = new Rect(x + i * width / 32, y + offset, width / 32 + 0.5f, height);
-                Panel(new Rect(segment.x - 1, segment.y - 2, segment.width + 2, segment.height + 4), new Color(0.16f, 0.18f, 0.13f, 0.7f));
-                Panel(segment, new Color(0.77f, 0.70f, 0.53f, 0.8f));
-                float filled = Mathf.Clamp01(fraction * 32 - i);
-                if (filled > 0)
-                    Panel(new Rect(segment.x, segment.y, segment.width * filled, segment.height), pigment);
-            }
+            Bar(BarFuse, new Rect(x, y, width, 11), fraction, pigment);
             if (fraction <= 0) return;
-            Vector2 tip = new Vector2(x + width * fraction, y + 4);
+            Vector2 tip = new Vector2(x + width * fraction, y + 5.5f);
             float glow = 3 + comboPulse * 5 + warning * beat * 2;
             Matrix4x4 saved = GUI.matrix;
             GUIUtility.RotateAroundPivot(45, tip);
@@ -259,6 +246,310 @@ namespace Bushido
                 Panel(new Rect(tip.x + drift * phase, tip.y - 5 - phase * (12 + comboPulse * 13), size, size),
                     new Color(pigment.r, pigment.g, pigment.b, (1 - phase) * 0.8f));
             }
+        }
+
+        // ---------------- Brush-and-paper HUD ----------------
+        struct HudBar { public bool seen; public float last, ghostHi, ghostT, pulse; }
+        readonly HudBar[] hudBars = new HudBar[9];
+        const int BarBoss = 0, BarPosture = 1, BarTime = 2, BarStamina = 3, BarJutsu = 4, BarAccuracy = 5, BarFuse = 6;
+        GUIStyle hudCap, hudNum, hudBanner, hudKey;
+        int hudHits = -1, hudMisses = -1;
+        float hudHitPop, hudMissPop, hudSplat, hudClock, ensoLast, ensoPulse, ensoFull;
+        string noticeSeen = "";
+        float noticeStart, noticeLast;
+        bool noticeStamp;
+        Vector2 noticeSize;
+
+        static Color Ink(float alpha) => new Color(PrototypeArt.Ink.r, PrototypeArt.Ink.g, PrototypeArt.Ink.b, alpha);
+
+        // Uniform scale inside the safe area, pinned to a corner (ax, ay in 0..1) so HUD groups keep their shape on any aspect.
+        void Anchor(float ax, float ay)
+        {
+            Rect safe = Screen.safeArea;
+            float s = Mathf.Min(safe.width / 1280f, safe.height / 720f);
+            GUI.matrix = Matrix4x4.TRS(new Vector3(safe.x + (safe.width - 1280f * s) * ax,
+                Screen.height - safe.yMax + (safe.height - 720f * s) * ay, 0), Quaternion.identity, new Vector3(s, s, 1));
+        }
+
+        void PrepareHudStyles()
+        {
+            hudCap = new GUIStyle(titleLogoStyle) { fontSize = 13, wordWrap = false, alignment = TextAnchor.MiddleLeft };
+            hudCap.normal.textColor = PrototypeArt.Ink;
+            hudNum = new GUIStyle(hudCap) { fontSize = 30 };
+            hudBanner = new GUIStyle(hudCap) { fontSize = 26, alignment = TextAnchor.MiddleCenter };
+            hudBanner.normal.textColor = PrototypeArt.Paper;
+            hudKey = new GUIStyle(hudCap) { fontSize = 15, alignment = TextAnchor.MiddleCenter };
+        }
+
+        void ResetHud() { System.Array.Clear(hudBars, 0, hudBars.Length); hudHits = hudMisses = -1; hudHitPop = hudMissPop = hudSplat = 0; ensoLast = 0; }
+
+        // One brush stroke from a to b. Only the part u0..u1 is shown; the rest of the stroke stays implied.
+        void Stroke(Vector2 a, Vector2 b, float thick, Color color, bool dry = false, float u0 = 0f, float u1 = 1f)
+        {
+            if (u1 <= u0) return;
+            Matrix4x4 m = GUI.matrix; Color c = GUI.color;
+            float length = Vector2.Distance(a, b);
+            GUI.matrix = m * Matrix4x4.TRS(a, Quaternion.Euler(0, 0, Mathf.Atan2(b.y - a.y, b.x - a.x) * Mathf.Rad2Deg), Vector3.one);
+            GUI.color = c * color;
+            GUI.DrawTextureWithTexCoords(new Rect(length * u0, -thick * .5f, length * (u1 - u0), thick), PrototypeArt.Brush(dry), new Rect(u0, 0, u1 - u0, 1));
+            GUI.matrix = m; GUI.color = c;
+        }
+
+        // GUIUtility.*AroundPivot reads its pivot in screen space and ignores GUI.matrix, so anchored groups would drift; this works in local space.
+        void Pivot(Vector2 p, float degrees, float scale = 1f) =>
+            GUI.matrix *= Matrix4x4.TRS(p, Quaternion.Euler(0, 0, degrees), new Vector3(scale, scale, 1)) * Matrix4x4.TRS(-p, Quaternion.identity, Vector3.one);
+
+        void Blot(Vector2 center, Vector2 size, Color color, float rotation = 0f, Texture2D texture = null)
+        {
+            Matrix4x4 m = GUI.matrix; Color c = GUI.color;
+            Pivot(center, rotation);
+            GUI.color = c * color;
+            GUI.DrawTexture(new Rect(center.x - size.x * .5f, center.y - size.y * .5f, size.x, size.y), texture != null ? texture : PrototypeArt.InkBlob);
+            GUI.matrix = m; GUI.color = c;
+        }
+
+        void Grain(Rect r, float alpha)
+        {
+            Color c = GUI.color;
+            GUI.color = new Color(1, 1, 1, c.a * alpha);
+            GUI.DrawTextureWithTexCoords(r, PrototypeArt.PaperGrain, new Rect(0, 0, r.width / 128f, r.height / 128f));
+            GUI.color = c;
+        }
+
+        // Four hand-drawn lines that overshoot at the corners, like a box drawn in one brush each.
+        void BrushBorder(Rect r, float thick, Color color)
+        {
+            Stroke(new Vector2(r.x - 3, r.y), new Vector2(r.xMax + 3, r.y), thick, color);
+            Stroke(new Vector2(r.xMax, r.y - 3), new Vector2(r.xMax, r.yMax + 3), thick, color, true);
+            Stroke(new Vector2(r.xMax + 3, r.yMax), new Vector2(r.x - 3, r.yMax), thick, color);
+            Stroke(new Vector2(r.x, r.yMax + 3), new Vector2(r.x, r.y - 3), thick, color, true);
+        }
+
+        void PaperCard(Rect r)
+        {
+            Panel(new Rect(r.x + 5, r.y + 6, r.width, r.height), Ink(.25f)); // guide: displaced paper shadow, ink at 25%
+            Panel(r, PrototypeArt.Paper);
+            Grain(r, .55f);
+            BrushBorder(r, 5f, PrototypeArt.Ink);
+        }
+
+        // Brush-stroke bar: wet ink blot at the tip pulses when the value moves; what was lost lingers lighter for 0.4 s.
+        void Bar(int slot, Rect rect, float fraction, Color color)
+        {
+            fraction = Mathf.Clamp01(fraction);
+            ref HudBar s = ref hudBars[slot];
+            if (!s.seen) { s.seen = true; s.last = fraction; }
+            if (Event.current.type == EventType.Repaint)
+            {
+                float dt = Mathf.Min(Time.unscaledDeltaTime, .05f);
+                if (s.last - fraction > .004f) { s.ghostHi = s.ghostT > 0 ? Mathf.Max(s.ghostHi, s.last) : s.last; s.ghostT = .4f; }
+                if (Mathf.Abs(fraction - s.last) > .004f) s.pulse = .35f;
+                s.last = fraction; s.ghostT -= dt; s.pulse -= dt;
+            }
+            Vector2 a = new Vector2(rect.x, rect.center.y), b = new Vector2(rect.xMax, rect.center.y);
+            float thick = rect.height * 1.35f; // the texture's ragged edges eat into its height
+            Stroke(a, b, thick, Ink(.32f), true);
+            if (s.ghostT > 0 && s.ghostHi > fraction)
+                Stroke(a, b, thick, new Color(color.r, color.g, color.b, .45f * s.ghostT / .4f), false, fraction, s.ghostHi);
+            Stroke(a, b, thick, color, false, 0f, fraction);
+            if (fraction > .02f)
+                Blot(new Vector2(rect.x + rect.width * fraction - 1, a.y), Vector2.one * (rect.height * 1.05f + Mathf.Max(0, s.pulse) * 16f),
+                    Color.Lerp(color, PrototypeArt.Ink, .35f), fraction * 400f);
+        }
+
+        void Caption(Rect r, string text, Color color, TextAnchor anchor = TextAnchor.MiddleLeft)
+        {
+            hudCap.alignment = anchor; hudCap.normal.textColor = color;
+            GUI.Label(r, text, hudCap);
+        }
+
+        void DrawFrogMark(Vector2 c, Color ink)
+        {
+            Blot(c + new Vector2(0, 3), new Vector2(23, 15), ink);
+            for (int side = -1; side <= 1; side += 2)
+            {
+                Blot(c + new Vector2(side * 7, -4), Vector2.one * 9, ink);
+                Blot(c + new Vector2(side * 7, -4), Vector2.one * 3, PrototypeArt.Paper);
+            }
+        }
+
+        void DrawCount(Rect r, int value, float pop, Color color)
+        {
+            Matrix4x4 m = GUI.matrix;
+            Pivot(new Vector2(r.x + 14, r.center.y), 0, 1f + .25f * Mathf.Clamp01(pop / .2f)); // pops 1.25 -> 1 in 0.2 s
+            hudNum.normal.textColor = color;
+            GUI.Label(r, value.ToString(), hudNum);
+            GUI.matrix = m;
+        }
+
+        void HangingTag(Rect tag)
+        {
+            Vector2 apex = new Vector2(640, -30);
+            Pivot(apex, Mathf.Sin(Time.unscaledTime * 1.3f) * .6f); // the tag sways on its cord
+            Stroke(apex, new Vector2(tag.x + 46, tag.y + 12), 4, PrototypeArt.Ink);
+            Stroke(apex, new Vector2(tag.xMax - 46, tag.y + 12), 4, PrototypeArt.Ink);
+            PaperCard(tag);
+            Blot(new Vector2(tag.x + 46, tag.y + 12), Vector2.one * 11, PrototypeArt.Ink);
+            Blot(new Vector2(tag.xMax - 46, tag.y + 12), Vector2.one * 11, PrototypeArt.Ink);
+        }
+
+        // Hanging tag, top centre: time, accuracy against the rank-B notch, and the two counters.
+        void DrawSenderoTag()
+        {
+            int total = hits + misses;
+            float accuracy = total > 0 ? (float)hits / total : 1f;
+            bool below = total > 0 && accuracy < CampaignProgress.RankBAccuracy;
+            if (Event.current.type == EventType.Repaint)
+            {
+                float dt = Mathf.Min(Time.unscaledDeltaTime, .05f);
+                if (hits < hudHits || misses < hudMisses) hudHits = hudMisses = -1; // a new battle
+                if (hudHits >= 0 && hits != hudHits) hudHitPop = .2f;
+                if (hudMisses >= 0 && misses != hudMisses) { hudMissPop = .2f; if (misses > hudMisses) hudSplat = .6f; }
+                hudHits = hits; hudMisses = misses;
+                hudHitPop -= dt; hudMissPop -= dt; hudSplat -= dt;
+            }
+            Rect tag = new Rect(430, 10, 420, 124);
+            Matrix4x4 m = GUI.matrix;
+            HangingTag(tag);
+            float barX = tag.x + 108, barW = tag.width - 108 - 22;
+            Caption(new Rect(tag.x + 20, tag.y + 12, 84, 22), "Tiempo", PrototypeArt.Ink);
+            Bar(BarTime, new Rect(barX, tag.y + 16, barW, 13), 1 - battleTime / 35f, PrototypeArt.Ink);
+            if (mission == 2)
+            {
+                Caption(new Rect(tag.x + 20, tag.y + 34, 84, 22), "Meta", PrototypeArt.Ink);
+                Bar(BarAccuracy, new Rect(barX, tag.y + 38, barW, 13), Mathf.Clamp01(arcade.Points / (float)FestivalScore.Target), PrototypeArt.Gold);
+            }
+            else
+            {
+                Caption(new Rect(tag.x + 20, tag.y + 34, 84, 22), "Puntería", PrototypeArt.Ink);
+                Bar(BarAccuracy, new Rect(barX, tag.y + 38, barW, 13), accuracy, below ? PrototypeArt.Red : PrototypeArt.Gold);
+                float notch = barX + barW * CampaignProgress.RankBAccuracy;
+                Stroke(new Vector2(notch, tag.y + 33), new Vector2(notch, tag.y + 56), 5, PrototypeArt.Ink, true);
+                Caption(new Rect(notch - 10, tag.y + 54, 20, 13), "B", PrototypeArt.Ink, TextAnchor.MiddleCenter);
+            }
+            Caption(new Rect(tag.x + 16, tag.y + 96, 195, 24), mission == 2 ?
+                $"Puntos  {arcade.Points} / {FestivalScore.Target}" : $"Puntos  {arcade.Points}", PrototypeArt.Ink);
+            Caption(new Rect(tag.x + 210, tag.y + 96, 195, 24), arcade.RushLeft > 0 ?
+                $"Frenesí ×2   {Mathf.CeilToInt(arcade.RushLeft)} s" : $"Frenesí   {arcade.Petals} / 3", PrototypeArt.Red);
+            Caption(new Rect(tag.x + 50, tag.y + 69, 100, 22), "Purificadas", PrototypeArt.Ink);
+            DrawCount(new Rect(tag.x + 152, tag.y + 64, 60, 32), hits, hudHitPop, PrototypeArt.Ink);
+            Caption(new Rect(tag.x + 232, tag.y + 69, 100, 22), "Escapadas", PrototypeArt.Red);
+            if (hudSplat > 0) Blot(new Vector2(tag.x + 358, tag.y + 80), Vector2.one * 74, new Color(PrototypeArt.Red.r, PrototypeArt.Red.g, PrototypeArt.Red.b, hudSplat / .6f * .7f), 20, PrototypeArt.InkSplat);
+            DrawCount(new Rect(tag.x + 334, tag.y + 64, 60, 32), misses, hudMissPop, PrototypeArt.Red);
+            GUI.matrix = m;
+        }
+
+        void DrawBossTag()
+        {
+            Rect tag = new Rect(430, 10, 420, 74);
+            Matrix4x4 m = GUI.matrix;
+            HangingTag(tag);
+            float barX = tag.x + 108, barW = tag.width - 108 - 22;
+            Caption(new Rect(tag.x + 20, tag.y + 12, 84, 22), "Jefe", PrototypeArt.Red);
+            Bar(BarBoss, new Rect(barX, tag.y + 16, barW, 13), (float)bossHealth / bossMaxHealth, PrototypeArt.Red);
+            Caption(new Rect(tag.x + 20, tag.y + 38, 84, 22), vulnerable ? "Contra" : "Postura", PrototypeArt.Ink);
+            Bar(BarPosture, new Rect(barX, tag.y + 42, barW, 13), vulnerable ? counterTime / 10f : 1f - (float)guard / guardLimit,
+                Color.Lerp(PrototypeArt.Gold, PrototypeArt.Ink, postureFlash / 0.24f));
+            GUI.matrix = m;
+        }
+
+        // Ensō: ring of brush segments, clockwise from the lower left, thick where the brush lands and thin where it lifts.
+        void DrawEnsoArc(Vector2 c, float radius, float sweep, float thick, Color color, bool dry)
+        {
+            const float Total = 300f, Start = 225f;
+            Texture2D tex = PrototypeArt.Brush(dry);
+            Matrix4x4 m = GUI.matrix; Color gc = GUI.color;
+            int count = Mathf.CeilToInt(sweep / 5f);
+            GUI.color = gc * color;
+            for (int i = 0; i < count; i++)
+            {
+                float deg = Start + Mathf.Min(sweep, (i + .5f) * 5f), f = (deg - Start) / Total;
+                float rad = deg * Mathf.Deg2Rad, h = thick * (1.25f - .7f * f) * (1f + .08f * Mathf.Sin(i * 2.7f));
+                Vector2 p = c + new Vector2(Mathf.Sin(rad), -Mathf.Cos(rad)) * radius;
+                GUI.matrix = m * Matrix4x4.TRS(p, Quaternion.Euler(0, 0, deg), Vector3.one);
+                float u = .2f + (i * 37 % 10) / 10f * .5f, len = radius * .087f * 1.7f;
+                GUI.DrawTextureWithTexCoords(new Rect(-len * .5f, -h * .5f, len, h), tex, new Rect(u, 0, .25f, 1));
+            }
+            GUI.matrix = m; GUI.color = gc;
+        }
+
+        // Judgment ensō (bottom left) doubles as the tap target; stamina is a brush bar beside it.
+        void DrawJudgmentMeter()
+        {
+            if (mode != Mode.Battle) return;
+            bool full = judgmentCharge >= 1f;
+            if (Event.current.type == EventType.Repaint)
+            {
+                float dt = Mathf.Min(Time.unscaledDeltaTime, .05f);
+                if (judgmentCharge > ensoLast + .001f) ensoPulse = .3f;
+                ensoLast = judgmentCharge; ensoPulse -= dt;
+                ensoFull = Mathf.MoveTowards(ensoFull, full ? 1f : 0f, dt * 4f);
+            }
+            const float K = 1.2f; // the signature technique gets a ~130 px disc and a ~105 px ring
+            Vector2 c = new Vector2(84, 636);
+            float time = Time.unscaledTime;
+            Matrix4x4 m = GUI.matrix;
+            Pivot(c, 0, K * (full ? 1f + .04f * Mathf.Sin(time * 5f) : 1f) * (1f + Mathf.Max(0, ensoPulse) / .3f * .09f));
+            Blot(c + new Vector2(4, 5), Vector2.one * 118, Ink(.3f));
+            Blot(c, Vector2.one * 118, PrototypeArt.Ink, 30); // inked rim: the paper disc must read against any backdrop
+            Blot(c, Vector2.one * 111, PrototypeArt.Paper, 30);
+            Blot(c, Vector2.one * 111, new Color(PrototypeArt.Ink.r, PrototypeArt.Ink.g, PrototypeArt.Ink.b, ensoFull), 30);
+            Grain(new Rect(c.x - 44, c.y - 44, 88, 88), .5f * (1f - ensoFull));
+            Color ring = Color.Lerp(PrototypeArt.Ink, JutsuInk, ensoFull);
+            DrawEnsoArc(c, 38, 300f, 10, Ink(.28f * (1f - ensoFull) + .2f * ensoFull), true);
+            float sweep = 300f * Mathf.Clamp01(judgmentCharge);
+            DrawEnsoArc(c, 38, sweep, 11, ring, false);
+            if (sweep > 8f && !full)
+            {
+                float rad = (225f + sweep) * Mathf.Deg2Rad;
+                Blot(c + new Vector2(Mathf.Sin(rad), -Mathf.Cos(rad)) * 38f, Vector2.one * (13f + Mathf.Max(0, ensoPulse) * 24f), PrototypeArt.Gold, sweep * 3f);
+            }
+            hudKey.normal.textColor = Color.Lerp(Ink(.85f), PrototypeArt.Paper, ensoFull);
+            GUI.Label(new Rect(c.x - 40, c.y - 10, 80, 20), "JUICIO", hudKey); // the J key still fires it; the label only names the move
+            GUI.matrix = m;
+            if (full)
+                for (int i = 0; i < 4; i++)
+                {
+                    float phase = Mathf.Repeat(time * .7f + i * .25f, 1f);
+                    Blot(c + new Vector2((i - 1.5f) * 15f + Mathf.Sin(time * 3f + i) * 5f, -48f * K - phase * 46f),
+                        Vector2.one * (15f * (1f - phase * .5f)), new Color(JutsuInk.r, JutsuInk.g, JutsuInk.b, Mathf.Sin(phase * Mathf.PI) * .8f));
+                }
+            Caption(new Rect(168, 628, 130, 20), "Aguante", PrototypeArt.Ink);
+            Bar(BarStamina, new Rect(168, 652, 130, 13), stamina / MaxStamina, guarding ? PrototypeArt.Gold : stamina <= 25 ? PrototypeArt.Red : PrototypeArt.Jade);
+            if (full && !paused && GUI.Button(new Rect(c.x - 67, c.y - 67, 134, 134), GUIContent.none, GUIStyle.none)) judgmentTap = true;
+        }
+
+        // Battle notices (hints and popups) as a brush banner: hints slide in, short all-caps popups stamp down.
+        void DrawNotice()
+        {
+            if (noticeTime <= 0 || string.IsNullOrEmpty(notice)) return;
+            if (notice != noticeSeen || noticeTime > noticeLast + .05f)
+            {
+                noticeSeen = notice; noticeStart = Time.unscaledTime;
+                noticeStamp = notice.Length <= 18 && notice == notice.ToUpperInvariant();
+                hudBanner.fontSize = noticeStamp ? 22 : 20;
+                noticeSize = hudBanner.CalcSize(new GUIContent(notice));
+            }
+            noticeLast = noticeTime;
+            float age = Time.unscaledTime - noticeStart, fade = Mathf.Clamp01(noticeTime / .3f);
+            // Short stamps live in the empty left column, hints in a slim banner above the launch marks: the centre stays clear.
+            float w = noticeSize.x + (noticeStamp ? 66 : 80), h = noticeStamp ? 46 : 40;
+            Vector2 c = noticeStamp ? new Vector2(195, 245) : new Vector2(640, 586);
+            Anchor(noticeStamp ? 0f : .5f, noticeStamp ? 0f : 1f);
+            Matrix4x4 m = GUI.matrix; Color gc = GUI.color;
+            GUI.color = new Color(1, 1, 1, fade);
+            if (noticeStamp)
+            {
+                float k = Mathf.Clamp01(age / .14f);
+                Pivot(c, -4f, Mathf.Lerp(1.8f, 1f, k * k));
+                if (age > .14f) Blot(c, new Vector2(w * 1.15f, h * 2.4f), Ink(Mathf.Clamp01(1f - (age - .14f) / .25f) * .5f), 0, PrototypeArt.InkSplat);
+            }
+            else c.x += -Mathf.Pow(1f - Mathf.Clamp01(age / .25f), 3f) * (w + 400f);
+            Stroke(c + new Vector2(-w * .5f, 3), c + new Vector2(w * .5f, 3), h, Ink(.28f), true);
+            Stroke(c + new Vector2(-w * .5f, 0), c + new Vector2(w * .5f, 0), h, PrototypeArt.Ink);
+            hudBanner.fontSize = noticeStamp ? 22 : 20;
+            GUI.Label(new Rect(c.x - w * .5f, c.y - h * .5f, w, h), notice, hudBanner);
+            GUI.matrix = m; GUI.color = gc;
         }
     }
 }

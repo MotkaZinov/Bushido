@@ -24,7 +24,7 @@ Shader "Bushido/KatanaAura"
     float arc=exp(-pow((r-radius)*32,2))*pow(.5+.5*sin(angle*2-_Age*2.6),3);
     float flare=exp(-abs(p.y)*65-abs(p.x)*5)*.3;
     float edge=1-smoothstep(.72,1,r);
-    float3 energy=float3(.04,.28,.85)*(halo+arc*.55)+float3(.35,.8,1)*(core+flare);
+    float3 energy=float3(.07,.38,.22)*(halo+arc*.55)+float3(.4,.85,.65)*(core+flare);
     return half4(energy*edge*breathing*_Power,0);
    }
    ENDHLSL

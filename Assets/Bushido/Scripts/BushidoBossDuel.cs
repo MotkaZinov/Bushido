@@ -16,12 +16,14 @@ namespace Bushido
         readonly List<Vector3> duelDrawing = new List<Vector3>();
         bool DuelActive => IsBoss && bossFinalStage == 0 && duelPhase != DuelPhase.None;
         float DuelStrikeDelay => DuelSymbol == 3 ? 1.65f : DuelSymbol == 2 ? 1.35f : 1.15f;
-        int DuelSymbol => bossSeals == 0 ? duelBeat % 2 : bossSeals == 1 ? (duelBeat % 2 == 0 ? 0 : 2) : (duelBeat == 3 ? 3 : duelBeat == 1 ? 2 : 0);
+        int DuelSymbol => mission == 4 ? UmbrellaSteps[Mathf.Clamp(bossSeals, 0, 2), duelBeat] : bossSeals == 0 ? duelBeat % 2 : bossSeals == 1 ? (duelBeat % 2 == 0 ? 0 : 2) : (duelBeat == 3 ? 3 : duelBeat == 1 ? 2 : 0);
 
         Vector3[] DuelPattern()
         {
             switch (DuelSymbol)
             {
+                case 4: return new[]{Vector3.left * .5f, Vector3.right * .5f};
+                case 5: return new[]{Vector3.up * .5f, Vector3.down * .5f};
                 case 1: return new[]{new Vector3(-.5f,.5f),new Vector3(.5f,-.5f)};
                 case 2: return new[]{new Vector3(-.5f,.5f),new Vector3(0,-.5f),new Vector3(.5f,.5f)};
                 case 3: return new[]{new Vector3(-.5f,.5f),new Vector3(.5f,.5f),new Vector3(-.5f,-.5f),new Vector3(.5f,-.5f)};
@@ -99,7 +101,7 @@ namespace Bushido
                     ReactBoss(BossReaction.Deflected);
                     impactTime=duelBeat==3?.08f:duelPerfect?.065f:.045f;
                     shakeTime=duelBeat==3?.16f:.09f;combo++;comboTime=3;
-                    duelFeedback=duelPerfect?"DESVÍO PERFECTO":"BLOQUEO";
+                    duelFeedback=duelPerfect?"DESVÍO PERFECTO":"BLOQUEO";if(duelPerfect)JudgmentGain(JudgmentDeflectGain);
                     if(duelBeat==3)PlayPostureSound(true);
                 }
                 else {duelFeedback="GOLPE RECIBIDO";Hurt();}
@@ -203,7 +205,7 @@ namespace Bushido
                 var box=new Rect(center.x-70,center.y-87,140,174);
                 Panel(new Rect(box.x+5,box.y+6,box.width,box.height),new Color(.08f,.1f,.07f,.3f));Panel(box,PrototypeArt.Red);
                 Panel(new Rect(box.x+5,box.y+5,130,164),PrototypeArt.Paper);
-                var pattern=DuelPattern();for(int i=1;i<pattern.Length;i++)DuelGuiLine(center+new Vector2(pattern[i-1].x,-pattern[i-1].y)*82,center+new Vector2(pattern[i].x,-pattern[i].y)*82,duelPrepared?new Color(.23f,.45f,.33f):PrototypeArt.Ink,6);
+                var pattern=DuelPattern();for(int i=1;i<pattern.Length;i++)DuelGuiLine(center+new Vector2(pattern[i-1].x,-pattern[i-1].y)*82,center+new Vector2(pattern[i].x,-pattern[i].y)*82,duelPrepared?PrototypeArt.Jade:PrototypeArt.Ink,6);
                 var start=center+new Vector2(pattern[0].x,-pattern[0].y)*82;Panel(new Rect(start.x-5,start.y-5,10,10),PrototypeArt.Gold);
                 float remaining=1-Mathf.Clamp01(duelClock/DuelStrikeDelay);
                 for(int i=0;i<40*remaining;i++)

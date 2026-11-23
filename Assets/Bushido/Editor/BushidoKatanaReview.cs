@@ -36,11 +36,11 @@ public static class BushidoKatanaReview
         {
             if(stage==0)
             {
-                Time.timeScale=0;Set(game,"mission",2);Call(game,"BeginBattle");Set(game,"paused",false);
+                Time.timeScale=0;Set(game,"mission",4);Call(game,"BeginBattle");Set(game,"paused",false);
                 Set(game,"theaterState",2);Set(game,"paperOpening",1f);Call(game,"UpdatePaperTheater",0f);
                 Call(game,"PlayKatanaParry",Vector3.up);Call(game,"UpdateKatanaProps",.08f);
-                Check(((Transform)Get(game,"counterKatana")).gameObject.activeInHierarchy,"La katana es visible durante el bloqueo del ogro");
-                Capture("ogro-katana-bloqueo");
+                Check(((Transform)Get(game,"counterKatana")).gameObject.activeInHierarchy,"La katana es visible durante el bloqueo de la sombrilla");
+                Capture("sombrilla-katana-bloqueo");
             }
             if(stage==1)
             {
@@ -54,13 +54,13 @@ public static class BushidoKatanaReview
                 var camera=(Camera)Get(game,"view");
                 var ogreSword=(Transform)Get(game,"counterKatana");
                 var ogreSaya=(Transform)Get(game,"drawSaya");
-                Check(!oldSword.gameObject.activeSelf && !oldSaya.gameObject.activeSelf,"La katana y funda de papel se ocultan en el remate del ogro");
-                Check(ogreSword.GetComponent<MeshFilter>().sharedMesh.vertexCount>1000 && ogreSaya.GetComponent<MeshFilter>().sharedMesh.triangles.Length>1000,"El remate del ogro utiliza la katana 3D original y su funda");
-                Check(ogreSword.gameObject.activeInHierarchy && ogreSaya.gameObject.activeInHierarchy,"Katana 3D y funda activas en el remate del ogro");
+                Check(!oldSword.gameObject.activeSelf && !oldSaya.gameObject.activeSelf,"La katana y funda de papel se ocultan en el remate de la sombrilla");
+                Check(ogreSword.GetComponent<MeshFilter>().sharedMesh.vertexCount>1000 && ogreSaya.GetComponent<MeshFilter>().sharedMesh.triangles.Length>1000,"El remate de la sombrilla utiliza la katana 3D original y su funda");
+                Check(ogreSword.gameObject.activeInHierarchy && ogreSaya.gameObject.activeInHierarchy,"Katana 3D y funda activas en el remate de la sombrilla");
                 Vector2 ogreGrip=camera.WorldToScreenPoint((Vector3)Get(game,"drawHiltPosition"));
                 Call(game,"BeginDrawGrip",ogreGrip);
-                Check((bool)Get(game,"drawGripHeld"),"El mango del remate del ogro responde al arrastre");
-                Check(((KatanaSpiritVfx)Get(game,"katanaSpirit")).SmokeStrength>0,"El remate del ogro incluye vapor y energía espiritual");
+                Check((bool)Get(game,"drawGripHeld"),"El mango del remate de la sombrilla responde al arrastre");
+                Check(((KatanaSpiritVfx)Get(game,"katanaSpirit")).SmokeStrength>0,"El remate de la sombrilla incluye vapor y energía espiritual");
                 Set(game,"theaterState",2);Set(game,"paperOpening",1f);Call(game,"UpdatePaperTheater",0f);
                 for(int i=0;i<3;i++)Call(game,"AddSpiritChains",(Transform)Get(game,"opponent"));
                 foreach(var chain in (System.Collections.IList)Get(game,"spiritChains"))chain.GetType().GetField("born").SetValue(chain,Time.time-.8f);
@@ -68,7 +68,7 @@ public static class BushidoKatanaReview
                 var chains=(System.Collections.IList)Get(game,"spiritChains");
                 var layers=(LineRenderer[])chains[0].GetType().GetField("smoke").GetValue(chains[0]);
                 Check(layers.Length==3 && layers[0].widthMultiplier>=.6f,"Las cadenas emiten tres capas de humo más ancho");
-                Capture("ogro-katana-cadenas");
+                Capture("sombrilla-katana-cadenas");
             }
             if(stage==3)
             {

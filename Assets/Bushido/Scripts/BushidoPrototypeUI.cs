@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Bushido
 {
@@ -15,13 +16,13 @@ namespace Bushido
         GUIStyle campaignButtonStyle;
         Texture2D techniqueMedallion;
         Texture2D techniqueEffectIcons;
-        static readonly Color CampaignInk = new Color(0.15f, 0.10f, 0.075f);
-        static readonly Color CampaignRed = new Color(0.48f, 0.16f, 0.105f);
-        static readonly Color CampaignPaper = new Color(0.90f, 0.81f, 0.64f);
+        static readonly Color CampaignInk = PrototypeArt.InkSepia;
+        static readonly Color CampaignRed = PrototypeArt.Red;
+        static readonly Color CampaignPaper = PrototypeArt.Paper;
         Texture2D shojiPanel;
         Texture2D pausePaper;
         GUIStyle pauseHeading;
-        GUIStyle pauseButtonLabel;
+        GUIStyle tagLabel, inkTitleStyle, stampStyle, resultMessageStyle;
         float shojiTime = -1f;
         const float ShojiSlideDuration = 0.43f;
         const float ShojiRevealTime = 0.55f;
@@ -52,6 +53,13 @@ namespace Bushido
             titleButtonStyle.normal.textColor = new Color(1f, 0.89f, 0.68f);
             titleButtonStyle.hover.textColor = titleButtonStyle.active.textColor = Color.white;
             campaignButtonStyle = new GUIStyle(titleButtonStyle) { fontSize = 18, wordWrap = true };
+            PrepareHudStyles();
+            tagLabel = new GUIStyle(titleButtonStyle) { fontSize = 18 };
+            inkTitleStyle = new GUIStyle(titleLogoStyle) { fontSize = 34 };
+            inkTitleStyle.normal.textColor = PrototypeArt.Ink;
+            stampStyle = new GUIStyle(titleLogoStyle) { fontSize = 92 };
+            resultMessageStyle = new GUIStyle(titleLogoStyle) { fontSize = 18, wordWrap = true, alignment = TextAnchor.UpperCenter };
+            resultMessageStyle.normal.textColor = PrototypeArt.Ink;
         }
 
         // Launch cues stay at the lower edge so they cannot be mistaken for targets.
@@ -111,6 +119,7 @@ namespace Bushido
                 DrawMapUI();
             }
             else { DrawBattleUI(); DrawWaveWarnings(); }
+            if (mode != Mode.Result) resultSince = -1f;
             if (mode == Mode.Result) DrawResultUI();
             if (paused) DrawPauseUI();
             if (movingScroll)
@@ -197,19 +206,45 @@ namespace Bushido
             GUI.color = previous;
         }
 
-        bool Button(Rect rect, string label, bool enabled = true)
+        // Every menu button is a paper tag: Paper with ink border, or vermilion with Paper text for the primary action.
+        bool Button(Rect rect, string label, bool enabled = true, bool primary = false)
         {
             bool previous = GUI.enabled;
             GUI.enabled = enabled && shojiTime < 0f;
-            bool clicked = GUI.Button(rect, label, buttonStyle);
+            bool hover = GUI.enabled && rect.Contains(Event.current.mousePosition);
+            bool down = hover && Mouse.current != null && Mouse.current.leftButton.isPressed;
+            DrawPaperTag(rect, label, primary, hover, down);
+            bool clicked = GUI.Button(rect, GUIContent.none, GUIStyle.none);
             GUI.enabled = previous;
             return clicked && mode != Mode.Transition && mode != Mode.ScrollOpening && mode != Mode.ScrollClosing;
         }
 
-        void Bar(Rect rect, float fraction, Color color)
+        void DrawPaperTag(Rect rect, string label, bool primary, bool hover, bool down)
         {
-            Panel(rect, new Color(0.08f, 0.1f, 0.11f));
-            Panel(new Rect(rect.x, rect.y, rect.width * Mathf.Clamp01(fraction), rect.height), color);
+            Color gc = GUI.color;
+            if (!GUI.enabled) GUI.color = new Color(1, 1, 1, gc.a * .5f);
+            Rect face = down ? new Rect(rect.x + 2, rect.y + 2, rect.width, rect.height) : rect; // pressed: sinks 2 px onto its shadow
+            Panel(new Rect(rect.x + 4, rect.y + 5, rect.width, rect.height), Ink(down ? .15f : .28f));
+            Panel(face, primary ? PrototypeArt.Red : PrototypeArt.Paper);
+            Grain(face, .5f);
+            if (hover || down) Panel(face, Ink(down ? .3f : .15f)); // ink wash fills the tag
+            BrushBorder(face, 4f, PrototypeArt.Ink);
+            Blot(new Vector2(face.x + 18, face.center.y), Vector2.one * 10, primary ? PrototypeArt.Ink : Ink(.8f)); // the tag's tie hole
+            tagLabel.normal.textColor = primary ? PrototypeArt.Paper : PrototypeArt.Ink;
+            GUI.Label(new Rect(face.x + 28, face.y, face.width - 36, face.height), label, tagLabel);
+            GUI.color = gc;
+        }
+
+        // Ink-wash dim: flat wash plus darker bands towards the edges.
+        void InkWash(float alpha)
+        {
+            Panel(new Rect(0, 0, 1280, 720), Ink(.4f * alpha));
+            for (int i = 1; i <= 6; i++)
+            {
+                float band = i * 26f; Color edge = Ink(.07f * alpha);
+                Panel(new Rect(0, 0, 1280, band), edge); Panel(new Rect(0, 720 - band, 1280, band), edge);
+                Panel(new Rect(0, band, band, 720 - band * 2), edge); Panel(new Rect(1280 - band, band, band, 720 - band * 2), edge);
+            }
         }
 
         void DrawMapUI()
@@ -219,7 +254,7 @@ namespace Bushido
             bool onMap = mode == Mode.Map && !paused;
             if (CampaignButton(new Rect(30, 13, 122, 47), "Mapa", !showTechniques, onMap)) SelectTechniques(false);
             if (CampaignButton(new Rect(164, 13, 146, 47), "Técnicas", showTechniques, onMap)) SelectTechniques(true);
-            GUI.Label(new Rect(339, 24, 390, 33), "Capítulo 01  /  El despertar", textStyle);
+            GUI.Label(new Rect(339, 24, 390, 33), "Capítulo 1  ·  Temporada de lluvias", textStyle);
             if (showTechniques)
             {
                 DrawTechniques();
@@ -250,13 +285,21 @@ namespace Bushido
             showTechniques = visible;
         }
 
+        GUIStyle techniqueCredit;
         void DrawTechniques()
         {
             Panel(new Rect(40, 110, 1200, 560), CampaignInk);
             Panel(new Rect(44, 114, 1192, 552), CampaignPaper);
             GUI.Label(new Rect(85, 140, 1100, 40), "Técnicas del viajero · Un símbolo, un movimiento", paperTextStyle);
+            // CC BY 3.0 asks for visible credit; it lives here since the map no longer shows it.
+            if (techniqueCredit == null)
+            {
+                techniqueCredit = new GUIStyle(smallStyle) { fontSize = 13, alignment = TextAnchor.MiddleRight };
+                techniqueCredit.normal.textColor = new Color(PrototypeArt.Ink.r, PrototypeArt.Ink.g, PrototypeArt.Ink.b, .7f);
+            }
+            GUI.Label(new Rect(85, 636, 1110, 22), "Iconos del mapa: Delapouite y Lorc · game-icons.net · CC BY 3.0", techniqueCredit);
             string[] names = { "Tiempo", "Abundancia", "Destierro" };
-            string[] effects = { "Ralentiza las ranas durante 4 s", "Dos ranas extra por oleada durante 8 s", "Limpia las ranas y debilita la postura" };
+            string[] effects = { "Ralentiza las chanclas durante 4 s", "Dos chanclas extra por oleada durante 8 s", "Limpia las chanclas y debilita la postura" };
             for (int i = 0; i < 3; i++)
             {
                 float y = 245 + i * 155;
@@ -333,41 +376,129 @@ namespace Bushido
 
         void DrawBattleUI()
         {
-            if (IsBoss && bossFinalStage == 2) return;
-            if(RitualModelKatana && bossFinalStage==1)
+            if (bossFinalStage == 2) return;
+            Matrix4x4 stretched = GUI.matrix;
+            if (battleTime < hudClock - .5f) ResetHud(); // BeginBattle rewinds battleTime
+            hudClock = battleTime;
+            Anchor(1, 0);
+            if (RitualModelKatana && bossFinalStage == 1)
             {
-                if(Button(new Rect(1140,30,112,52),"Pausa",!paused))TogglePause();
+                if (Button(new Rect(1140, 30, 112, 52), "Pausa", !paused)) TogglePause();
+                GUI.matrix = stretched;
                 return;
             }
-            DrawPaperHealth();
-            if (IsBoss)
-            {
-                DrawBossSealIndicators();
-                Bar(new Rect(420, 28, 420, 7), (float)bossHealth / bossMaxHealth, PrototypeArt.Red);
-                Color postureInk = Color.Lerp(PrototypeArt.Gold, Color.white, postureFlash / 0.24f);
-                Bar(new Rect(420, 41, 420, 4), vulnerable ? counterTime / 10f : 1f - (float)guard / guardLimit, postureInk);
-            }
-            else Bar(new Rect(420, 28, 420, 4), 1 - battleTime / 35, PrototypeArt.Jade);
             if (Button(new Rect(1140, 30, 112, 52), "Pausa", mode == Mode.Battle && !paused)) TogglePause();
+            Anchor(0, 0);
+            DrawPaperHealth();
+            if (jutsuTime > 0)
+            {
+                PaperCard(new Rect(22, 114, 176, 54));
+                Caption(new Rect(34, 118, 100, 20), "Técnica", PrototypeArt.Ink);
+                Bar(BarJutsu, new Rect(36, 142, 148, 12), jutsuTime / JutsuDuration, Color.Lerp(JutsuInk, PrototypeArt.Ink, .3f));
+            }
+            Anchor(.5f, 0);
+            if (mode == Mode.Result) { } // the scroll takes the stage
+            else if (IsBoss) { DrawBossSealIndicators(); DrawBossTag(); }
+            else if (LanternDuel) DrawLanternTag();
+            else DrawSenderoTag();
+            Anchor(1, .5f);
             DrawStyleMeter();
+            GUI.matrix = stretched;
             DrawDefense();
-            if (jutsuTime > 0) Bar(new Rect(32, 144, 155, 5), jutsuTime / JutsuDuration, JutsuInk);
+            DrawBossVoice();
+            Anchor(0, 1);
+            DrawJudgmentMeter();
+            DrawNotice();
+            GUI.matrix = stretched;
         }
 
+        float resultSince = -1f;
+
+        // Hanging scroll: unrolls, then stats count up, the rank is stamped, the message and buttons follow.
         void DrawResultUI()
         {
-            Panel(new Rect(0, 132, 1280, 500), new Color(0.025f, 0.045f, 0.05f, 0.9f));
-            GUI.Label(new Rect(355, 160, 600, 46), won ? IsBoss ? "Jefe derrotado" : "Misión terminada" : "La batalla continúa", titleStyle);
-            GUI.Label(new Rect(470, 210, 340, 100), won ? resultRank.ToString() : "Derrota", rankStyle);
-            GUI.Label(new Rect(355, 326, 600, 52), "Cortes " + hits + "   ·   Fallos " + misses + "   ·   Daño " + wounds + "\nMejor combo " + bestCombo, textStyle);
-            string message = !won ? "Puedes volver a intentarlo o elegir otra misión disponible."
-                : unlockedNew ? "Nuevo destino desbloqueado. Elige tu próximo encuentro en el mapa."
-                : IsBoss && mission == 4 ? "Has completado el camino del bambú. Tus encuentros siguen disponibles."
-                : !IsBoss && resultRank < Rank.B && !progress.completed[mission] ? "Necesitas B o superior para desbloquear el siguiente punto."
-                : "Tu mejor calificación queda guardada. Puedes volver a jugar desde el mapa.";
-            GUI.Label(new Rect(355, 401, 600, 70), message, textStyle);
-            if (Button(new Rect(355, 505, 265, 60), "Volver al mapa")) { selected = mission; ShowMap(); }
-            if (Button(new Rect(650, 505, 265, 60), "Reintentar")) BeginBattle();
+            if (resultSince < 0f) resultSince = Time.unscaledTime;
+            float t = Time.unscaledTime - resultSince;
+            if (Event.current.type == EventType.MouseDown && t < 2f) { resultSince -= 3f; t += 3f; } // a click skips the show
+            InkWash(Mathf.Clamp01(t / .3f));
+            float land = t - 1.45f, shake = land > 0f && land < .2f ? Mathf.Sin(land * 120f) * 4f * (1f - land / .2f) : 0f;
+            Anchor(.5f, .5f);
+            GUI.matrix *= Matrix4x4.Translate(new Vector3(shake, shake * .5f, 0));
+            const float px = 380, pw = 520, top = 70, full = 560;
+            float open = 1f - Mathf.Pow(1f - Mathf.Clamp01(t / .35f), 3f), bottom = top + full * open;
+            Color gc = GUI.color;
+            Panel(new Rect(px + 8, top + 8, pw, bottom - top), Ink(.25f));
+            for (float y = top; y < bottom; y += 4f) // deckled sides: each 4 px slice is inset by noise
+                Panel(new Rect(px + Mathf.PerlinNoise(y * .09f, 3.1f) * 9f, y, pw - Mathf.PerlinNoise(y * .09f, 3.1f) * 9f - Mathf.PerlinNoise(y * .09f, 7.7f) * 9f, Mathf.Min(4f, bottom - y)), PrototypeArt.Paper);
+            Grain(new Rect(px + 9, top, pw - 18, bottom - top), .6f);
+            Stroke(new Vector2(px + 60, top), new Vector2(640, -40), 4, PrototypeArt.Ink);
+            Stroke(new Vector2(px + pw - 60, top), new Vector2(640, -40), 4, PrototypeArt.Ink);
+            foreach (float rod in new[] { top, bottom })
+            {
+                Stroke(new Vector2(px - 28, rod), new Vector2(px + pw + 28, rod), 20, PrototypeArt.Ink);
+                Blot(new Vector2(px - 28, rod), Vector2.one * 26, PrototypeArt.Ink);
+                Blot(new Vector2(px + pw + 28, rod), Vector2.one * 26, PrototypeArt.Ink);
+            }
+            GUI.color = new Color(1, 1, 1, Mathf.Clamp01((t - .3f) / .2f));
+            GUI.Label(new Rect(px, top + 28, pw, 56), won ? IsBoss ? "Jefe derrotado" : "Misión terminada" : "La batalla continúa", inkTitleStyle);
+            Stroke(new Vector2(px + 70, top + 92), new Vector2(px + pw - 70, top + 94), 9, PrototypeArt.Ink, false, 0f, Mathf.Clamp01((t - .4f) / .3f));
+            string[] names = { "Aciertos", "Fallos", "Heridas", "Mejor combo" };
+            int[] values = { hits, misses, wounds, bestCombo };
+            for (int i = 0; i < 4; i++)
+            {
+                float start = .55f + i * .22f, k = Mathf.Clamp01((t - start) / .3f), y = top + 120 + i * 46;
+                GUI.color = new Color(1, 1, 1, Mathf.Clamp01((t - start) / .15f));
+                hudCap.alignment = TextAnchor.MiddleLeft; hudCap.fontSize = 18; hudCap.normal.textColor = PrototypeArt.Ink;
+                GUI.Label(new Rect(px + 50, y, 170, 36), names[i], hudCap);
+                hudCap.fontSize = 13;
+                hudNum.alignment = TextAnchor.MiddleRight; hudNum.normal.textColor = PrototypeArt.Ink;
+                GUI.Label(new Rect(px + 220, y - 3, 70, 40), Mathf.RoundToInt(values[i] * (1f - Mathf.Pow(1f - k, 3f))).ToString(), hudNum);
+                hudNum.alignment = TextAnchor.MiddleLeft;
+                Stroke(new Vector2(px + 50, y + 38), new Vector2(px + 290, y + 38), 4, Ink(.5f), true, 0f, k);
+            }
+            GUI.color = gc;
+            if (land > 0f)
+            {
+                float k = Mathf.Clamp01(land / .16f), a = Mathf.Clamp01(land / .06f);
+                Vector2 c = new Vector2(px + pw - 130, top + 210);
+                if (land > .16f) Blot(c, Vector2.one * 250 * (.85f + .15f * Mathf.Clamp01((land - .16f) / .12f)), new Color(PrototypeArt.Red.r, PrototypeArt.Red.g, PrototypeArt.Red.b, .6f), 15, PrototypeArt.InkSplat);
+                Matrix4x4 m = GUI.matrix;
+                Pivot(c, -6f, Mathf.Lerp(1.6f, 1f, k * k)); // the stamp falls onto the paper
+                GUI.color = new Color(PrototypeArt.Red.r, PrototypeArt.Red.g, PrototypeArt.Red.b, a);
+                GUI.DrawTexture(new Rect(c.x - 70, c.y - 70, 140, 140), PrototypeArt.Hanko);
+                string rank = !won ? "DERROTA" : resultRank == Rank.Perfect ? "PERFECTO" : resultRank.ToString();
+                stampStyle.fontSize = rank.Length > 2 ? 25 : 104;
+                GUI.color = new Color(1, 1, 1, a); // the hanko tint above would also dye the lettering
+                stampStyle.normal.textColor = PrototypeArt.Paper;
+                GUI.Label(new Rect(c.x - 70, c.y - 70, 140, 140), rank, stampStyle);
+                GUI.matrix = m; GUI.color = gc;
+            }
+            if (t > 1.85f)
+            {
+                string message = !won ? "Puedes volver a intentarlo o elegir otra misión disponible."
+                    : unlockedNew ? "Nuevo destino desbloqueado. Elige tu próximo encuentro en el mapa."
+                    : IsBoss && mission == 4 ? "Sombrilla — ¿Oyes eso? Por fin llueve fuera de mí.\nSamurái — Ven. Hay sitio bajo el alero."
+                    : !IsBoss && !LanternDuel && resultRank < Rank.B && !progress.completed[mission] ? "Necesitas rango B para seguir el camino"
+                    : "Tu mejor calificación queda guardada. Puedes volver a jugar desde el mapa.";
+                GUI.color = new Color(1, 1, 1, Mathf.Clamp01((t - 1.85f) / .25f));
+                if (IsTrail)
+                {
+                    if (!won && mission == 2 && lives > 0) message = $"Meta del festival: {FestivalScore.Target} puntos.";
+                    message = $"Puntos {arcade.Points}   ·   Récord {progress.bestScores[mission]}\n" + message;
+                }
+                GUI.Label(new Rect(px + 44, top + 340, pw - 88, 80), message, resultMessageStyle);
+                GUI.color = gc;
+            }
+            if (t > 2.1f)
+            {
+                float slide = (1f - Mathf.Clamp01((t - 2.1f) / .2f)) * 14f;
+                GUI.color = new Color(1, 1, 1, Mathf.Clamp01((t - 2.1f) / .2f));
+                bool mapFirst = won && (IsBoss || LanternDuel || resultRank >= Rank.B); // below rank B the useful next step is to retry
+                // Behaviour unchanged: Finish() cannot be edited, so these two lines are the old button actions verbatim.
+                if (Button(new Rect(px + 24, top + 440 + slide, 226, 58), "Volver al mapa", true, mapFirst)) { selected = mission; mode = Mode.Transition; StartCoroutine(RevealMap()); }
+                if (Button(new Rect(px + pw - 250, top + 440 + slide, 226, 58), "Reintentar", true, !mapFirst)) BeginBattle();
+                GUI.color = gc;
+            }
         }
 
         void DrawPauseUI()
@@ -375,66 +506,24 @@ namespace Bushido
             Matrix4x4 previous = GUI.matrix;
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity,
                 new Vector3(Screen.width / 1280f, Screen.height / 720f, 1));
-            Panel(new Rect(0, 0, 1280, 720), new Color(0.025f, 0.035f, 0.03f, 0.76f));
+            InkWash(1f);
             // Keep the card inside the phone's safe area, including camera cutouts.
-            Rect safe = Screen.safeArea;
-            float scale = Mathf.Min(safe.width / 1280f, safe.height / 720f);
-            GUI.matrix = Matrix4x4.TRS(new Vector3(safe.x + (safe.width - 1280f * scale) * 0.5f,
-                Screen.height - safe.yMax + (safe.height - 720f * scale) * 0.5f, 0),
-                Quaternion.identity, new Vector3(scale, scale, 1));
+            Anchor(.5f, .5f);
             if (pauseHeading == null)
             {
                 pauseHeading = new GUIStyle(titleLogoStyle) { fontSize = 42 };
-                pauseHeading.normal.textColor = CampaignInk;
-                pauseButtonLabel = new GUIStyle(titleButtonStyle) { fontSize = 22 };
+                pauseHeading.normal.textColor = PrototypeArt.Ink;
             }
-            if (pausePaper == null) pausePaper = Resources.Load<Texture2D>("Backgrounds/MapaTinta");
             Rect paper = new Rect(370, 146, 540, 428);
-            Panel(new Rect(379, 158, 540, 428), new Color(0, 0, 0, 0.35f));
-            Panel(paper, CampaignPaper);
-            Color tint = GUI.color;
-            if (pausePaper != null)
-            {
-                GUI.color = new Color(1, 1, 1, 0.18f);
-                GUI.DrawTexture(paper, pausePaper, ScaleMode.ScaleAndCrop);
-                GUI.color = tint;
-            }
-            // Uneven ink edges and restrained gold trim echo the campaign's paper cards.
-            for (int i = 0; i < 27; i++)
-            {
-                float edge = 2f + Mathf.Sin(i * 2.3f) * 1.5f;
-                Panel(new Rect(370 + i * 20, 146, 20, edge), CampaignInk);
-                Panel(new Rect(370 + i * 20, 574 - edge, 20, edge), CampaignInk);
-            }
-            Panel(new Rect(386, 165, 2, 390), PrototypeArt.Gold);
-            Panel(new Rect(892, 165, 2, 390), PrototypeArt.Gold);
-            Panel(new Rect(624, 179, 32, 32), CampaignRed);
-            Panel(new Rect(633, 187, 4, 16), CampaignPaper);
-            Panel(new Rect(643, 187, 4, 16), CampaignPaper);
-            GUI.Label(new Rect(410, 227, 460, 65), "Pausa", pauseHeading);
-            DuelGuiLine(new Vector2(500, 310), new Vector2(780, 310), CampaignInk, 2);
-            if (PausePaperButton(new Rect(430, 344, 420, 64), "Continuar", true)) TogglePause();
-            if (PausePaperButton(new Rect(430, 430, 420, 64), "Volver al mapa", false)) ShowMap();
+            PaperCard(paper);
+            Panel(new Rect(624, 172, 32, 32), PrototypeArt.Red);
+            Panel(new Rect(633, 180, 4, 16), PrototypeArt.Paper);
+            Panel(new Rect(643, 180, 4, 16), PrototypeArt.Paper);
+            GUI.Label(new Rect(410, 222, 460, 65), "Pausa", pauseHeading);
+            Stroke(new Vector2(480, 306), new Vector2(800, 308), 8, PrototypeArt.Ink);
+            if (Button(new Rect(430, 344, 420, 64), "Continuar", true, true)) TogglePause();
+            if (Button(new Rect(430, 430, 420, 64), "Volver al mapa")) ShowMap();
             GUI.matrix = previous;
-        }
-
-        bool PausePaperButton(Rect rect, string label, bool primary)
-        {
-            bool hover = rect.Contains(Event.current.mousePosition);
-            Panel(new Rect(rect.x + 3, rect.y + 4, rect.width, rect.height), new Color(0, 0, 0, 0.18f));
-            Color ink = primary ? CampaignRed : CampaignInk;
-            if (hover) ink = Color.Lerp(ink, PrototypeArt.Gold, 0.18f);
-            Panel(rect, ink);
-            Panel(new Rect(rect.x + 12, rect.y + 7, rect.width - 24, 1), PrototypeArt.Gold);
-            Panel(new Rect(rect.x + 12, rect.yMax - 8, rect.width - 24, 1), PrototypeArt.Gold);
-            GUI.Label(rect, label, pauseButtonLabel);
-            return GUI.Button(rect, GUIContent.none, GUIStyle.none);
         }
     }
 }
-
-
-
-
-
-

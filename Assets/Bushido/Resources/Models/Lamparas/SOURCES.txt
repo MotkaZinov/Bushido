@@ -1,0 +1,3 @@
+lampara_blanca.fbx, lampara_roja.fbx: modelos hechos por el equipo en Blender (entregados el 2026-11-14).
+Cuerpo_Final.png: textura incrustada en lampara_roja.fbx, extraída; se usa en el cuerpo del farol rojo.
+Pendiente: la textura Cuerpo_Final.png que referencia lampara_blanca no se entregó; el farol blanco usa un cuerpo de color Papel puesto por código.

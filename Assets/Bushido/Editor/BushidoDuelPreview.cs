@@ -21,7 +21,7 @@ public static class BushidoDuelPreview
         var game=Object.FindAnyObjectByType<BushidoPrototype>();if(game==null)return;
         if(ticks==45)
         {
-            Time.timeScale=0;Set(game,"mission",2);Call(game,"BeginBattle");Set(game,"paused",false);
+            Time.timeScale=0;Set(game,"mission",4);Call(game,"BeginBattle");Set(game,"paused",false);
             Call(game,"BeginTheaterAttack");Call(game,"UpdatePaperTheater",.5f);Call(game,"UpdateBossRitual",0f);
         }
         if(ticks==65)Capture("duel-warning");

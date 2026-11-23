@@ -26,7 +26,7 @@ namespace Bushido
         }
         bool BossGesture(Vector3 a, Vector3 b)
         {
-            if (!IsBoss) return false;
+            if (!IsBoss && !(LanternDuel && bossFinalStage > 0)) return false;
             if (bossFinalStage == 1)
             {
                 if (flyingSeal != null) return true;
@@ -41,7 +41,10 @@ namespace Bushido
                 float pull = Vector2.Dot(drag, pullAxis);
                 if (drawGripHeld) drawPullTarget = Mathf.Clamp01(drawGripStart + pull / (Screen.height * .18f));
                 if (drawGripHeld && drawPullTarget >= .72f && Mathf.Abs(Vector2.Dot(drag, new Vector2(-pullAxis.y, pullAxis.x))) < Screen.height * .16f)
-                    BeginBossInkFinish(new Vector3(-1, 1, 0));
+                {
+                    if (LanternDuel) BeginLanternExecution();
+                    else BeginBossInkFinish(new Vector3(-1, 1, 0));
+                }
                 return true;
             }
             if (bossFinalStage > 1) return true;
@@ -110,6 +113,14 @@ namespace Bushido
         }
         void UpdateBossRitual(float delta)
         {
+#if UNITY_EDITOR
+            // Editor-only test key: K jumps straight to the execution, as if the three seals had landed.
+            var keys = UnityEngine.InputSystem.Keyboard.current;
+            if (keys != null && keys.kKey.wasPressedThisFrame && IsBoss && bossFinalStage == 0)
+            {
+                bossSeals = landedBossSeals = 3; bossHealth = 0; theaterState = 2; bossFinalStage = 1;
+            }
+#endif
             UpdateBossActing(delta);
             UpdateCursedMask(delta);
             UpdateSpiritChains();
@@ -125,12 +136,13 @@ namespace Bushido
                 {
                     ReactBoss(BossReaction.Seal);
                     landedBossSeals = bossSeals;
+                    BossSay(VoiceUmbrella, UmbrellaSealLines[bossSeals - 1], 2.8f);
                     GuardBurst(target, true);
                     if (cursedMask != null) flyingSeal.SetParent(cursedMask, true);
                     else if (opponent != null) flyingSeal.SetParent(opponent, true);
                     AddSpiritChains(flyingSeal);
                     flyingSeal = null;
-                    if (landedBossSeals >= 3) bossFinalStage = 1;
+                    if (landedBossSeals >= 3) { bossFinalStage = 1; BossSay(VoiceUmbrella, UmbrellaCornered, 3.6f); }
                 }
             }
             if (bossFinalStage == 1 && sheathedKatana != null)
@@ -144,6 +156,7 @@ namespace Bushido
             if (!finalCutReleased && bossFinalTime >= .16f)
             {
                 finalCutReleased = true; PlayKatanaCounter(finalCutDirection);
+                if (mission == titles.Length - 1) BeginFinisherCut(finalCutDirection);
                 PlayFinisherDrawSound();
                 if (slash != null) slash.enabled = true;
                 impactTime = Mathf.Max(impactTime, .08f); shakeTime = Mathf.Max(shakeTime, .12f);
@@ -193,7 +206,15 @@ namespace Bushido
         void DrawBossRitualOverlay()
         {
             if (IsBoss && mode == Mode.Battle) DrawParryPrompt();
-            if (bossFinalStage == 2 && mode != Mode.Map)
+            if (LanternDuel && bossFinalStage == 2 && mode == Mode.Battle)
+            {
+                float frame = Mathf.SmoothStep(0, 1, bossFinalTime / ExecutionDraw)
+                    * (1 - Mathf.SmoothStep(0, 1, (bossFinalTime - SpiritMeeting) / (ExecutionEnd - SpiritMeeting)));
+                float height = 42f * frame;
+                Panel(new Rect(0, 0, 1280, height), PrototypeArt.InkSepia);
+                Panel(new Rect(0, 720 - height, 1280, height), PrototypeArt.InkSepia);
+            }
+            else if (bossFinalStage == 2 && mode != Mode.Map)
             {
                 float t = Mathf.Clamp01((bossFinalTime - .2f) / .5f);
                 Color previous = GUI.color; GUI.color = new Color(1, 1, 1, .38f);

@@ -71,7 +71,7 @@ namespace Bushido
                 float window = Mathf.Clamp01(guardHeldTime / DeflectWindow);
                 bool sharp = window < 1f;
                 Transform ring = guardFxStance.transform;
-                ring.position = fighter.position + new Vector3(0, height * 0.55f, -0.4f);
+                ring.position = (fighterRig?.ChestPoint ?? (fighter.position + Vector3.up * height * .55f)) + Vector3.back * .4f;
                 ring.localScale = Vector3.one * height * Mathf.Lerp(0.74f, 0.46f, 1f - (1f - window) * (1f - window));
                 ring.Rotate(0, 0, delta * 35f);
                 guardFxStance.widthMultiplier = sharp ? 0.09f : 0.035f;
@@ -147,7 +147,7 @@ namespace Bushido
         void GuardFxHurtBurst()
         {
             float height = view.orthographicSize * 0.68f;
-            Vector3 chest = fighter.position + new Vector3(0, height * 0.6f, -0.6f);
+            Vector3 chest = (fighterRig?.ChestPoint ?? (fighter.position + Vector3.up * height * .6f)) + Vector3.back * .6f;
             int count = Mathf.Min(8, 48 - cutEffects.Count);
             for (int i = 0; i < count; i++)
             {

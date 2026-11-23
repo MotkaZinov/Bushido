@@ -13,7 +13,7 @@ public static class BushidoCompositionReview
     static int wait;
     static readonly BindingFlags Flags=BindingFlags.Instance|BindingFlags.NonPublic;
     static BushidoCompositionReview(){if(SessionState.GetBool(Key,false))EditorApplication.update+=Tick;}
-    [MenuItem("Bushido/Revisión/Composición del ogro %#F8")]
+    [MenuItem("Bushido/Revisión/Composición de la sombrilla %#F8")]
     public static void ReviewCurrentScene()
     {
         SessionState.SetBool(Key,true);wait=0;Time.timeScale=1;
@@ -39,14 +39,14 @@ public static class BushidoCompositionReview
         EditorApplication.update-=Tick;
         try
         {
-            Set(game,"mission",2);Call(game,"BeginBattle");Set(game,"paused",true);
+            Set(game,"mission",4);Call(game,"BeginBattle");Set(game,"paused",true);
             Set(game,"theaterState",2);Set(game,"theaterTime",.3f);Set(game,"paperOpening",1f);
             Call(game,"UpdatePaperTheater",0f);Call(game,"UpdateBossRitual",0f);
             string output=Path.GetFullPath(Path.Combine(Application.dataPath,"../../QualityReview"));Directory.CreateDirectory(output);
             Render(game,output,"encuentro",1600,900);
             Call(game,"OpenCounter");Call(game,"UpdateBossRitual",0f);
             Render(game,output,"sello",1600,900);
-            var mask=(Transform)Get(game,"cursedMask");
+            var mask=(Transform)Get(game,"opponent");
             for(int i=0;i<3;i++)
             {
                 Set(game,"bossSeals",i);

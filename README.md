@@ -1,6 +1,6 @@
 # Bushido
 
-Prototipo jugable de un juego de acción con estética de teatro de papel japonés. Un samurái recorre aldeas amenazadas por yōkai: corta ranas durante las oleadas, bloquea ataques del jefe, dibuja sellos y termina el encuentro con un desenvainado.
+Prototipo jugable de un juego de acción con estética de teatro de papel japonés. Un samurái recorre aldeas amenazadas por yōkai: corta chanclas durante las oleadas, bloquea ataques del jefe, dibuja sellos y termina el encuentro con un desenvainado.
 
 ## Abrir el proyecto
 
@@ -10,10 +10,17 @@ Prototipo jugable de un juego de acción con estética de teatro de papel japon�
 
 El mapa y los objetos de combate se construyen al iniciar la escena. Para una beta móvil hay que verificar los gestos y el rendimiento en un teléfono horizontal.
 
+## Senderos y festival
+
+El Bosque de bambú enseña los tajos y exige rango B. El Festival de las chanclas ocupa el segundo destino. Sobrevive 35 segundos con al menos 280 puntos para abrir el duelo de los faroles gemelos. El santuario de la sombrilla cierra la campaña.
+
+Cada chancla cortada a mano vale 10 puntos. El anillo dorado señala el punto más alto del salto, donde el corte suma otros 10. A partir de la tercera chancla del mismo tajo, cada corte dentro de 0.45 segundos desde el primero añade 15 puntos. Un corte en la cima o un tajo triple carga un pétalo por gesto. Tres pétalos activan cinco segundos de frenesí con puntos dobles y tandas adicionales. En el festival, algunas tandas salen en dos grupos con una bomba en medio. Levanta la katana entre ambos tajos. Tocar una bomba descuenta hasta 25 puntos y cancela la carga. El juego guarda el récord de cada sendero.
+
 ## Controles
 
-- Mouse o dedo: desliza para cortar ranas y trazar símbolos. El sonido de tajo se reproduce al acertar.
+- Mouse o dedo: desliza para cortar chanclas y trazar símbolos. El sonido de tajo se reproduce al acertar.
 - Contra un jefe: dibuja los símbolos indicados para bloquear los cuatro golpes. Cuando se agota, traza el sello mostrado. Repite la secuencia hasta completar tres sellos.
+- `J` (o tocar el medidor "Juicio" del HUD): lanza el corte del juicio cuando el medidor está lleno; se carga con +1/12 por chancla cortada y +1/3 por desvío perfecto, y se vacía al usarlo. El sello Destierro lo lanza gratis sin gastar carga. No funciona durante el remate del jefe.
 - Ejecución: tira del mango de la katana para desencadenar el corte final.
 - `Escape` o el botón de pausa: abre el menú para continuar o regresar al mapa.
 
@@ -28,7 +35,7 @@ La escena principal está en `Assets/Scenes/`. El código propio está en `Asset
 | Oleadas y cortes | `BushidoPrototype.cs`, `FrogSlicer.cs`, `BushidoCutFeedback.cs`, `BushidoSwingFeedback.cs` |
 | Jefe y defensa | `BushidoBossDuel.cs`, `BushidoDefense.cs`, `BushidoBossActing.cs`, `BushidoBossRitual.cs`, `BushidoSpiritSeal.cs` |
 | Katana y efectos del remate | `BushidoKatana.cs`, `KatanaSpiritVfx.cs` |
-| Escenario y personajes | `BushidoPaperTheater.cs`, `BushidoPaperOgre.cs`, `BushidoCompanion.cs`, `BushidoForestTerrain.cs` |
+| Escenario y personajes | `BushidoPaperTheater.cs`, `BushidoUmbrella.cs`, `BushidoCompanion.cs`, `BushidoForestTerrain.cs` |
 
 Las herramientas de revisión están en `Assets/Bushido/Editor/`. Los recursos se agrupan en `Assets/Bushido/Resources/`. Conserva los archivos `.meta` junto a cada asset para preservar las referencias de Unity.
 
@@ -60,7 +67,7 @@ No se han realizado pruebas en dispositivos móviles. Los controles táctiles, l
 
 - Realizar pruebas en dispositivos móviles y ajustar los controles táctiles y el rendimiento para teléfono horizontal.
 - Mejorar los efectos visuales.
-- Completar el último nivel.
+- Ajustar la dificultad de la sombrilla con pruebas de jugadores.
 - Consultar con el equipo la dirección de las peleas contra jefes, las animaciones y la música.
 
 ## Crear recursos con IA

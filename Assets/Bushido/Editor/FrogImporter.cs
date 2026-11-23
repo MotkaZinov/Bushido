@@ -6,7 +6,8 @@ namespace Bushido.Editor
     {
         void OnPreprocessModel()
         {
-            if (assetPath.Contains("/Models/Weapons/katana/") && assetPath.EndsWith(".fbx"))
+            // The weapon meshes are rebuilt from their UVs at runtime, so they must stay readable in builds.
+            if (assetPath.Contains("/Models/Weapons/") && assetPath.EndsWith(".fbx"))
             {
                 ((ModelImporter)assetImporter).isReadable = true;
                 return;

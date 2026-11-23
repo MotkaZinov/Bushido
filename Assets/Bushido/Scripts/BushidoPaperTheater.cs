@@ -22,10 +22,10 @@ namespace Bushido
             if (backdrop != null)
             {
                 var backing = backdrop.GetComponent<Renderer>().sharedMaterial;
-                backing.SetTexture("_BaseMap", Resources.Load<Texture2D>(IsBoss ? "Backgrounds/KamishibaiAldea" : "ThirdParty/PolyHaven/LacqueredCherryWood"));
+                backing.SetTexture("_BaseMap", Resources.Load<Texture2D>(IsBoss || LanternDuel ? "Backgrounds/KamishibaiAldea" : "ThirdParty/PolyHaven/LacqueredCherryWood"));
                 backing.SetColor("_BaseColor", Color.white);
-                backing.SetTextureScale("_BaseMap", IsBoss ? Vector2.one : new Vector2(2, 1));
-                backing.SetFloat("_PaperSurface", IsBoss ? 1 : 0);
+                backing.SetTextureScale("_BaseMap", IsBoss || LanternDuel ? Vector2.one : new Vector2(2, 1));
+                backing.SetFloat("_PaperSurface", IsBoss || LanternDuel ? 1 : 0);
                 backing.SetFloat("_InkShading", 0);
             }
             replacementPaper = art.Backdrop(world, "Nueva hoja del teatro", "KamishibaiPradera");
@@ -82,10 +82,10 @@ namespace Bushido
             theaterStrike = false;
             pendingFrogs.Clear();
             pendingBombDelay = -1f;
-            foreach (Projectile item in projectiles) Destroy(item.root.gameObject);
-            projectiles.Clear();
+            ClearProjectiles();
             ClearJutsuSeal();
             StartDuelRound();
+            BossSay(VoiceUmbrella, BossPick(UmbrellaAttack), 2.2f);
         }
         void UpdatePaperTheater(float delta)
         {
@@ -94,7 +94,7 @@ namespace Bushido
             if(mode!=Mode.Battle)return;
             // Anticipation: the closed sheet shakes harder and harder before it tears open.
             bool hold = DuelActive && duelPhase == DuelPhase.Charge && duelClock < JutsuFxTearHold && paperOpening <= 0;
-            float target = vulnerable || (theaterState == 2 && !hold) || theaterState == 3 || paperOpening > 0 ? 1f : 0f;
+            float target = LanternDuel || vulnerable || (theaterState == 2 && !hold) || theaterState == 3 || paperOpening > 0 ? 1f : 0f;
             JutsuFxTheaterTells(delta);
             replacementPaper.gameObject.SetActive(theaterState == 3 && flyingSeal==null && bossReaction!=BossReaction.Seal);
             replacementPaper.localPosition = new Vector3(0, 4.1f + 11 * (1 - Mathf.SmoothStep(0, 1, theaterTime / 0.55f)), 1.99f);

@@ -3,21 +3,29 @@ namespace Bushido
 {
     public sealed partial class BushidoPrototype
     {
-        enum CompanionMood { Calm, Blink, Focus, Happy, Excited, Parry, Hurt, Disappointed, Seal, Danger, Draw, Victory }
+        enum CompanionMood { Calm, Focus, Happy, Excited, Parry, Hurt, Disappointed, Seal, Danger, Draw, Victory }
         float companionReactionTime, companionReactionAge;
         int companionPreviousCombo, companionPreviousRank, companionPreviousSeals, companionPreviousLives;
         bool companionWasGuardFlash;
         CompanionMood companionMood;
-        Texture2D companionSpriteSheet;
-        Texture2D companionLifeSheet;
-        static readonly int[] HealthyLifeFrames = { 0, 1, 2, 1, 0, 0, 3, 0 };
-        static readonly int[] AlertLifeFrames = { 0, 1, 0, 2, 0, 1, 3, 0 };
-        static readonly int[] CriticalLifeFrames = { 0, 1, 1, 2, 2, 0, 3, 0 };
+        LineRenderer companionTrail;
+        Transform belt;
+        Quaternion beltRest;
+        float clothAngle, clothVelocity, previousTurn;
+        readonly Vector3[] edgeSamples = new Vector3[7];
+        int edgeCount;
+        float reactionBlend, companionClock;
         void BeginCompanionFace()
         {
-            companionSpriteSheet = Resources.Load<Texture2D>("UI/SamuraiReactionsMasked");
-            companionLifeSheet = Resources.Load<Texture2D>("UI/SamuraiLifeStages");
-            foreach(var renderer in fighter.GetComponentsInChildren<Renderer>()) renderer.enabled=false;
+            companionTrail = art.Line(world, edgeSamples, PrototypeArt.Gold, .055f);
+            companionTrail.useWorldSpace = true;
+            companionTrail.widthCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+            companionTrail.enabled = false;
+            edgeCount = 0;
+            companionClock = reactionBlend = 0f;
+            clothAngle = clothVelocity = previousTurn = 0f;
+            belt = System.Array.Find(fighter.GetComponentsInChildren<Transform>(), part => part.name == "Cinturon");
+            if (belt != null) beltRest = belt.localRotation;
             companionPreviousCombo=0; companionPreviousRank=0; companionPreviousSeals=0;
             companionPreviousLives=lives; companionWasGuardFlash=false;
             companionReactionTime=companionReactionAge=0; companionMood=CompanionMood.Calm;
@@ -49,39 +57,72 @@ namespace Bushido
             if(companionReactionTime<=0 && bossFinalStage==0)
                 companionMood=lives==1?CompanionMood.Danger:StyleLevel>=4?CompanionMood.Happy:CompanionMood.Calm;
         }
-        void DrawIllustratedCompanion()
+        void PoseCompanion(float delta, float swing)
         {
-            if(companionSpriteSheet==null || (mode!=Mode.Battle && mode!=Mode.Transition) || (bossFinalStage==2 && !bossInkBurst))return;
-            int frame=(int)companionMood;
-            bool lifeIdle = companionReactionTime <= 0 && bossFinalStage == 0 && companionLifeSheet != null;
-            Texture2D sheet = companionSpriteSheet;
-            if (lifeIdle)
+            if (fighterRig == null) return;
+            companionClock += delta;
+            float energy = Mathf.Clamp01(companionReactionTime * 5f);
+            if (bossFinalStage != 0 || mode == Mode.Result || companionMood == CompanionMood.Happy) energy = 1;
+            reactionBlend = Mathf.MoveTowards(reactionBlend, energy, delta * 9f);
+            float beat = Mathf.Sin(companionClock * (lives == 1 ? 4.6f : 2.4f));
+            float fatigue = (3 - Mathf.Clamp(lives, 0, 3)) / 3f;
+            float nod = 2f * beat + 11f * fatigue;
+            float gaze = 9f, lean = 3f * fatigue, knees = 7f + fatigue * 12f;
+            float leftStep = swing * 16f, freeHand = 0, eyes = 1f;
+            // Breathing and a slow shift of weight between the feet, so the guard never looks frozen.
+            float breath = Mathf.Sin(companionClock * 2.1f);
+            knees += 3f * (1f + breath);
+            lean += 1.6f * breath;
+            nod += 1.2f * breath;
+            leftStep += Mathf.Sin(companionClock * .55f) * 6f;
+            knees += samuraiCutCrouch; lean += samuraiCutLean;
+            float response = reactionBlend;
+            float bounce = Mathf.Sin(companionReactionAge * 10f);
+            switch (companionMood)
             {
-                int lifeRow = lives >= 3 ? 0 : lives == 2 ? 1 : 2;
-                float rate = lifeRow == 2 ? 2.8f : lifeRow == 1 ? 4f : 3.4f;
-                int tick = Mathf.FloorToInt(battleTime * rate) % 8;
-                int pose = lifeRow == 0 ? HealthyLifeFrames[tick] : lifeRow == 1 ? AlertLifeFrames[tick] : CriticalLifeFrames[tick];
-                frame = lifeRow * 4 + pose;
-                sheet = companionLifeSheet;
+                case CompanionMood.Focus: nod += 7 * response; eyes -= .36f * response; break;
+                case CompanionMood.Happy: nod -= (7 + bounce * 5) * response; freeHand = 18 * response; break;
+                case CompanionMood.Excited: knees += (1 + bounce) * 12 * response; freeHand = 42 * response; break;
+                case CompanionMood.Parry: lean -= 12 * response; leftStep += 18 * response; eyes -= .42f * response; break;
+                case CompanionMood.Hurt: nod -= 13 * response; gaze -= 19 * response; knees += 24 * response; eyes -= .85f * response; break;
+                case CompanionMood.Disappointed: nod += 21 * response; lean += 10 * response; break;
+                case CompanionMood.Seal: freeHand = 58 * response; gaze += 14 * response; break;
+                case CompanionMood.Danger: knees += 6 + beat * 4; gaze += beat * 6; eyes = .74f; break;
+                case CompanionMood.Draw: nod += 11; leftStep += 22; freeHand = 28; lean += 9 * drawPullProgress; break;
+                case CompanionMood.Victory: nod -= 9; freeHand = 54; knees -= 4; break;
             }
-            if(!lifeIdle && companionReactionTime<=0 && Mathf.Repeat(battleTime+1.3f,3.7f)<.13f && companionMood==CompanionMood.Calm)frame=1;
-            float age=companionReactionAge;
-            float settle=Mathf.Sin(age*19)*Mathf.Exp(-age*5);
-            float hop=companionMood==CompanionMood.Excited?Mathf.Abs(Mathf.Sin(age*9))*12*Mathf.Min(1,companionReactionTime*2):
-                companionMood==CompanionMood.Happy?Mathf.Sin(age*7)*4:Mathf.Sin(battleTime*2.2f)*2;
-            float recoil=companionMood==CompanionMood.Hurt?Mathf.Sin(Mathf.Clamp01(age/.7f)*Mathf.PI)*12:0;
-            if (lifeIdle)
-                hop = Mathf.Sin(battleTime * (lives == 1 ? 3.5f : 2.2f)) * (lives == 1 ? 3.5f : 1.8f);
-            Vector2 pivot=new Vector2(1120,620);
-            Matrix4x4 matrix=GUI.matrix;
-            float tilt=companionMood==CompanionMood.Hurt?-recoil:companionMood==CompanionMood.Excited?settle*10:
-                companionMood==CompanionMood.Disappointed?5:Mathf.Sin(battleTime*2)*1.5f;
-            GUIUtility.RotateAroundPivot(tilt,pivot);
-            Vector2 stretch=new Vector2(1-settle*.035f,1+settle*.055f);
-            GUIUtility.ScaleAroundPivot(stretch,pivot);
-            Rect cell=new Rect((frame%4)*.25f,(2-frame/4)/3f,.25f,1/3f);
-            GUI.DrawTextureWithTexCoords(new Rect(1000+recoil,394-hop,240,240),sheet,cell,true);
-            GUI.matrix=matrix;
+            float blinkPhase = Mathf.Repeat(companionClock + .9f, 3.65f);
+            float blink = Mathf.Clamp01(Mathf.Abs(blinkPhase - .095f) / .095f);
+            fighterRig.PoseExpression(nod, gaze, lean, knees, leftStep, freeHand, eyes * blink);
+            if (belt != null && delta > 0f)
+            {
+                float turn = Mathf.DeltaAngle(168f, fighter.eulerAngles.y);
+                float drag = Mathf.Clamp(-Mathf.DeltaAngle(previousTurn, turn) / delta * .03f, -11f, 11f);
+                previousTurn = turn;
+                clothAngle = Mathf.SmoothDamp(clothAngle, drag, ref clothVelocity, .16f, Mathf.Infinity, delta);
+                belt.localRotation = Quaternion.AngleAxis(clothAngle, belt.parent.InverseTransformDirection(fighter.up)) * beltRest;
+            }
+            float grip = Mathf.Max(guardPose, fighterMove == FighterMove.Cut ? swing : 0f);
+            fighterRig.SupportHilt(grip * (1f - Mathf.Clamp01(freeHand / 40f)));
+            bool tracing = mode == Mode.Battle && bossFinalStage == 0 && judgmentRoot == null
+                && fighterSwing > 0 && (fighterMove == FighterMove.Cut || fighterMove == FighterMove.MultiCut);
+            if (!tracing)
+            {
+                edgeCount = 0;
+                companionTrail.enabled = false;
+                return;
+            }
+            Vector3 tip = fighterRig.BladeTip;
+            if (edgeCount > 0 && (tip - edgeSamples[edgeCount - 1]).sqrMagnitude < .0009f) return;
+            if (edgeCount == edgeSamples.Length)
+            {
+                System.Array.Copy(edgeSamples, 1, edgeSamples, 0, edgeCount - 1);
+                edgeCount--;
+            }
+            edgeSamples[edgeCount++] = tip;
+            companionTrail.positionCount = edgeCount;
+            for (int i = 0; i < edgeCount; i++) companionTrail.SetPosition(i, edgeSamples[i]);
+            companionTrail.enabled = edgeCount > 1;
         }
     }
 }

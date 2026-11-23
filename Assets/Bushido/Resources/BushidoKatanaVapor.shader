@@ -28,7 +28,8 @@ Shader "Bushido/KatanaVapor"
     float edge=1-smoothstep(.25,1,r);
     float body=smoothstep(.2,.76,density)*edge*edge;
     float lit=pow(saturate(density),2)*edge;
-    float3 color=lerp(i.color.rgb,float3(.24,.82,1.08),lit*.7);
+    // Ink smoke: the vertex colour is the ink, spirit light only threads its densest folds.
+    float3 color=lerp(i.color.rgb,float3(.55,.92,.72),pow(lit,3)*.45);
     return half4(color,body*i.color.a);
    }
    ENDHLSL

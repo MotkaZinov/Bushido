@@ -7,7 +7,7 @@ namespace Bushido
             new Vector2(155,470),new Vector2(355,320),new Vector2(585,405),
             new Vector2(775,245),new Vector2(1010,205)
         };
-        public static readonly string[] Names={"El viajero","Bosque de bambú","Aldea del ogro","Paso de montaña","Santuario del oni"};
+        public static readonly string[] Names={"Tu aldea","Bosque de bambú","Festival de las chanclas","Los faroles gemelos","Santuario de la lluvia"};
         public static Vector2 Point(int from,int to,float t) => Vector2.Lerp(Positions[from],Positions[to],t)+Vector2.up*Mathf.Sin(t*Mathf.PI)*26f;
     }
     public sealed partial class BushidoPrototype
@@ -18,7 +18,7 @@ namespace Bushido
         readonly Rect[] boardRoadBounds = new Rect[4];
         Texture2D samuraiMapIcon;
         GUIStyle boardCaption,boardHeading,boardStatus,boardCredit,boardRank;
-        static readonly string[] BoardIconNames={"japanese-bridge","bamboo","oni","mountains","samurai-helmet"};
+        static readonly string[] BoardIconNames={"japanese-bridge","bamboo","mountains","faroles-gemelos"};
 
         void PrepareBoardArt()
         {
@@ -36,7 +36,7 @@ namespace Bushido
             if(samuraiMapIcon==null)samuraiMapIcon=Resources.Load<Texture2D>("MapInk/samurai-helmet");
             if(boardSeal==null){boardSeal=CampaignInkArt.Seal(false);titleAssets.Add(boardSeal);}
             if(boardPawn==null){boardPawn=CampaignInkArt.Seal(true);titleAssets.Add(boardPawn);}
-            for(int i=0;i<5;i++)if(boardIcons[i]==null)boardIcons[i]=Resources.Load<Texture2D>("MapInk/"+BoardIconNames[i]);
+            for(int i=0;i<BoardIconNames.Length;i++)if(boardIcons[i]==null)boardIcons[i]=Resources.Load<Texture2D>("MapInk/"+BoardIconNames[i]);
             for(int i=0;i<4;i++)if(boardRoads[i]==null)
             {
                 boardRoads[i]=CampaignInkArt.Road(i,out boardRoadBounds[i]);titleAssets.Add(boardRoads[i]);
@@ -55,7 +55,19 @@ namespace Bushido
             BoardTexture(boardSeal,new Rect(p.x-55,p.y-49,116,116),new Color(.16f,.10f,.06f,.14f));
             BoardTexture(boardSeal,new Rect(p.x-58,p.y-58,116,116),chosen?CampaignRed:pigment);
             BoardTexture(boardSeal,new Rect(p.x-53,p.y-53,106,106),available?new Color(.96f,.88f,.72f):new Color(.82f,.77f,.65f));
-            BoardTexture(boardIcons[node],new Rect(p.x-36,p.y-36,72,72),chosen?CampaignRed:pigment);
+            if (node == 4)
+            {
+                Color ink = chosen ? CampaignRed : pigment;
+                Vector2 crown = p + Vector2.up * -25;
+                DuelGuiLine(crown, p + new Vector2(0, 30), ink, 4);
+                for (int rib = -2; rib <= 2; rib++)
+                {
+                    var tip = p + new Vector2(rib * 16, 5 + Mathf.Abs(rib) * 2);
+                    DuelGuiLine(crown, tip, ink, 3);
+                    if (rib < 2) DuelGuiLine(tip, p + new Vector2((rib + 1) * 16, 5 + Mathf.Abs(rib + 1) * 2), ink, 3);
+                }
+            }
+            else BoardTexture(boardIcons[node],new Rect(p.x-36,p.y-36,72,72),chosen?CampaignRed:pigment);
             if(completed)
             {
                 BoardTexture(boardSeal,new Rect(p.x+27,p.y+24,32,32),CampaignRed);
@@ -88,7 +100,7 @@ namespace Bushido
             Panel(new Rect(0,76,1280,644),CampaignPaper);
             BoardTexture(boardPaper,new Rect(0,76,1280,644),new Color(1,1,1,.22f));
             Panel(new Rect(28,95,1224,2),new Color(.3f,.2f,.1f,.25f));
-            GUI.Label(new Rect(60,116,520,48),"El camino del exorcista",boardHeading);
+            GUI.Label(new Rect(60,116,520,48),"Ruta al santuario",boardHeading);
             for(int n=0;n<4;n++)
             {
                 Color ink=progress.IsUnlocked(n+1)?new Color(.19f,.15f,.12f,.95f):new Color(.36f,.31f,.24f,.38f);
@@ -100,8 +112,8 @@ namespace Bushido
                 bool available=progress.IsUnlocked(i);
                 DrawMapSeal(p,i);
                 float labelY=p.y+(i==1 || i==3 ? -100 : 58);
-                GUI.Label(new Rect(p.x-105,labelY,210,28),CampaignBoardLayout.Names[i],boardCaption);
-                string status=!available?"Por descubrir":progress.completed[i]?"Exorcizado":i==0?"Inicio del viaje":"Disponible";
+                GUI.Label(new Rect(p.x-140,labelY,280,28),CampaignBoardLayout.Names[i],boardCaption); // wide enough that no name wraps onto its seal
+                string status=!available?"Bloqueado":progress.completed[i]?(CampaignProgress.IsBoss(i) || CampaignProgress.IsDuel(i) ? "Derrotado" : "Hecho"):i==0?"Sales de aquí":"Nuevo";
                 GUI.Label(new Rect(p.x-100,labelY+27,200,24),status,boardStatus);
                 if(interactive && i>0 && available && GUI.Button(new Rect(p.x-52,p.y-52,104,104),GUIContent.none,GUIStyle.none))selected=i;
             }
@@ -109,10 +121,19 @@ namespace Bushido
             if(mode==Mode.Travel)token=CampaignBoardLayout.Point(routeNode,nextRouteNode,Mathf.SmoothStep(0,1,travelTime));
             DrawMapPawn(token);
             Panel(new Rect(60,606,1160,1),new Color(.3f,.2f,.1f,.3f));
+            if (mode == Mode.FaceOff)
+            {
+                GUI.Label(new Rect(65,615,810,36), EncounterDialogue[mission, dialogueLine * 2], boardHeading);
+                GUI.Label(new Rect(65,651,835,45), EncounterDialogue[mission, dialogueLine * 2 + 1], boardCaption);
+                if (CampaignButton(new Rect(930,632,280,55), dialogueLine == 0 ? "Sigue" : "¡A pelear!", true, !paused))
+                {
+                    if (dialogueLine == 0) dialogueLine++;
+                    else { mode = Mode.ScrollClosing; scrollTime = 0; }
+                }
+                return;
+            }
             GUI.Label(new Rect(65,625,710,36),CampaignBoardLayout.Names[selected],boardHeading);
-            GUI.Label(new Rect(65,665,740,28),CampaignProgress.IsBoss(selected)?"Encuentro yōkai · Rompe su maldición":"Sendero · Afina tu espada antes del encuentro",boardStatus);
-            if(CampaignButton(new Rect(930,632,280,55),progress.completed[selected]?"Volver al encuentro":"Seguir el camino",true,interactive && progress.IsUnlocked(selected) && selected>0))StartTravel();
-            GUI.Label(new Rect(790,696,420,18),"Iconos: Delapouite y Lorc · game-icons.net · CC BY 3.0",boardCredit);
+            if(CampaignButton(new Rect(930,632,280,55),progress.completed[selected]?"Otra vez":"Vamos",true,interactive && progress.IsUnlocked(selected) && selected>0))StartTravel();
         }
     }
 }

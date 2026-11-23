@@ -11,6 +11,8 @@ namespace Bushido
         public static readonly Color Gold = new Color(0.82f, 0.62f, 0.28f);
         public static readonly Color Paper = new Color(0.9f, 0.82f, 0.65f);
         public static readonly Color Jade = new Color(0.26f, 0.47f, 0.36f);
+        public static readonly Color Spirit = new Color(0.42f, 0.8f, 0.6f); // luminous blue-green: seals, jutsu, katana energy
+        public static readonly Color InkSepia = new Color(0.15f, 0.10f, 0.075f); // the one allowed map variant of Ink
         readonly Dictionary<Color, Material> materials = new Dictionary<Color, Material>();
         readonly Dictionary<Material, Material> modelMaterials = new Dictionary<Material, Material>();
         readonly List<Object> ownedAssets = new List<Object>();
@@ -42,6 +44,159 @@ namespace Bushido
             return leaf.transform;
         }
 
+
+        // ---- UI ink textures: white on alpha so GUI.color tints them. Baked once, shared by every HUD and menu.
+        static Texture2D brushWet, brushDry, blobTex, splatTex, grainTex, hankoTex;
+        static float Sm(float a, float b, float x) { x = Mathf.Clamp01((x - a) / (b - a)); return x * x * (3 - 2 * x); }
+
+        static Texture2D Bake(string name, int w, int h, System.Func<int, int, float> alpha, Color32 rgb, TextureWrapMode wrap = TextureWrapMode.Clamp)
+        {
+            var tex = new Texture2D(w, h, TextureFormat.RGBA32, false) { name = name, wrapMode = wrap, filterMode = FilterMode.Bilinear, hideFlags = HideFlags.HideAndDontSave };
+            var px = new Color32[w * h];
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++) { rgb.a = (byte)(Mathf.Clamp01(alpha(x, y)) * 255f); px[y * w + x] = rgb; }
+            tex.SetPixels32(px); tex.Apply(false, true);
+            return tex;
+        }
+
+        // Horizontal brush stroke: round start, thinning tail, ragged edge and bristle streaks. Dry = sparse, faint stroke.
+        public static Texture2D Brush(bool dry)
+        {
+            ref Texture2D cache = ref (dry ? ref brushDry : ref brushWet);
+            if (cache) return cache;
+            const int W = 512, H = 32;
+            float seed = dry ? 9.3f : 2.1f;
+            return cache = Bake(dry ? "Trazo seco" : "Trazo de pincel", W, H, (x, y) =>
+            {
+                float u = x / (W - 1f), v = (y + .5f) / H * 2f - 1f, side = v < 0 ? 5.7f : 1.3f;
+                float half = (.66f + .34f * Mathf.PerlinNoise(u * 5f + seed, .5f)) * (.55f + .45f * Sm(0f, .05f, u))
+                    * Mathf.Lerp(.3f, 1f, Sm(1f, .88f, u)) * (.92f + .08f * Mathf.PerlinNoise(u * 70f, side + seed));
+                float d = Mathf.Abs(v), cut = d / Mathf.Max(half, .01f);
+                float bristle = Mathf.PerlinNoise(u * 4.5f + seed, v * 15f + side);
+                float thr = dry ? .40f : .56f * Sm(.5f, 1f, cut) + Sm(.8f, 1f, u) * .22f;
+                return Mathf.Clamp01((half - d) * 14f) * Sm(thr - .07f, thr + .07f, bristle);
+            }, new Color32(255, 255, 255, 255));
+        }
+
+        public static Texture2D InkBlob
+        {
+            get
+            {
+                if (!blobTex) blobTex = Bake("Gota de tinta", 64, 64, (x, y) =>
+                {
+                    float px = (x + .5f) / 32f - 1f, py = (y + .5f) / 32f - 1f, a = Mathf.Atan2(py, px);
+                    float rad = .795f + .07f * Mathf.Sin(a * 3 + 1f) + .04f * Mathf.Sin(a * 7) + .05f * Mathf.PerlinNoise(x * .2f, y * .2f);
+                    return (rad - Mathf.Sqrt(px * px + py * py)) * 16f;
+                }, new Color32(255, 255, 255, 255));
+                return blobTex;
+            }
+        }
+
+        // A blot with flung droplets around it: ink splat for escapes and the stamp's spatter.
+        public static Texture2D InkSplat
+        {
+            get
+            {
+                if (!splatTex) splatTex = Bake("Salpicadura de tinta", 128, 128, (x, y) =>
+                {
+                    float px = (x + .5f) / 64f - 1f, py = (y + .5f) / 64f - 1f, a = Mathf.Atan2(py, px);
+                    float v = (.3f + .05f * Mathf.Sin(a * 5) + .04f * Mathf.Sin(a * 9 + 2) - Mathf.Sqrt(px * px + py * py)) * 14f;
+                    for (int i = 0; i < 11; i++)
+                    {
+                        float ang = i * 2.399f, dist = .5f + (i * 37 % 10) / 10f * .42f, size = .1f - i * .006f;
+                        v = Mathf.Max(v, (size - Mathf.Sqrt(Mathf.Pow(px - Mathf.Cos(ang) * dist, 2) + Mathf.Pow(py - Mathf.Sin(ang) * dist, 2))) * 22f);
+                    }
+                    return v;
+                }, new Color32(255, 255, 255, 255));
+                return splatTex;
+            }
+        }
+
+        // Fibres, mirrored at the half so the tile has no seam.
+        public static Texture2D PaperGrain
+        {
+            get
+            {
+                if (!grainTex) grainTex = Bake("Fibra de papel", 128, 128, (x, y) =>
+                {
+                    int mx = x < 64 ? x : 127 - x, my = y < 64 ? y : 127 - y;
+                    float fibre = Mathf.PerlinNoise(mx * .9f + 3f, my * .07f + 9f) * Mathf.PerlinNoise(mx * .05f, my * .5f + 2f);
+                    return (fibre * fibre * 180f + (Mathf.PerlinNoise(mx * .35f, my * .35f + 5f) > .7f ? 30f : 0f)) / 255f;
+                }, new Color32(110, 80, 45, 255), TextureWrapMode.Repeat);
+                return grainTex;
+            }
+        }
+
+        // Rounded-square hanko with an inner groove and worn ink.
+        public static Texture2D Hanko
+        {
+            get
+            {
+                if (!hankoTex) hankoTex = Bake("Sello hanko", 128, 128, (x, y) =>
+                {
+                    float px = (x + .5f) / 64f - 1f, py = (y + .5f) / 64f - 1f;
+                    float d = Mathf.Pow(Mathf.Pow(Mathf.Abs(px), 6) + Mathf.Pow(Mathf.Abs(py), 6), 1f / 6f);
+                    float a = Mathf.Clamp01((.95f + .025f * Mathf.PerlinNoise(x * .25f, y * .25f) - d) * 30f);
+                    a *= 1f - Mathf.Clamp01(1f - Mathf.Abs(d - .78f) * 45f);
+                    float wear = .75f * Mathf.PerlinNoise(x * .11f + 4f, y * .11f + 1f) + .25f * Mathf.PerlinNoise(x * .4f, y * .4f);
+                    return a * Sm(.2f, .3f, wear);
+                }, new Color32(255, 255, 255, 255));
+                return hankoTex;
+            }
+        }
+
+        // ---- Shimenawa set: coloured textures baked once and shared (the rope, its paper streamers, the bamboo posts).
+        static Texture2D strawTex, shideTex, bambooTex;
+        static Texture2D BakeColor(string name, int w, int h, System.Func<int, int, Color32> pixel, TextureWrapMode wrap)
+        {
+            var tex = new Texture2D(w, h, TextureFormat.RGBA32, false) { name = name, wrapMode = wrap, filterMode = FilterMode.Bilinear, hideFlags = HideFlags.HideAndDontSave };
+            var px = new Color32[w * h];
+            for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) px[y * w + x] = pixel(x, y);
+            tex.SetPixels32(px); tex.Apply(false, true);
+            return tex;
+        }
+
+        // Twisted straw: eight diagonal strands per tile (tiles along the line), brushed ragged edge. Periodic in u so the tile has no seam.
+        public static Texture2D StrawRope => strawTex ? strawTex : strawTex = BakeColor("Cuerda de paja trenzada", 256, 32, (x, y) =>
+        {
+            float u = x / 256f, v = (y + .5f) / 32f * 2f - 1f, tau = Mathf.PI * 2f;
+            float strand = .5f + .5f * Mathf.Sin((u * 8f + (v * .5f + .5f) * .8f) * tau);
+            float fibre = .5f + .5f * Mathf.Sin(u * tau * 37f + v * 3f) * Mathf.Sin(u * tau * 11f - v * 5f);
+            float b = Mathf.Clamp01(.35f + .45f * strand + .2f * fibre - .22f * v * v);
+            float half = .88f + .06f * Mathf.Sin(u * tau * 11f) + .04f * Mathf.Sin(u * tau * 23f + 1f);
+            Color c = Color.Lerp(Color.Lerp(Gold, InkSepia, .6f), Color.Lerp(Paper, Gold, .3f), b);
+            c.a = Mathf.Abs(v) < half ? 1f : 0f;
+            return (Color32)c;
+        }, TextureWrapMode.Repeat);
+
+        // Shide: a zigzag paper streamer, white paper with an ink edge, ragged bottom.
+        public static Texture2D Shide => shideTex ? shideTex : shideTex = BakeColor("Shide de papel", 64, 160, (x, y) =>
+        {
+            float u = (x + .5f) / 64f, t = 1f - (y + .5f) / 160f;
+            float tri = Mathf.Abs(Mathf.Repeat(t * 1.5f, 1f) * 2f - 1f) - .5f;       // 0.75 of a zigzag period per length: three bends
+            float d = Mathf.Abs(u - (.5f + tri * .34f)), hw = .17f - .04f * t;
+            float bottom = .96f - .04f * Mathf.Sin(u * 23f) - .02f * Mathf.Sin(u * 61f);
+            bool inside = d < hw && t > .015f && t < bottom;
+            bool edge = d > hw - .045f || t < .04f || t > bottom - .03f;
+            float crease = Mathf.Abs(Mathf.Repeat(t * 1.5f, .5f) - .25f) < .012f ? .8f : 1f; // fold lines
+            byte g = (byte)(255f * (edge ? .24f : crease));
+            return new Color32(g, g, g, (byte)(inside ? 255 : 0));
+        }, TextureWrapMode.Clamp);
+
+        // A cut-paper bamboo stalk: nodes, an ink edge and a slanted cut at the top.
+        public static Texture2D Bamboo => bambooTex ? bambooTex : bambooTex = BakeColor("Poste de bambú recortado", 32, 256, (x, y) =>
+        {
+            float v = (x + .5f) / 32f * 2f - 1f, along = y / 256f * 5f, node = Mathf.Repeat(along, 1f);
+            bool ring = node < .06f || node > .985f;
+            float half = ring ? .84f : .74f;
+            bool inside = Mathf.Abs(v) < half && y < 250 - 14 * x / 32;
+            Color c = Color.Lerp(Jade, Ink, .35f);
+            if (v < -.15f && v > -.45f) c = Color.Lerp(Jade, Paper, .25f);          // highlight strip
+            if (Mathf.Abs(v) > half - .13f || (ring && node < .035f)) c = Ink;
+            c.a = inside ? 1f : 0f;
+            return (Color32)c;
+        }, TextureWrapMode.Clamp);
+
         public PrototypeArt(bool forest = false)
         {
             this.forest = forest;
@@ -69,7 +224,7 @@ namespace Bushido
             Color color = source.HasProperty("_BaseColor") ? source.GetColor("_BaseColor")
                 : source.HasProperty("baseColorFactor") ? source.GetColor("baseColorFactor")
                 : source.HasProperty("_Color") ? source.GetColor("_Color") : Color.white;
-            var material = new Material(shader);
+            var material = new Material(shader) { name = source.name };
             material.SetColor("_BaseColor", color);
             material.SetFloat("_CelShading", 1f);
             material.SetFloat("_CharacterInk", 1f);
@@ -219,10 +374,16 @@ namespace Bushido
             var material=new Material(Resources.Load<Shader>("BushidoSpiritSmoke"));
             ownedAssets.Add(material);return material;
         }
+        public Material DuskMaterial()
+        {
+            var material=new Material(Resources.Load<Shader>("BushidoDusk"));
+            material.SetColor("_Tint",Ink);material.SetColor("_Warm",Color.Lerp(Paper,Gold,.4f));
+            ownedAssets.Add(material);return material;
+        }
         public Material KatanaMaterial()
         {
             var material=new Material(Resources.Load<Shader>("BushidoKatana"));
-            material.SetTexture("_BaseMap",Resources.Load<Texture2D>("Models/Weapons/katana/katana material_Base_Color"));
+            material.SetTexture("_BaseMap",Resources.Load<Texture2D>("Models/Weapons/KatanaTintaAtlas"));
             ownedAssets.Add(material);return material;
         }
         public Material KatanaAuraMaterial()

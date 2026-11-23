@@ -16,6 +16,7 @@ namespace Bushido
             shakeTime = Mathf.Max(shakeTime, .13f);
             guardFlash = .28f;
             fighterReaction = .25f;
+            ShockRingBurst(CounterCenter + Vector3.back * 2, Quaternion.identity, 1.6f, SpiritLight(.15f, 1.4f));
         }
         Transform drawSaya;
         bool drawGripHeld;
@@ -36,9 +37,9 @@ namespace Bushido
         KatanaSpiritVfx katanaSpirit;
         float katanaEquipTime;
         bool finalKatanaLoaded;
-        // El ogro y el jefe final comparten la presentación 3D del remate.
+        // Los faroles y la sombrilla comparten la presentación 3D del remate.
         // Las defensas normales siguen usando las ilustraciones de papel.
-        bool RitualModelKatana => mission == 2 || mission == titles.Length - 1;
+        bool RitualModelKatana => LanternDuel || IsBoss;
 
         void UpdateRitualKatana(float delta)
         {
@@ -78,43 +79,14 @@ namespace Bushido
             counterKatana.localScale = Vector3.one * scale; drawHiltPosition = grip + axis * (drawPullProgress * 1.5f * scale);
         }
 
-        // El FBX original contiene espada y funda en una sola malla, separadas en Y.
-        // Se extrae la funda y se alinea su abertura con la guarda de la espada.
-        // Si se sustituye el modelo, hay que revisar este criterio de separación.
         Transform CreateModelWeapon(bool saya)
         {
-            var swordAsset = Resources.Load<GameObject>("Models/Weapons/katana/katana no case");
-            var source = Resources.Load<GameObject>("Models/Weapons/katana/" + (saya ? "katana" : "katana no case"));
-            if (source == null || swordAsset == null) throw new System.InvalidOperationException("Falta el modelo 3D de katana");
-            var swordBounds = swordAsset.GetComponentInChildren<MeshFilter>().sharedMesh.bounds;
-            var original = source.GetComponentInChildren<MeshFilter>().sharedMesh;
-            var vertices = original.vertices;
-            var selected = new System.Collections.Generic.List<int>();
-            var bounds = new Bounds(); bool first = true;
-            var tris = original.triangles;
-            for (int i = 0; i < tris.Length; i += 3)
-            {
-                if (saya && (vertices[tris[i]].y >= swordBounds.min.y - .01f || vertices[tris[i + 1]].y >= swordBounds.min.y - .01f || vertices[tris[i + 2]].y >= swordBounds.min.y - .01f)) continue;
-                for (int j = 0; j < 3; j++)
-                {
-                    int index = tris[i + j]; selected.Add(index);
-                    if (first) { bounds = new Bounds(vertices[index], Vector3.zero); first = false; } else bounds.Encapsulate(vertices[index]);
-                }
-            }
-            float unit = 2.3f / swordBounds.size.x;
-            float mouth = saya ? bounds.max.x : swordBounds.max.x - swordBounds.size.x * .265f;
-            float centerY = saya ? bounds.center.y : swordBounds.center.y;
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                Vector3 p = vertices[i];
-                vertices[i] = new Vector3(-(p.y - centerY) * unit, (p.x - mouth) * unit + PaperSayaMouth, (p.z - swordBounds.center.z) * unit);
-            }
-            var mesh = new Mesh { name = saya ? "Funda 3D separada" : "Katana 3D normalizada" };
-            mesh.vertices = vertices; mesh.uv = original.uv; mesh.triangles = selected.ToArray(); mesh.RecalculateNormals(); mesh.RecalculateTangents(); mesh.RecalculateBounds();
-            var root = new GameObject(mesh.name).transform; root.SetParent(world, false);
+            var mesh = LoadWeaponMesh(saya ? "SayaTinta" : "KatanaTinta");
+            var root = new GameObject(saya ? "Funda 3D" : "Katana 3D").transform; root.SetParent(world, false);
             root.gameObject.AddComponent<MeshFilter>().sharedMesh = mesh; root.gameObject.AddComponent<SliceMeshOwner>();
             var material = art.KatanaMaterial(); if (!saya) katanaBladeMaterial = material; else katanaSayaMaterial = material;
-            root.gameObject.AddComponent<MeshRenderer>().sharedMaterial = material; return root;
+            root.gameObject.AddComponent<MeshRenderer>().sharedMaterial = material;
+            return root;
         }
 
         void UpdateKatanaPresentation(float delta)
@@ -122,20 +94,21 @@ namespace Bushido
             katanaEquipTime += delta;
             float enter = 1 - Mathf.Pow(1 - Mathf.Clamp01(katanaEquipTime / .85f), 3);
             float reveal = Mathf.SmoothStep(0, 1, (katanaEquipTime - 1.05f) / .75f) * .16f;
-            float scale = view.orthographicSize * 2 * .62f / 2.3f; drawSwordScale = scale;
+            // Large and close, like a first-person weapon: the saya runs off the bottom-right corner.
+            float scale = view.orthographicSize * 2 * .88f / 2.3f; drawSwordScale = scale;
             if (!wasPressed) { drawGripHeld = false; drawPullTarget = reveal; }
             drawPullProgress = Mathf.MoveTowards(drawPullProgress, Mathf.Max(reveal, drawPullTarget), delta * (drawGripHeld ? 5 : 1.5f));
             float settle = Mathf.Sin(katanaEquipTime * 9) * Mathf.Exp(-katanaEquipTime * 3) * 3;
-            Quaternion pose = Quaternion.Euler(0, 0, Mathf.Lerp(15, 8, enter) + settle + Mathf.Sin(katanaEquipTime * 1.8f) * .45f) * Quaternion.Euler(0, Mathf.Lerp(174, 188, enter) + Mathf.Sin(katanaEquipTime * .9f) * 3, 0);
+            Quaternion pose = Quaternion.Euler(0, 0, Mathf.Lerp(48, 36, enter) + settle + Mathf.Sin(katanaEquipTime * 1.8f) * .45f) * Quaternion.Euler(0, Mathf.Lerp(174, 188, enter) + Mathf.Sin(katanaEquipTime * .9f) * 3, 0);
             Vector3 axis = pose * Vector3.up;
             // Keep the marked upright pose and turn the blade around its long axis.
-            Vector3 grip = view.ViewportToWorldPoint(new Vector3(.565f, .32f, 3.8f));
+            Vector3 grip = view.ViewportToWorldPoint(new Vector3(.54f, .56f, 3.8f));
             grip += new Vector3((1 - enter) * scale * .6f, -(1 - enter) * scale * .95f, 0);
             grip += Vector3.up * (Mathf.Sin(katanaEquipTime * 2) * scale * .006f);
             Vector3 origin = grip - axis * (.9f * scale);
             drawSaya.gameObject.SetActive(true); drawSaya.SetPositionAndRotation(origin, pose); drawSaya.localScale = Vector3.one * scale;
-            counterKatana.gameObject.SetActive(true); counterKatana.SetPositionAndRotation(origin + axis * (drawPullProgress * 1.5f * scale), pose);
-            counterKatana.localScale = Vector3.one * scale; drawHiltPosition = counterKatana.TransformPoint(Vector3.up * .9f);
+            counterKatana.gameObject.SetActive(true); SheathSlide(drawSaya, counterKatana, drawPullProgress * 1.5f);
+            drawHiltPosition = counterKatana.TransformPoint(Vector3.up * .9f);
             SetPaperBladeReveal(true);
             Vector3 mouth = drawSaya.TransformPoint(Vector3.up * PaperSayaMouth);
             float charge = Mathf.Clamp01((drawPullProgress - .16f) / .56f);
@@ -144,6 +117,8 @@ namespace Bushido
             katanaBladeMaterial.SetFloat("_Age", katanaEquipTime);
             katanaSayaMaterial.SetFloat("_Age", katanaEquipTime);
             katanaBladeMaterial.SetFloat("_Spirit", reflectedSpirit);
+            // Blade energy wakes as it leaves the saya and grows with the pull.
+            katanaBladeMaterial.SetFloat("_Energy", Mathf.Clamp01(drawPullProgress / .16f) * (.45f + charge * .55f));
             katanaSayaMaterial.SetFloat("_Spirit", reflectedSpirit);
         }
         Transform CreatePaperWeapon(string resource, bool saya)
@@ -192,6 +167,7 @@ namespace Bushido
             if (counterKatana != null) counterKatana.localScale = Vector3.one;
             katanaCutDirection = ((Vector2)direction).normalized;
             katanaCutTime = 0.52f;
+            SlashArcBurst(CounterCenter + Vector3.back * 1.8f, katanaCutDirection, 2.1f, SpiritLight(.45f, 1.6f));
         }
 
         void UpdateKatanaProps(float delta)

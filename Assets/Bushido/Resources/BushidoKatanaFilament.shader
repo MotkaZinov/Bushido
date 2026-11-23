@@ -19,7 +19,7 @@ Shader "Bushido/KatanaFilament"
     float edge=exp(-pow((i.uv.y*2-1)*2.4,2));
     float taper=sin(saturate(i.uv.x)*PI);
     float pulse=.55+.45*pow(.5+.5*sin(i.uv.x*9-_Age*3),3);
-    return half4(float3(.12,.82,1.65)*edge*taper*pulse*_Power,0);
+    return half4(float3(.12,.92,.5)*edge*taper*pulse*_Power,0);
    }
    ENDHLSL
   }

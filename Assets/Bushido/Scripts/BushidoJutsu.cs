@@ -3,7 +3,7 @@ namespace Bushido
 {
     public sealed partial class BushidoPrototype
     {
-        static readonly Color JutsuInk = new Color(0.42f, 0.8f, 0.6f); // luminous jade, in palette
+        static readonly Color JutsuInk = PrototypeArt.Spirit;
         const float JutsuDuration = 4f;
         Transform jutsuSeal;
         float sealTime, jutsuTime;
@@ -32,7 +32,7 @@ namespace Bushido
         void ShowJutsuSeal()
         {
             ClearJutsuSeal();
-            sealVariant = sealsShown++ % 3;
+            sealsShown++; sealVariant = (sealsShown + 2) % 3; // Tiempo -> Abundancia -> Destierro
             sealStrokes = KanjiPaths(sealVariant);
             completedSealStrokes = new bool[sealStrokes.Length];
             sealLegs = new LineRenderer[sealStrokes.Length];
@@ -103,16 +103,9 @@ namespace Bushido
             ClearJutsuSeal();
             if (sealVariant == 0) jutsuTime = JutsuDuration;
             else if (sealVariant == 1) abundanceTime = 8f;
-            else
-            {
-                for (int i = projectiles.Count - 1; i >= 0; i--)
-                {
-                    if (projectiles[i].kind != ProjectileKind.Frog) continue;
-                    RewardCut(projectiles[i].root.position); RemoveProjectile(i);
-                }
-                if (IsBoss && !vulnerable) { DamagePosture(3); if (guard >= guardLimit) OpenCounter(); }
-            }
+            else BeginJudgmentCut(JudgmentBanish);
             waveTimer = Mathf.Min(waveTimer, 0.35f);
+            ReactCompanion(CompanionMood.Seal, 1f);
             JutsuFxActivate(center); PlayGuardSound(true);
             return true;
         }

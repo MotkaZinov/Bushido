@@ -13,7 +13,9 @@ namespace Bushido
         public int[] bestRanks = new int[5];
         public bool[] completed = new bool[5];
 
-        public static bool IsBoss(int node) => node == 2 || node == 4;
+        public int[] bestScores = new int[5];
+        public static bool IsBoss(int node) => node == 4;
+        public static bool IsDuel(int node) => node == 3; // "Los faroles gemelos": winning passes the node whatever the rank
 
         public bool IsUnlocked(int node) => node >= 0 && node < 5 && node <= unlockedThrough;
 
@@ -22,6 +24,7 @@ namespace Bushido
             unlockedThrough = Math.Max(1, Math.Min(4, unlockedThrough));
             currentNode = Math.Max(0, Math.Min(unlockedThrough, currentNode));
             if (bestRanks == null || bestRanks.Length != 5) Array.Resize(ref bestRanks, 5);
+            if (bestScores == null || bestScores.Length != 5) Array.Resize(ref bestScores, 5);
             if (completed == null || completed.Length != 5) Array.Resize(ref completed, 5);
             for (int i = 0; i < 5; i++)
                 bestRanks[i] = Math.Max(0, Math.Min((int)Rank.Perfect, bestRanks[i]));
@@ -33,7 +36,7 @@ namespace Bushido
             currentNode = node;
             if (!won) return false;
             bestRanks[node] = Math.Max(bestRanks[node], (int)rank);
-            bool passed = IsBoss(node) || rank >= Rank.B;
+            bool passed = IsBoss(node) || IsDuel(node) || rank >= Rank.B;
             if (passed)
             {
                 completed[node] = true;
@@ -41,6 +44,9 @@ namespace Bushido
             }
             return passed;
         }
+
+        // Accuracy needed for rank B (and so to unlock the next node). The HUD notch reads this too.
+        public const float RankBAccuracy = 0.55f;
 
         // Provisional rank boundaries, independent of the campaign unlock rules.
         public static Rank Grade(int hits, int missed, int wounds)
@@ -50,7 +56,7 @@ namespace Bushido
             float accuracy = (float)hits / Math.Max(1, hits + missed);
             if (accuracy >= 0.9f && wounds <= 1) return Rank.S;
             if (accuracy >= 0.75f && wounds <= 2) return Rank.A;
-            if (accuracy >= 0.55f) return Rank.B;
+            if (accuracy >= RankBAccuracy) return Rank.B;
             return Rank.C;
         }
     }

@@ -59,14 +59,27 @@ namespace Bushido
         {
             var model = Instantiate(Resources.Load<GameObject>("Models/Samurai"), parent, false).transform;
             var renderers = model.GetComponentsInChildren<Renderer>();
-            Bounds bounds = renderers[0].bounds;
+            Bounds bounds = default;
+            bool hasBody = false;
             foreach (var renderer in renderers)
             {
                 if (!renderer.name.StartsWith("Katana", System.StringComparison.Ordinal))
-                    bounds.Encapsulate(renderer.bounds);
+                {
+                    if (hasBody) bounds.Encapsulate(renderer.bounds);
+                    else { bounds = renderer.bounds; hasBody = true; }
+                }
                 Material[] materials = renderer.sharedMaterials;
                 for (int i = 0; i < materials.Length; i++) materials[i] = art.ModelMaterial(materials[i]);
                 renderer.sharedMaterials = materials;
+            }
+            // Calm swordsman: the eyes are closed ink lines (flattened and inked).
+            var closed = new MaterialPropertyBlock();
+            closed.SetColor("_BaseColor", PrototypeArt.Ink);
+            foreach (var renderer in renderers)
+            {
+                if (renderer.name != "Ojo.L" && renderer.name != "Ojo.R") continue;
+                renderer.SetPropertyBlock(closed);
+                renderer.transform.localScale = Vector3.Scale(renderer.transform.localScale, new Vector3(1.25f, .26f, 1f));
             }
             float scale = height / Mathf.Max(bounds.size.y, 0.001f);
             Vector3 feet = new Vector3(bounds.center.x, bounds.min.y, bounds.center.z);
@@ -74,32 +87,21 @@ namespace Bushido
             model.localScale *= scale;
         }
 
-        Transform CreateBossFigure(int node, Vector3 position, float height)
+        Transform CreateUmbrellaFigure(Vector3 position, float height)
         {
-            if(node==2)
-            {
-                var illustrated=CreatePaperOgre(position,height);
-                if(illustrated!=null)return illustrated;
-            }
-            string modelResource = node == 2 ? "Drax/Drax/Drax_MarvelNow" : "OniSamurai";
-            string modelName = node == 2 ? "Drax" : "Oni Samurai";
-            GameObject prefab = Resources.Load<GameObject>("Models/Bosses/" + modelResource);
-            if (prefab == null)
-            {
-                Debug.LogWarning("No se pudo cargar el modelo de jefe en Resources/Models/Bosses/" + modelResource);
-                return CreateBossPlaceholder(node, position, height);
-            }
-
-            var figure = new GameObject(modelName).transform;
+            var prefab = Resources.Load<GameObject>("Models/sombrilla");
+            if (prefab == null) throw new System.InvalidOperationException("Falta el modelo de sombrilla.");
+            var figure = new GameObject("Sombrilla de la lluvia").transform;
             figure.SetParent(world, false);
             var model = Instantiate(prefab, figure, false).transform;
             Renderer[] renderers = model.GetComponentsInChildren<Renderer>();
             if (renderers.Length == 0)
             {
                 Destroy(figure.gameObject);
-                return CreateBossPlaceholder(node, position, height);
+                throw new System.InvalidOperationException("La sombrilla no tiene mallas.");
             }
 
+            model.localRotation = Quaternion.Euler(0, 180, 0) * model.localRotation;
             Bounds bounds = renderers[0].bounds;
             foreach (Renderer renderer in renderers)
             {
@@ -113,30 +115,6 @@ namespace Bushido
             model.localPosition = (model.localPosition - figure.InverseTransformPoint(feet)) * scale;
             model.localScale *= scale;
             figure.position = position;
-            return figure;
-        }
-
-        Transform CreateBossPlaceholder(int node, Vector3 position, float height)
-        {
-            bool drax = node == 2;
-            Color armor = drax ? new Color(0.22f, 0.34f, 0.32f) : new Color(0.58f, 0.17f, 0.11f);
-            Transform figure = art.Samurai(world, position, armor, height / 2.2f);
-            figure.name = drax ? "Drax provisional" : "Oni samurái provisional";
-            art.Shape(figure, "Máscara yokai", PrimitiveType.Sphere, new Vector3(0, 1.51f, 0.18f),
-                new Vector3(0.46f, 0.40f, 0.25f), drax ? PrototypeArt.Paper : armor);
-            foreach (int side in new[] { -1, 1 })
-            {
-                art.Shape(figure, "Ojo", PrimitiveType.Cube, new Vector3(side * 0.105f, 1.56f, 0.297f),
-                    new Vector3(0.073f, 0.038f, 0.025f), drax ? PrototypeArt.Ink : PrototypeArt.Gold);
-                if (!drax)
-                {
-                    art.Shape(figure, "Cuerno", PrimitiveType.Cube, new Vector3(side * 0.23f, 1.92f, 0.12f),
-                        new Vector3(0.11f, 0.35f, 0.13f), PrototypeArt.Paper).transform.localRotation =
-                        Quaternion.Euler(0f, 0f, -side * 26f);
-                    art.Shape(figure, "Hombrera", PrimitiveType.Cube, new Vector3(side * 0.44f, 1.28f, 0.04f),
-                        new Vector3(0.42f, 0.23f, 0.50f), armor);
-                }
-            }
             return figure;
         }
 
@@ -169,6 +147,7 @@ namespace Bushido
             bool broken = stamina <= 0;
             recoveryDelay = broken ? 1.25f : 0.65f;
             guarding = !broken;
+            if (deflect) JudgmentGain(JudgmentDeflectGain);
             guardFlash = 0.25f;
             fighterReaction = 0.3f;
             fighterSwing = 0;
@@ -182,6 +161,7 @@ namespace Bushido
         void GuardBurst(Vector3 contact, bool deflect)
         {
             if (guardFxPulse == null || fighter == null) return;
+            if (deflect) ReactCompanion(CompanionMood.Parry, .7f);
             contact.z = -2.3f;
             contact.y = Mathf.Clamp(contact.y, 0.9f, 6.6f);
             // Deflected steel flies back up and away from the player.
@@ -284,6 +264,7 @@ namespace Bushido
 
         void FighterCut(Vector2 direction, bool rankedUp = false)
         {
+            strokeHasSwing = true;
             FighterMove move = rankedUp && StyleLevel >= 4 ? FighterMove.Celebrate
                 : strokeHits >= 2 ? FighterMove.MultiCut : rankedUp ? FighterMove.Salute : FighterMove.Cut;
             if (fighterSwing > 0 && (int)fighterMove > (int)move) return;
@@ -292,7 +273,7 @@ namespace Bushido
             switch (move)
             {
                 case FighterMove.MultiCut:
-                    swingDuration = 0.62f + Mathf.Min(3, strokeHits - 2) * 0.08f;
+                    swingDuration = SamuraiCutDuration * 1.7f;
                     break;
                 case FighterMove.Salute:
                     swingDuration = 0.67f;
@@ -301,7 +282,7 @@ namespace Bushido
                     swingDuration = 0.95f;
                     break;
                 default:
-                    swingDuration = fighterRig?.SwordDuration ?? 0.28f;
+                    swingDuration = SamuraiCutDuration;
                     break;
             }
             fighterSwing = swingDuration;
@@ -315,33 +296,57 @@ namespace Bushido
             hurtFlash = Mathf.Max(0, hurtFlash - delta);
             postureFlash = Mathf.Max(0, postureFlash - delta);
             float recoil = fighterReaction / 0.3f;
-            guardPose = Mathf.MoveTowards(guardPose, guarding || recoil > 0 ? 1 : 0, delta * 12f);
+            guardPose = Mathf.MoveTowards(guardPose, guarding || recoil > 0 || (DuelActive && duelPhase == DuelPhase.Telegraph && duelPrepared) ? 1 : 0, delta * 12f);
             float phase = fighterSwing > 0 ? 1f - fighterSwing / swingDuration : 0;
-            float motion = Mathf.Sin(phase * Mathf.PI) * (1 - guardPose);
+            // Readable stage timing: gather, sweep, hold the silhouette, then settle.
+            float sweep = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(.16f, .46f, phase));
+            float recover = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(.57f, 1f, phase));
+            float windup = Mathf.Sin(Mathf.Clamp01(phase / .25f) * Mathf.PI);
+            bool cutting = fighterMove == FighterMove.Cut || fighterMove == FighterMove.MultiCut;
+            float motion = (cutting ? sweep * (1f - recover) : Mathf.Sin(phase * Mathf.PI)) * (1 - guardPose);
             float flourish = fighterMove == FighterMove.MultiCut ? Mathf.Sin(phase * Mathf.PI * 2) * motion : 0;
             float salute = fighterMove == FighterMove.Salute ? motion : 0;
             float celebration = fighterMove == FighterMove.Celebrate ? motion : 0;
+            if (mode == Mode.Result && won) celebration = Mathf.MoveTowards(0, 1, companionReactionAge * 3);
+            if (bossFinalStage == 1) salute = Mathf.Max(salute, .35f + .6f * drawPullProgress);
             float swing = fighterMove == FighterMove.Cut || fighterMove == FighterMove.MultiCut ? motion : 0;
-            Vector2 gesture = Quaternion.AngleAxis(95f * flourish, Vector3.forward) * fighterDirection;
+            float arc = cutting ? Mathf.Lerp(-38f, 14f, sweep) * Mathf.Sign(fighterDirection.x + .01f) : 0;
+            Vector2 gesture = Quaternion.AngleAxis(arc + 95f * flourish, Vector3.forward) * fighterDirection;
+            // Real cuts: a kenjutsu arc chosen by the swipe (see BushidoSamuraiMoves).
+            SamuraiCutPose cut = default;
+            if (cutting) { cut = CurrentSamuraiCut(phase); swing = cut.weight * (1f - guardPose); gesture = cut.blade; flourish = 0; }
+            else if (fighterSwing <= 0 && guardPose < .01f && mode == Mode.Battle)
+            {
+                // Idle kamae shift every few seconds: the blade drops from the high guard toward the enemy and rises again.
+                float cycle = Mathf.Repeat(battleTime + 2f, 6.5f);
+                float shift = cycle < 1.5f ? Mathf.Sin(cycle / 1.5f * Mathf.PI) : 0f;
+                swing = shift * .5f;
+                gesture = new Vector2(Mathf.Cos(28f * Mathf.Deg2Rad), Mathf.Sin(28f * Mathf.Deg2Rad));
+            }
+            samuraiCutCrouch = cut.crouch * cut.weight; samuraiCutLean = cut.lean * cut.weight;
             float cheerHop = celebration * 0.035f + salute * 0.014f + Mathf.Abs(flourish) * 0.012f;
             // Hurt reads heavier than a guard recoil: knocked further back, buckling and shuddering.
             float hurt = hurtFlash / 0.32f, buckle = Mathf.Sin(hurt * Mathf.PI);
             cheerHop -= buckle * 0.012f;
-            float step = -swing * 0.012f + recoil * 0.018f - salute * 0.008f
+            float step = -swing * 0.012f - cut.lunge * cut.weight * 0.016f + recoil * 0.018f - salute * 0.008f
                 + hurt * 0.012f + Mathf.Sin(hurtFlash * 90f) * hurt * 0.003f;
             float idleSway = Mathf.Sin(battleTime * 2.4f) * 0.0025f;
             fighter.position = view.ViewportToWorldPoint(new Vector3(0.875f + step + idleSway, 0.12f + cheerHop, 12f));
             fighter.position += Vector3.up * (Mathf.Sin(battleTime * 3f) * 0.035f);
             fighter.localScale = Vector3.one * (view.orthographicSize * 2f * 0.34f / 2.65f);
             float enthusiasm = Mathf.Sin(battleTime * 11f) * celebration;
-            fighter.rotation = Quaternion.Euler(-salute * 8f, 168f - swing * 28f + enthusiasm * 9f,
+            // The cut stays facing the camera: the arc is carried by arm and blade, not by turning the body away.
+            fighter.rotation = Quaternion.Euler(-salute * 8f, 168f + (cutting ? 5f * windup * (1f - guardPose) : 0f) - swing * 10f + enthusiasm * 9f,
                 recoil * 15f + hurt * 9f + flourish * 17f - swing * 12f + enthusiasm * 7f);
             float squash = 1 - celebration * 0.06f + swing * 0.025f - buckle * 0.05f;
             fighter.localScale = Vector3.Scale(fighter.localScale, new Vector3(1 / squash, squash, 1));
-            fighterRig?.Pose(gesture, swing, flourish, salute, celebration, guardPose, recoil);
-            fighterRig?.PlaySwordTrial(fighterSwing > 0 && fighterMove == FighterMove.Cut, phase, guardPose, recoil);
-            UpdateKatanaProps(delta);
-            UpdateCompanionFace(delta);
+            fighterRig?.Pose(gesture, swing, flourish, salute, celebration, guardPose, recoil, Mathf.Sin(battleTime * 2.1f));
+            fighterRig?.PlaySwordTrial(false, phase, guardPose, recoil); // the sampled clip only drives the block now; cuts are keyed
+            UpdateSamuraiTrail(delta, cut.cutting * cut.weight);
+            if (mode == Mode.Battle) UpdateCompanionFace(delta);
+            else companionReactionAge += delta;
+            PoseCompanion(delta, swing);
+            if (mode == Mode.Battle) UpdateKatanaProps(delta);
         }
 
         void DrawDefense()
@@ -353,7 +358,7 @@ namespace Bushido
                 float fade = Mathf.Clamp01(guardFlash * 4);
                 bool sharp = guardFxKind != GuardFxBlock;
                 float half = sharp ? 640f * Mathf.Sqrt(fade) : 150f * fade, thick = sharp ? 5f : 2f;
-                Color line = sharp ? new Color(1, 0.72f, 0.22f, fade) : new Color(0.9f, 0.82f, 0.65f, fade * 0.7f);
+                Color line = sharp ? new Color(1, 0.72f, 0.22f, fade) : new Color(PrototypeArt.Paper.r, PrototypeArt.Paper.g, PrototypeArt.Paper.b, fade * 0.7f);
                 Panel(new Rect(640 - half, 133.5f - thick * 0.5f, half * 2, thick), line);
             }
             if (hurtFlash > 0)

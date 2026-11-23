@@ -75,7 +75,7 @@ namespace Bushido
             bloom.scatter.Override(.65f); bloom.clamp.Override(6);
             bloom.downscale.Override(BloomDownscaleMode.Quarter); bloom.maxIterations.Override(4);
             var vignette = profile.Add<Vignette>(true);
-            vignette.color.Override(new Color(.025f, .055f, .09f));
+            vignette.color.Override(new Color(.03f, .05f, .045f));
             vignette.center.Override(new Vector2(.53f, .44f));
             vignette.intensity.Override(.24f); vignette.smoothness.Override(.7f);
             var grade = profile.Add<ColorAdjustments>(true);
@@ -164,7 +164,7 @@ namespace Bushido
                 Vector3 r = (right * Mathf.Cos(angle) + up * Mathf.Sin(angle)) * radius * scale;
                 Vector3 v = (-right * Mathf.Sin(angle) + up * Mathf.Cos(angle)) * radius * scale * 1.35f;
                 float fade = Mathf.SmoothStep(0, 1, u / .12f) * (1 - Mathf.SmoothStep(.45f, 1, u));
-                Color color = Color.Lerp(new Color(.09f, .39f, .64f), new Color(.23f, .36f, .56f), u);
+                Color color = Color.Lerp(new Color(.03f, .04f, .04f), PrototypeArt.Ink, u) /* ink smoke */;
                 color.a = born < 0 ? 0 : fade * SmokeStrength * (1.25f + charge * .15f);
                 Quad(smoke, i, p, r, v, color);
             }
@@ -186,7 +186,7 @@ namespace Bushido
                 float radius = scale * Mathf.Lerp(.045f, .32f, u);
                 float fade = Mathf.SmoothStep(0, 1, u / .08f) * (1 - Mathf.SmoothStep(0, 1, (u - .65f) / .35f));
                 fade *= Mathf.SmoothStep(0, 1, (sceneCamera.WorldToViewportPoint(p).y + .08f) / .2f);
-                Color color = Color.Lerp(new Color(.15f, .46f, .61f), new Color(.36f, .65f, .73f), u);
+                Color color = Color.Lerp(new Color(.04f, .05f, .05f), new Color(.19f, .23f, .22f), u) /* ink wash */;
                 color.a = born < 0 ? 0 : fade * SmokeStrength * (.6f + charge * .15f);
                 Quad(fallingFog, i, p, right * radius, up * radius * 1.4f, color);
             }
@@ -200,7 +200,7 @@ namespace Bushido
                 float seed = i * 2.39996f;
                 Vector3 p = mouth + scale * (side * Mathf.Sin(seed + u * 5) * (.03f + u * .28f) + up * (u * .65f) + axis * u * .15f) - forward * .29f;
                 float size = scale * (i % 4 == 0 ? .010f : .005f) * (1 + charge * .3f);
-                Color color = i % 5 == 0 ? new Color(1.9f, 1.05f, .32f) : new Color(.3f, 1.4f, 2.6f);
+                Color color = i % 5 == 0 ? new Color(1.9f, 1.05f, .32f) : new Color(1.1f, 2f, 1.5f);
                 color.a = born < 0 ? 0 : Mathf.Sin(u * Mathf.PI) * SmokeStrength * (.35f + .4f * Mathf.Pow(.5f + .5f * Mathf.Sin(age * 6 + seed), 2));
                 Quad(sparks, i, p, right * size, up * size * 1.5f, color);
             }
@@ -251,7 +251,7 @@ namespace Bushido
                 float spread = (i / (float)(SparkCount - 1) - .5f) * 2;
                 Vector3 p = center + direction * spread * scale * (.35f + age * 2.8f) + side * Mathf.Sin(i * 2.4f) * age * scale * .6f;
                 float size = scale * (.004f + (i % 3) * .002f);
-                Color color = i % 5 == 0 ? new Color(1, .61f, .18f, fade) : new Color(.08f, .47f, .85f, fade);
+                Color color = i % 5 == 0 ? new Color(1, .61f, .18f, fade) : new Color(.03f, .04f, .04f, fade);
                 Quad(sparks, i, p, right * size, up * size * 2, color);
             }
             Upload(sparks, age);

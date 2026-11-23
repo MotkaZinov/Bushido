@@ -77,9 +77,9 @@ public static class BushidoDuelValidation
         }
         throw new TimeoutException(reason);
     }
-    static void StartBattle(BushidoPrototype game)
+    static void StartBattle(BushidoPrototype game, int mission = 4)
     {
-        Set(game, "mission", 2);
+        Set(game, "mission", mission);
         Call(game, "BeginBattle");
         Set(game, "paused", true);
         Call(game, "BeginTheaterAttack");
@@ -100,7 +100,31 @@ public static class BushidoDuelValidation
             "Tres de cuatro bloqueos no abren ni aplican un sello");
         Check((int)Get(game, "lives") == 2, "Un golpe omitido resta exactamente una cantimplora");
 
-        StartBattle(game);
+        Set(game, "mission", 2);
+        Call(game, "BeginBattle");
+        Check((Transform)Get(game, "opponent") == null && !CampaignProgress.IsBoss(2), "El festival es un sendero sin jefe");
+        ValidateSeals(game, 4);
+        ValidateTimingAndDefeat(game);
+    }
+
+    static void ValidateSeals(BushidoPrototype game, int mission)
+    {
+        StartBattle(game, mission);
+        if (mission == 4)
+        {
+            var boss = (Transform)Get(game, "opponent");
+            Check(boss.Find("sombrilla(Clone)") != null, "El santuario carga el FBX de la sombrilla");
+            Call(game, "UpdateUmbrella", 0f);
+            var foot = (Transform)Get(game, "footJoint");
+            var canopy = (Transform[])Get(game, "canopyPanels");
+            Check(foot != null && canopy[0] != null && canopy[1] != null, "El pie y las dos capas están articulados");
+            var restFoot = foot.localRotation;
+            var restPanel = canopy[0].localRotation;
+            Call(game, "PoseUmbrellaParts", 1f, 0f, 1f, 1f);
+            Check(Quaternion.Angle(restFoot, foot.localRotation) > 1f &&
+                Quaternion.Angle(restPanel, canopy[0].localRotation) > 1f,
+                "La anticipación mueve pie y cubierta en sus ejes locales");
+        }
         for (int round = 0; round < 3; round++)
         {
             for (int beat = 0; beat < 4; beat++)
@@ -132,7 +156,6 @@ public static class BushidoDuelValidation
                 "El jefe no preparó la ronda siguiente");
         }
         Check((int)Get(game, "bossFinalStage") == 1, "Tres sellos permiten el desenvaine final");
-        ValidateTimingAndDefeat(game);
     }
 
     static void ValidateTimingAndDefeat(BushidoPrototype game)
@@ -142,7 +165,7 @@ public static class BushidoDuelValidation
         Set(game, "duelGestureBeat", Get(game, "duelBeat"));
         Set(game,"strokeGestureEpoch",Get(game,"gestureEpoch"));
         Set(game,"strokeGestureEpoch",Get(game,"gestureEpoch"));
-        var wrongDiagonal = new List<Vector3> { new Vector3(-.5f,.5f), new Vector3(.5f,-.5f) };
+        var wrongDiagonal = new List<Vector3> { new Vector3(0,.5f), new Vector3(0,-.5f) };
         Check(!(bool)Call(game, "CompleteDuelGesture", wrongDiagonal) && !(bool)Get(game, "duelPrepared"),
             "Diagonal opuesta al símbolo no prepara guardia");
 
